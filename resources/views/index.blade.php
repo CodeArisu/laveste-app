@@ -1,5 +1,5 @@
 <x-layouts.app>
-    <header>
-        <p>Test</p>
-    </header>
+
+    <x-fragments.button uri="#" label="Button" btnType="btn-type-secondary"/>
+
 </x-layouts.app>
