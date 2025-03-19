@@ -18,6 +18,7 @@
     </head>
 
     <body class='src'>
+        @include('components.layouts.header')
         {{-- main src component --}}
         @isset($slot)
             {{ $slot }}

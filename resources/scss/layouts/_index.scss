@@ -15,6 +15,9 @@ ul > li {
     list-style-type: none;
     padding: 0;
 }
+a {
+    text-decoration: none;
+}
 
 .src {
     background: $clr-primary;
