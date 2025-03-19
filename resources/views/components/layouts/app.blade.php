@@ -19,9 +19,13 @@
 
     <body class='src'>
         @include('components.layouts.header')
+        
         {{-- main src component --}}
         @isset($slot)
             {{ $slot }}
         @endisset
+
+        @stack('scripts')
+        <script src="https://kit.fontawesome.com/d4296d9b5d.js" crossorigin="anonymous"></script>
     </body>
 </html>

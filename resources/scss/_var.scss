@@ -1,19 +1,21 @@
+@use 'sass:math' as m;
 
 // colors
 $clr-primary: hsl(47, 77%, 83%);
 $clr-secondary: hsl(0, 51%, 39%);
 
 // fonts
-$fnt-primary: 'Playfair Display', serif;
-$fnt-secondary: 'Poppins', serif;
+$fn-primary: 'Playfair Display', serif;
+$fn-secondary: 'Poppins', serif;
+
+$base-fn: .6em;
+$fn-sm: m.div($base-fn, .5);
+$fn-md: $fn-sm * 1.5;
+$fn-lg: $fn-md * 1.5;
+$fn-xl: $fn-lg * 1.5;
 
 // spacing
 $spc-xsm: .4em;
-$spc-sm: .4em;
-$spc-md: .4em;
-$spc-lg: .4em;
-$spc-xlg: .4em;
-
 
 // transition
 $df-transition: .16s ease-in;

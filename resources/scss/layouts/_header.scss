@@ -1,11 +1,12 @@
 @import '../var';
 
-.navi {
+.navigator {
     margin-top: 1.3em;
 
-    display: flex;
-    flex-direction: row;
-
+    li > a {
+        font-family: $fn-secondary;
+        color: $clr-secondary;
+    }
 
     .nav_list {
         padding: 0;
@@ -15,20 +16,21 @@
         padding-inline: 1.2em;
     
         a {
-            font-family: $fnt-secondary;
-            font-weight: 300;
-            color: $clr-secondary;
-            font-size: 1.25em;
+            font-weight: 400;
+            font-size: $fn-sm;
         }
     }
-
 
     .ico_list {
         padding: 0;
     }
     .ico_list > .ico_item {
         display: inline-block;
-        padding-inline: 1.2em;
+        padding-inline: .5em;
+
+        i {
+            font-size: $fn-md;
+        }
     }
 }
 

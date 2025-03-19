@@ -1,19 +1,25 @@
-<nav class='navi'>
+<nav class='navigator align-flex-between m-inline-1'>
     <div>
-        <ul class="nav_list">
-            <li class="nav_item hover"><a href="">Home</a></li>
-            <li class="nav_item hover"><a href="">Products</a></li>
-            <li class="nav_item hover"><a href="">Appointment</a></li>
-            <li class="nav_item hover"><a href="">How it Works</a></li>
-            <li class="nav_item hover"><a href="">About Us</a></li>
-            <li class="nav_item hover"><a href="">Contacts</a></li>
-        </ul>
+        <x-fragments.item-list ulClass='nav_list' liClass='nav_item hover' 
+        :list="[
+            ['element' => 'Home', 'url' => '#'],
+            ['element' => 'Products', 'url' => '#'],
+            ['element' => 'Appointment', 'url' => '#'],
+            ['element' => 'How It Works', 'url' => '#'],
+            ['element' => 'About Us', 'url' => '#'],
+            ['element' => 'Contacts', 'url' => '#'],
+        ]" >
+        </x-fragments.item-list>
     </div>
     <div>
-        <ul class="ico_list">
-            <li class="ico_item"><a href=""></a></li>
-            <li class="ico_item"><a href=""></a></li>
-            <li class="ico_item"><a href=""></a></li>
-        </ul>
+        <x-fragments.item-list 
+            ulClass='ico_list m-inline-2' 
+            liClass='ico_item' 
+            :list="[
+                ['element' => '<i class=\'fa-solid fa-magnifying-glass\'></i>', 'url' => '#'],
+                ['element' => '<i class=\'fa-regular fa-heart\'></i>', 'url' => '#'],
+                ['element' => '<i class=\'fa-regular fa-user\'></i>', 'url' => '#'],
+            ]" >
+        </x-fragments.item-list>
     </div>
 </nav>

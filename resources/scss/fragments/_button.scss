@@ -9,7 +9,7 @@ $styles: (
 {
     .btn-type-#{$key} 
     {
-        font-family: $fnt-secondary;
+        font-family: $fn-secondary;
         color: $val;
         background: if($key == 'primary', transparentize(map-get($styles, 'secondary'), $amount: 0.7), transparentize(map-get($styles, 'primary'), $amount: 0.7));
 
