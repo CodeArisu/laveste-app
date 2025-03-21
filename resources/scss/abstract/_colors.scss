@@ -1,0 +1,16 @@
+@import '../var';
+
+$colors : (
+    'primary' : $clr-primary,
+    'secondary' : $clr-secondary 
+);
+
+@each $key, $val in $colors {
+    .text-clr-#{$key} {
+        color: $val;
+    }
+
+    .bg-clr-#{$key} {
+        color: $val;
+    }
+}

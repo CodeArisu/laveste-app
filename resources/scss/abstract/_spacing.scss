@@ -1,10 +1,15 @@
-// temporary
-.m-inline-1 {
-    margin-inline: 1em;
-}
-.m-inline-2 {
-    margin-inline: 1.75em;
-}
-.p-inline-1 {
-    padding-inline: 1em;
+@import '../var';
+
+$space : (
+    '1' : $spc-sm,
+    '2' : $spc-md
+);
+
+@each $key, $val in $space {
+    .p-inline-#{$key} {
+        padding-inline: $val;
+    }
+    .m-inline-#{$key} {
+        margin-inline: $val;
+    }
 }
