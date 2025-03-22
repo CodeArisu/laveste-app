@@ -12,5 +12,7 @@
             Style has never been this accessible—start your journey today!
         </p>
         <x-fragments.button uri='#' label='Start Now' btnType='btn-type-primary rad-400 text-fs-200 p-inline-2' />
+
     </div>
+    djabwdadadadawd
 </div>

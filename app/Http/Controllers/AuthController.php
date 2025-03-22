@@ -2,30 +2,35 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
-{
-    public function registerUser(Request $request)
+{   
+    /**
+     * @param void loops and creates through roles enums exists
+     */
+    private function registerRoles()
     {
+        foreach (\app\Enums\Role::cases() as $roles) {
+            \app\Models\Role::firstOrCreate(['role' => $roles->label()]);
+        }
+    }
+
+    public function registerUser(Request $request)
+    {   
         $validated = Validator::make($request->all(), [
             'name' => 'required|string|max:50',
             'email' => 'required|string|email|max:50|unique:users',
-            'password' => 'required|string|confirmed|min:8'
+            'password' => 'required|string|confirmed|min:8',
         ]);
         $this->isValidated($validated);
 
         try {
-            // creates the user to the database
-            $user = \app\Models\User::firstOrCreate($validated);
-
-            // assigns user roles
-            $role = \app\Models\Role::firstOrCreate([
-                'role' => 'user',
-                'user_id' => $user->id
-            ]);
+            // creates user roles
+            $this->registerRoles();
+            // creates the new user with default role
+            $user = \app\Models\User::firstOrCreate([$validated, 'role_id' => \app\Enums\Role::EMPLOYEE->value]);
 
             // creates new token
             $authToken = $user->createToken('auth_token')->plainTextToken;
@@ -33,7 +38,7 @@ class AuthController extends Controller
             return response()->json([
                 'access_token' => $authToken,
                 'user' => $user,
-                'type' => $role,
+                'type' => $user->role,
                 'token_type' => 'Bearer'
             ], 201);
         } catch (\Exception $e) 
@@ -91,7 +96,8 @@ class AuthController extends Controller
     }
 
     public function logoutUser(Request $request)
-    {
+    {   
+        // revokes user access token
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([

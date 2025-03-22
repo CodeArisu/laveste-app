@@ -10,11 +10,16 @@ class Role extends Model
 {
     use HasFactory;
 
+    /**
+    * mass assignable attributes
+    * 
+    * @var list<any>
+    */
     protected $fillable = [
         'role',
-        'user_id'
     ];
 
+    // one to one 
     public function user() : HasOne
     {
         return $this->hasOne(User::class);
