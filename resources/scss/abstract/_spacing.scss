@@ -12,4 +12,15 @@ $space : (
     .m-inline-#{$key} {
         margin-inline: $val;
     }
+
+    .m-left-#{$key} {
+        margin-left: $val;
+    }
+    .m-right-#{$key} {
+        margin-right: $val;
+    }
+}
+
+.p-1 {
+    padding: 1px;
 }

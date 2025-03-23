@@ -1,16 +1,22 @@
 @import '../var';
+@import '../maps/color_map';
 
-$colors : (
-    'primary' : $clr-primary,
-    'secondary' : $clr-secondary 
+$border : (
+    'sm' : $border-sm,
+    'md' : $border-md,
+    'lg' : $border-lg,
 );
 
 @each $key, $val in $colors {
     .text-clr-#{$key} {
         color: $val;
     }
-
     .bg-clr-#{$key} {
         color: $val;
+    }
+    @each $br, $vr in $border {
+        .border-#{$key}-#{$br} {
+            border: $vr solid $val;
+        }
     }
 }
