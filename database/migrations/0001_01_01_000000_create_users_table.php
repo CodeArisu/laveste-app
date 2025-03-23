@@ -18,6 +18,12 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
 
+            $table->unsignedBigInteger('user_details_id');
+            $table->foreign('user_details_id')
+            ->references('id')
+            ->on('user_details')
+            ->onDelete('cascade');
+
             $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')
             ->references('id')
@@ -32,6 +38,15 @@ return new class extends Migration
             $table->id();
             $table->string('role_name');
             $table->timestamps();
+        });
+
+        Schema::create('user_details', function (Blueprint $table) {
+            $table->id();
+            $table->string('first_name', 25);
+            $table->string('last_name', 25);
+            $table->text('address', 255);
+            $table->integer('contact')->unique();
+            $table->timestamp('created_at');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -59,5 +74,6 @@ return new class extends Migration
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
         Schema::dropIfExists('roles');
+        Schema::dropIfExists('user_details');
     }
 };

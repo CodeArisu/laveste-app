@@ -16,7 +16,7 @@ class Role extends Model
     * @var list<any>
     */
     protected $fillable = [
-        'role',
+        'role_name',
     ];
 
     // one to one 

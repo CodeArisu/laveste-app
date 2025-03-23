@@ -13,7 +13,7 @@ class AuthController extends Controller
     private function registerRoles()
     {
         foreach (\app\Enums\Role::cases() as $roles) {
-            \app\Models\Role::firstOrCreate(['role' => $roles->label()]);
+            \app\Models\Role::firstOrCreate(['role_name' => $roles->label()]);
         }
     }
 
