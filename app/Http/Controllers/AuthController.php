@@ -2,96 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuthRequest;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {   
-    /**
-     * @param void loops and creates through roles enums exists
-     */
-    private function registerRoles()
-    {
-        foreach (\app\Enums\Role::cases() as $roles) {
-            \app\Models\Role::firstOrCreate(['role_name' => $roles->label()]);
-        }
-    }
-
-    public function registerUser(Request $request)
-    {   
-        $validated = Validator::make($request->all(), [
-            'name' => 'required|string|max:50',
-            'email' => 'required|string|email|max:50|unique:users',
-            'password' => 'required|string|confirmed|min:8',
-        ]);
-        $this->isValidated($validated);
-
+    public function registerUser(AuthRequest $request, AuthService $authService)
+    {      
         try {
-            // creates user roles
-            $this->registerRoles();
-            // creates the new user with default role
-            $user = \app\Models\User::firstOrCreate([$validated, 'role_id' => \app\Enums\Role::EMPLOYEE->value]);
-
-            // creates new token
-            $authToken = $user->createToken('auth_token')->plainTextToken;
-
-            return response()->json([
-                'access_token' => $authToken,
-                'user' => $user,
-                'type' => $user->role,
-                'token_type' => 'Bearer'
-            ], 201);
-        } catch (\Exception $e) 
-        {
-            return response()->json([
-                'messages' => 'An Error has Occurred',
-                'error' => $e->getMessage()
-            ], 401);
-        }
-    }
-
-    public function loginUser(Request $request) 
-    {
-        $validated = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:50',
-            'password' => 'required|string|min:8'
-        ]);
-        $this->isValidated($validated);
-
-        try {
-            // temporary allocation
-            $credential = [
-                'email' => $request->email,
-                'password' => $request->password
-            ];
-
-            // checks if the credentials matched
-            if (!auth()->attempt($credential))
-            {
-                return response()->json([
-                    'message' => 'Invalid Credentials'
-                ], 403);
-            }
-
-            // finds user email
-            $user = \app\Models\User::where('email', $credential['email'])->firstOrFail();
-
-            // creates new token
-            $authToken = $user->createToken('auth_token')->plainTextToken;
-
-            return response()->json([
-                'access_token' => $authToken,
-                'user' => $user,
-                'type' => $user->roles->role,
-                'token_type' => 'Bearer'
-            ], 201);
+            $userData = $authService->registerUser($request->validated());
             
-        } catch (\Exception $e)
-        {
-            return response()->json([
-                'messages' => 'An Error has Occurred',
-                'error' => $e->getMessage()
-            ], 401);
+            return $this->userResponse(
+                $userData['authToken'], 
+                $userData['user'],
+                'Registration Successful'
+            );
+        } catch (\Exception $e) {
+            return $this->sendError('Registration Failed', $e->getMessage(), 400);
+        }
+    }
+        
+    public function loginUser(AuthRequest $request, AuthService $authService) 
+    {   
+        try {
+            $user = $authService->loginUser($request);
+
+            return $this->userResponse(
+                $user['authToken'], 
+                $user['user'],
+                'Login Successful'
+            );
+        } catch (\Exception $e) {
+            $this->sendError('An Error has Occurred', $e->getMessage());
         }
     }
 
@@ -103,5 +46,23 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logged out Successfully'
         ], 200);
+    }
+
+    private function userResponse($authToken, $user, $message)
+    {
+        return response()->json([
+            'message' => $message,
+            'access_token' => $authToken,
+            'type' => $user->role->id,
+            'token_type' => 'Bearer'
+        ], 201);
+    }
+
+    private function sendError($message, $error)
+    {
+        return response()->json([
+            'message' => $message,
+            'error' => $error
+        ], 403);
     }
 }
