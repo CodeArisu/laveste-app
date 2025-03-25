@@ -1,0 +1,60 @@
+@import '../var';
+
+.navigator {
+    margin-top: 1.3em;
+
+    li > a {
+        font-family: $fn-secondary;
+        color: $clr-secondary;
+    }
+
+    .nav_list {
+        padding: 0;
+    }
+    .nav_list > .nav_item {
+        display: inline-block;
+        padding-inline: 1.2em;
+    
+        a {
+            font-weight: 400;
+            font-size: clamp($fn-sm, 1vw, $fn-md);
+        }
+    }
+
+    .ico_list {
+        padding: 0;
+    }
+    .ico_list > .ico_item {
+        display: inline-block;
+        padding-inline: .5em;
+
+        i {
+            font-size: $fn-md;
+        }
+    }
+}
+
+// item hover effect
+.hover {
+    display: inline-block;
+    position: relative;
+
+    ::after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        transform: scaleX(0);
+        height: 2px;
+        bottom: -3px;
+        left: 0;
+        transform: translateX(50%) scaleX(0);
+        background-color: $clr-secondary;
+        transform-origin: bottom center;
+        transition: transform $df-transition;
+    }
+
+    :hover::after{
+        transform: translateX(50%) scaleX(1); 
+        transform-origin: bottom center;
+    }
+}

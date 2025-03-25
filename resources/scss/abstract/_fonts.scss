@@ -1,0 +1,35 @@
+@import '../var';
+
+$font-style: (
+    "s1" : $fn-primary,
+    "s2" : $fn-secondary
+);
+
+$font-size: (
+    "100" : $fn-sm,
+    "200" : $fn-md,
+    "300" : $fn-lg,
+    "400" : $fn-xl,
+    '500' : $fn-xxl
+);
+
+@each $key, $val in $font-size 
+{
+    .text-fs-#{$key} {
+        font-size: clamp($fn-sm, 50vw, $val);
+    }
+}
+@each $key, $val in $font-style 
+{
+    .text-fn-#{$key} {
+        font-family: $val;
+    }
+}
+
+.text-justify {
+    text-align: justify;
+    text-justify: inter-word;
+}
+
+
+

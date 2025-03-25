@@ -1,0 +1,14 @@
+@import '../var';
+
+$radius: (
+    '100' : $bx-sm,
+    '200' : $bx-md,
+    '300' : $bx-lg,
+    '400' : $bx-xl
+);
+
+@each $key, $val in $radius {
+    .rad-#{$key} {
+        border-radius: $val;
+    }
+}

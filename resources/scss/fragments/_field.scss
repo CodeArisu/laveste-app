@@ -1,0 +1,33 @@
+@import '../var';
+@import '../maps/color_map';
+
+@each $key, $val in $colors {
+    .input-clr-#{$key} 
+    {
+        color: $val;
+    }
+    .input-clr-#{$key}::placeholder
+    {
+        color: $val;
+    }
+}
+
+.textfield {
+
+    input {
+        background: none;
+        border: none;
+
+        width: 10rem;
+        min-height: 2rem;
+    }
+
+    input:focus {
+        outline: $clr-secondary 4px solid;
+        border-radius: $border-md;
+    }
+
+    i {
+        padding: 5px;
+    }
+}
