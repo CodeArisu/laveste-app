@@ -3,89 +3,71 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\api\ApiBaseController;
+use App\Http\Requests\ProductRequest;
+
 use App\Models\Product;
 
-use Illuminate\Http\Request;
+use App\Services\ProductService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class ProductController extends ApiBaseController
-{
+{   
+    public function __construct(
+        protected ProductService $productService
+    ) {}
+
     public function index()
     {
         return response()->json([
-                'success' => 'allowed',
+            'success' => 'allowed',
         ], 200);
     }
 
-    public function store(Request $request)
-    {
-        $validated = Validator::make($request->all(), [
-            'product_name' => 'required|string|max:50',
-            'original_price' => 'required|integer',
-            'description' => 'nullable|max:255',
-
-            'supplier_name' => 'nullable|string|regex:/^\d{11}$/|max:65',
-            'company_name' => 'nullable|string|max:65',
-            'address' => 'required|string|max:255',
-            'contact' => 'required|string|regex:/^\d{11}$/|unique:suppliers,contact'
-        ]);
-
-        $this->validationFailed($validated);
-
-        DB::beginTransaction();
+    public function store(ProductRequest $request, ProductService $productService)
+    {   
         try {
+            return DB::transaction(function () use ($request, $productService) {
+                $products = $productService->createProduct($request);
 
-            // new supplier
-            $supplier = $this->storeSupplier(
-                $request->only(
-                    'supplier_name',
-                    'company_name',
-                    'address',
-                    'contact'
-                )
-            );
+                array_walk($products, fn($prod) => $this->isChecked($prod, 'Failed to create product!'));
 
-            // new product type
-            $productType = $this->productType(
-                $request->only(
-                    'type',
-                    'subtype'
-                )
-            );
-
-            // new product added
-            $product = $this->storeProduct(
-                $request->only(
-                    'product_name',
-                    'original_price',
-                    'description'
-                ), [ 
-                    'supplier' => $supplier,
-                    'productType' => $productType
-                ]
-            );
-
-            DB::commit();
-            return $this->sendSuccess('Success', $product);
+                return $this->sendSuccess('Created Successfully!');
+            });
         } catch (\Exception $e) {
-            DB::rollBack();
             return $this->sendError($e);
         }
     }
 
     public function show(Product $product)
     {
-        //
+
     }
 
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request, Product $product) 
     {
-        //
+        try {
+            return DB::transaction(function () use ($request, $product) {
+                $result = $this->productService->updateProduct($request, $product);
+                
+                collect($result)->each(fn($item, $key) => 
+                    $this->isChecked($item, ucfirst($key).' update failed')
+                );
+        
+                return $this->sendSuccess('Product successfully updated!');
+            });
+        } catch (\Exception $e) {
+            return $this->sendError($e);
+        }
     }
 
     public function destroy(Product $product)
     {
-        //
+        try {
+            $product->delete();
+
+            return $this->sendSuccess('Deleted Successfully!');
+        } catch (\Exception $e) {
+            return $this->sendError($e);
+        }
     }
 }
