@@ -13,9 +13,24 @@ $fn-sm: m.div($base-fn, .5);
 $fn-md: $fn-sm * 1.5;
 $fn-lg: $fn-md * 1.5;
 $fn-xl: $fn-lg * 1.5;
+$fn-xxl: $fn-xl * 1.5;
+
+// radius
+$base-rad: .2px;
+$bx-sm: $base-rad * 10;
+$bx-md: $bx-sm * 2;
+$bx-lg: $bx-md * 4;
+$bx-xl: $bx-lg * 8;
+
+// border thickness
+$border-sm: 1px;
+$border-md: 2px;
+$border-lg: 3px;
 
 // spacing
-$spc-xsm: .4em;
+$base-spc: .85em;
+$spc-sm: $base-spc * 2;
+$spc-md: $spc-sm * 1.5;
 
 // transition
 $df-transition: .16s ease-in;

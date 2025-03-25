@@ -1,21 +1,17 @@
 @import '../var';
+@import '../maps/color_map';
 
-$styles: (
-    "primary" : $clr-primary,
-    "secondary" : $clr-secondary
-);
-
-@each $key, $val in $styles
+@each $key, $val in $colors
 {
     .btn-type-#{$key} 
     {
         font-family: $fn-secondary;
         color: $val;
-        background: if($key == 'primary', transparentize(map-get($styles, 'secondary'), $amount: 0.7), transparentize(map-get($styles, 'primary'), $amount: 0.7));
+        background: if($key == 'primary', transparentize(map-get($colors, 'secondary'), $amount: 0.7), transparentize(map-get($colors, 'primary'), $amount: 0.7));
 
         font-weight: 500;
         display: inline-block;
-        padding: .5em 1em;
+        padding: .3em 1em;
 
         border: $val solid 2px;
         border-radius: .5em;
@@ -28,7 +24,7 @@ $styles: (
     .btn-type-#{$key}:hover
     {
         background: $val;
-        color: if($key == 'primary', map-get($styles, 'secondary'), map-get($styles, 'primary'));
+        color: if($key == 'primary', map-get($colors, 'secondary'), map-get($colors, 'primary'));
     }
 
     .btn-type-#{$key}:active

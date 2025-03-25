@@ -1,8 +1,13 @@
 @import 'abstract/fonts';
 @import 'abstract/spacing';
 @import 'abstract/alignment';
+@import 'abstract/colors';
+@import 'abstract/radius';
 
 @import 'fragments/button';
+@import 'fragments/field';
+
+@import 'scaffold/validation-form.scss';
 
 * {
     box-sizing: border-box;
@@ -20,4 +25,10 @@ ul > li {
 }
 a {
     text-decoration: none;
+}
+
+// modified default styles
+.src {
+    background: $clr-primary;
+    color: $clr-secondary;
 }
