@@ -32,7 +32,8 @@ class ProductRequest extends FormRequest
             'contact' => 'required|digits:10|unique:App\Models\Supplier,contact',
 
             'type' => 'required|string',
-            'subtype' => 'required|string'
+            'subtype' => 'required|array|prohibited_if:subtype.*,string',
+            'subtype.*' => 'required|string',
         ];
     }
 }

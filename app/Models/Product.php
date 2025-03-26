@@ -11,9 +11,17 @@ class Product extends Model
 
     protected $fillable = [
         'product_name',
-        'product_type_id',
         'supplier_id',
         'original_price',
         'description'
     ];
+
+    public function productType()
+    {
+        return $this->belongsTo(ProductType::class);
+    }
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
 }

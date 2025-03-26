@@ -32,6 +32,21 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->string('product_name', 50);
+
+            $table->unsignedBigInteger('supplier_id');
+            $table->foreign('supplier_id')
+            ->references('id')
+            ->on('suppliers')
+            ->onDelete('cascade');
+            
+            $table->double('original_price', 16, 2);
+            $table->text('description', 255);
+            $table->timestamps();
+        });
+
         Schema::create('product_types', function (Blueprint $table) {
             $table->id();
 
@@ -47,29 +62,15 @@ return new class extends Migration
             ->on('subtypes')
             ->onDelete('cascade');
 
+            $table->unsignedBigInteger('product_id');
+            $table->foreign('product_id')
+            ->references('id')
+            ->on('products')
+            ->onDelete('cascade');
+
             $table->timestamps();
         });
 
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->string('product_name', 50);
-
-            $table->unsignedBigInteger('supplier_id');
-            $table->foreign('supplier_id')
-            ->references('id')
-            ->on('suppliers')
-            ->onDelete('cascade');
-
-            $table->unsignedBigInteger('product_type_id');
-            $table->foreign('product_type_id')
-            ->references('id')
-            ->on('product_types')
-            ->onDelete('cascade');
-            
-            $table->double('original_price', 16, 2);
-            $table->text('description', 255);
-            $table->timestamps();
-        });
     }
 
     /**

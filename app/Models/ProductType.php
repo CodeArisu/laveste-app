@@ -10,7 +10,17 @@ class ProductType extends Model
     use HasFactory;
 
     protected $fillable = [
+        'product_id',
         'type_id',
         'subtype_id'
     ];
+    
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
+    }
+    public function subtype()
+    {
+        return $this->belongsTo(Subtype::class);
+    }
 }

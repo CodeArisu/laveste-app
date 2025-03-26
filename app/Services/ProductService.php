@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Requests\ProductRequest;
 use App\Models\{Product, ProductType, Supplier, Type, Subtype};
+use Illuminate\Support\Collection;
 
 class ProductService
 {   
@@ -15,16 +16,14 @@ class ProductService
             'supplier_name', 'company_name', 'address', 'contact'
         ]));
 
-        $productType = $this->handleProductType($validated->only([
-            'type', 'subtype'
-        ]));
-
         $product = $this->handleProduct($validated->only([
             'product_name', 'original_price', 'description'
-        ]), [
-            'supplier_id' => $supplier->id,
-            'product_type_id' => $productType->id
-        ]);
+        ]), 
+        [ 'supplier_id' => $supplier->id]);
+
+        $productType = $this->handleProductType($validated->only([
+            'type', 'subtype'
+        ]), ['product_id' => $product->id]);
 
         return compact('supplier', 'productType', 'product');
     }
@@ -33,42 +32,53 @@ class ProductService
     {
         $validated = $request->safe();
 
+        // Update supplier (unchanged)
         $supplier = $this->updateOrKeepSupplier(
-            $product->supplier, $validated->only([
-            'supplier_name', 'company_name', 'address', 'contact'
-        ]));
+            $product->supplier, 
+            $validated->only(['supplier_name', 'company_name', 'address', 'contact'])
+        );
+    
+        // Handle product types
+        $typeData = $validated->only(['type', 'subtype']);
+        if ($this->typeDataChanged($product, $typeData)) {
+            $productTypes = $this->updateOrKeepProductTypes($product, $typeData);
+            
+            $productTypes = $productTypes instanceof Collection ? $productTypes : collect([$productTypes]);
+            $product->productTypes()->sync($productTypes->pluck('id'));
+            
+            $primaryProductType = $productTypes->first();
+        } else {
 
-        $productType = $this->updateOrKeepProductType(
-            $product->productType, $validated->only([
-            'type', 'subtype'
-        ]));
-
+            $primaryProductType = $product->productType;
+        }
+    
         $product = $this->updateProductDetails(
             $product,
             $validated->only(['product_name', 'original_price', 'description']),
             [
                 'supplier_id' => $supplier->id,
-                'product_type_id' => $productType->id
+                'product_type_id' => $primaryProductType->id
             ]
         );
-
+    
         return compact('supplier', 'productType', 'product');
     }
     
     private function handleProduct(array $productData, array $relations) : Product
-    {
+    {   
+        // creates new product if not exists
         return Product::firstOrCreate([ 
             'product_name' => $productData['product_name'],
             'supplier_id' => $relations['supplier_id'], 
         ], [
             'original_price' => $productData['original_price'],
-            'description' => $productData['description'],
-            'product_type_id' => $relations['product_type_id']
+            'description' => $productData['description']
         ]);
     }
 
     private function updateProductDetails(Product $product, array $productData, array $relations) : Product
-    {
+    {   
+        // Update product details
         $product->update([
             'product_name' => $productData['product_name'],
             'original_price' => $productData['original_price'],
@@ -81,7 +91,8 @@ class ProductService
     }
     
     private function handleSupplier(array $supplierData) : Supplier
-    {   
+    {  
+        // creates new supplier if not exists
        return Supplier::firstOrCreate([
             'supplier_name' => $supplierData['supplier_name'],
             'company_name' => $supplierData['company_name'],
@@ -102,35 +113,87 @@ class ProductService
 
     private function supplierDataChanged(Supplier $supplier, array $supplierData): bool
     {
-        return $supplier->supplier_name !== $supplierData['supplier_name'] ||
-               $supplier->company_name !== $supplierData['company_name'] ||
-               $supplier->address !== $supplierData['address'] ||
-               $supplier->contact !== $supplierData['contact'];
+        return $supplier->supplier_name !== $supplierData['supplier_name'] || $supplier->company_name !== $supplierData['company_name'] ||
+               $supplier->address !== $supplierData['address'] || $supplier->contact !== $supplierData['contact'];
     }
 
-    private function handleProductType(array $typeData) : ProductType
-    {
+    private function handleProductType(array $typeData, array $relations) : ProductType|Collection
+    {   
         $mainType = Type::firstOrCreate(['type_name' => $typeData['type']]);
-        $subType = Subtype::firstOrCreate(['subtype_name' => $typeData['subtype']]);
+        $subtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
 
-        return ProductType::firstOrCreate([
-            'type_id' => $mainType->id,
-            'subtype_id' => $subType->id
-        ]);
-    }
-
-    private function updateOrKeepProductType(?ProductType $productType, array $typeData) : ProductType
-    {
-        if (!$productType || $this->typeDataChanged($productType, $typeData)) {
-            return $this->handleProductType($typeData);
+        $productTypes = collect();
+        foreach ($subtypes as $subtypeName) {
+            $subType = Subtype::firstOrCreate(['subtype_name' => $subtypeName]);
+            $productTypes->push(
+                ProductType::firstOrCreate([
+                    'type_id' => $mainType->id,
+                    'subtype_id' => $subType->id,
+                    'product_id' => $relations['product_id']
+                ])
+            );
         }
-
-        return $productType;
+        return $productTypes->count() === 1 ? $productTypes->first() : $productTypes;
     }
 
-    private function typeDataChanged(ProductType $productType, array $typeData): bool
+    private function updateOrKeepProductTypes(Product $product, array $typeData) : array
     {
-        return $productType->type->type_name !== $typeData['type'] ||
-               $productType->subtype->subtype_name !== $typeData['subtype'];
+    $mainType = Type::firstOrCreate(['type_name' => $typeData['type']]);
+    $subtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
+
+    // Get existing product types for this product
+    $existingTypes = $product->productTypes()->with(['type', 'subtype'])->get();
+    
+    // Determine which subtypes to keep, add, and remove
+    $subtypesToKeep = [];
+    $subtypesToAdd = $subtypes;
+    
+    foreach ($existingTypes as $existingType) {
+        if (in_array($existingType->subtype->subtype_name, $subtypes)) {
+            // Keep this relationship
+            $subtypesToKeep[] = $existingType->subtype->subtype_name;
+            $subtypesToAdd = array_diff($subtypesToAdd, [$existingType->subtype->subtype_name]);
+        }
+    }
+    
+    // Remove types that are no longer needed
+    $typesToRemove = $existingTypes->reject(function ($type) use ($subtypes) {
+        return in_array($type->subtype->subtype_name, $subtypes);
+    });
+    
+    if ($typesToRemove->isNotEmpty()) {
+        $product->productTypes()->detach($typesToRemove->pluck('id'));
+    }
+    
+    // Add new types
+    $newProductTypes = collect();
+    foreach ($subtypesToAdd as $subtypeName) {
+        $subType = Subtype::firstOrCreate(['subtype_name' => $subtypeName]);
+        $productType = ProductType::firstOrCreate([
+            'type_id' => $mainType->id,
+            'subtype_id' => $subType->id,
+            'product_id' => $product->id
+        ]);
+        
+        $product->productTypes()->syncWithoutDetaching([$productType->id]);
+        $newProductTypes->push($productType);
+    }
+    
+    // Return all current product types (kept + new)
+    return $product->productTypes()
+        ->whereIn('subtype_id', Subtype::whereIn('subtype_name', $subtypes)->pluck('id'))
+        ->get();
+    }
+
+    private function typeDataChanged(Product $product, array $typeData): bool
+    {   
+        $currentMainType = $product->productType->first()->type->type_name ?? null;
+        $currentSubtypes = $product->productType->pluck('subtype.subtype_name')->unique()->toArray();
+        
+        $newSubtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
+        sort($currentSubtypes);
+        sort($newSubtypes);
+        
+        return $currentMainType !== $typeData['type'] || $currentSubtypes !== $newSubtypes;
     }
 }

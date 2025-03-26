@@ -12,4 +12,9 @@ class Type extends Model
     protected $fillable = [
         'type_name',
     ];
+
+    public function productType()
+    {
+        return $this->hasOne(ProductType::class);
+    }
 }

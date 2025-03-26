@@ -12,4 +12,9 @@ class Subtype extends Model
     protected $fillable = [
         'subtype_name'
     ];
+
+    public function productType() 
+    {
+        return $this->hasMany(ProductType::class);
+    }
 }
