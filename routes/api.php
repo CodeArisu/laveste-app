@@ -11,3 +11,5 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/product', [ProductController::class, 'store'])->name('store.product');
 Route::put('/product/{product}', [ProductController::class, 'update'])->name('update.product');
+
+Route::put('/test', [ProductController::class, 'test'])->name('test.product');

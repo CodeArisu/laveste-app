@@ -1,29 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\api;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\ProductRequest;
-
 use App\Models\Product;
-
 use App\Services\ProductService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends ApiBaseController
 {   
-    public function __construct(
+    public function __construct(    
         protected ProductService $productService
     ) {}
 
-    public function index()
+    public function show(Product $product)
     {
-        return response()->json([
-            'success' => 'allowed',
-        ], 200);
+        return response()->json($product);
     }
 
-    public function store(ProductRequest $request, ProductService $productService)
+    public function store(ProductRequest $request, ProductService $productService) : JsonResponse
     {   
         try {
             return DB::transaction(function () use ($request, $productService) {
@@ -36,11 +33,6 @@ class ProductController extends ApiBaseController
         } catch (\Exception $e) {
             return $this->sendError($e);
         }
-    }
-
-    public function show(Product $product)
-    {
-
     }
 
     public function update(ProductRequest $request, Product $product) 

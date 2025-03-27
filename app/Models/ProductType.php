@@ -15,6 +15,10 @@ class ProductType extends Model
         'subtype_id'
     ];
     
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
     public function type()
     {
         return $this->belongsTo(Type::class);

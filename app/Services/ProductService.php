@@ -39,7 +39,7 @@ class ProductService
         );
     
         // Handle product types
-        $typeData = $validated->only(['type', 'subtype']);
+        $typeData = array_merge($validated->only(['type', 'subtype']), ['product_id' => $product]);
         if ($this->typeDataChanged($product, $typeData)) {
             $productTypes = $this->updateOrKeepProductTypes($product, $typeData);
             
@@ -55,10 +55,7 @@ class ProductService
         $product = $this->updateProductDetails(
             $product,
             $validated->only(['product_name', 'original_price', 'description']),
-            [
-                'supplier_id' => $supplier->id,
-                'product_type_id' => $primaryProductType->id
-            ]
+            ['supplier_id' => $supplier->id,]
         );
     
         return compact('supplier', 'productType', 'product');
@@ -84,7 +81,6 @@ class ProductService
             'original_price' => $productData['original_price'],
             'description' => $productData['description'],
             'supplier_id' => $relations['supplier_id'],
-            'product_type_id' => $relations['product_type_id']
         ]);
 
         return $product->fresh();
@@ -188,7 +184,11 @@ class ProductService
     private function typeDataChanged(Product $product, array $typeData): bool
     {   
         $currentMainType = $product->productType->first()->type->type_name ?? null;
-        $currentSubtypes = $product->productType->pluck('subtype.subtype_name')->unique()->toArray();
+        $currentSubtypes = $product->productType->map( function($productType) {
+            return $productType->subtype->subtype_name ?? null;
+        })
+        ->filter()->unique()->values()->toArray();
+        dd($currentSubtypes);
         
         $newSubtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
         sort($currentSubtypes);
