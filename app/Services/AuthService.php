@@ -2,15 +2,33 @@
 
 namespace App\Services;
 
-use App\Enum\UserRoles;
-use App\Models\Role as ModelsRole;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use App\Enum\{StatusCode, UserRoles};
+use App\Exceptions\InternalException;
+use App\Http\Requests\AuthRequest;
+use App\Models\{Role as ModelsRole, User};
+use Illuminate\Support\Facades\{Auth, Hash};
 
 class AuthService
 {   
-    public function registerUser($request)
+    public function registerRequest(AuthRequest $request)
+    {   
+        if (!$request) {
+            throw InternalException::failedRequest();
+        }
+        $user =  $this->registerUser($request->validated());
+        return $user;
+    }
+
+    public function loginRequest(AuthRequest $request)
+    {   
+        if (!$request) {
+            throw InternalException::failedRequest();
+        }
+        $user = $this->loginUser($request);
+        return $user;
+    }
+
+    private function registerUser($request)
     {   
         $this->registerRoles();
 
@@ -20,7 +38,7 @@ class AuthService
         return compact('user', 'authToken');
     }
 
-    public function handleRegister($request)
+    private function handleRegister($request)
     {   
         return User::firstOrCreate([
             'name' => $request['name'],
@@ -31,7 +49,7 @@ class AuthService
         ]);
     }
 
-    public function loginUser($request)
+    private function loginUser($request)
     {
         if (!Auth::attempt($request->safe()->only('email', 'password'), $request->boolean('remember'))) {
             return response()->json([
@@ -58,5 +76,14 @@ class AuthService
                 ModelsRole::firstOrCreate(['role_name' => $role->label()]);
             }
         }
+    }
+
+    public function userResponse(array $params)
+    {
+        return response()->json([
+            'message' => $params['message'],
+            'access_token' => $params['token'],
+            'token_type' => empty($params['token']) ? 'bearer' : 'revoked'
+        ], StatusCode::SUCCESS->value);
     }
 }

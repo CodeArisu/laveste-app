@@ -3,14 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enum\StatusCode;
+use Illuminate\Http\JsonResponse;
 
 abstract class Controller
 {
-    protected function isValidated($validator)
-    {   
-        if ($validator->fails()) {
-            abort(StatusCode::BAD_REQUEST, $validator->errors()->first());
-        }
-        return;
-    }
+
 }
