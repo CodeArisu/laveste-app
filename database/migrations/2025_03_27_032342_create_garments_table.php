@@ -59,7 +59,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('sizes');
         Schema::dropIfExists('condition_status');
-        Schema::dropIfExists('images');
         Schema::dropIfExists('garments');
     }
 };

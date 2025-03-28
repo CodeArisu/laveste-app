@@ -4,9 +4,7 @@ namespace App\Services;
 
 use App\Enum\Condition;
 use App\Http\Requests\GarmentRequest;
-use App\Models\ConditionStatus;
-use App\Models\Garment;
-use App\Models\Size;
+use App\Models\{ConditionStatus, Size, Garment};
 
 class GarmentServices
 {
@@ -15,8 +13,10 @@ class GarmentServices
         $validated = $request->safe();
 
         // creates new status first
-        $this->generateStatus();
-
+        if (ConditionStatus::count() === 0) {
+            $this->generateStatus();
+        }
+       
         // creates new size
         $size = $this->handleSize($validated->only([
             'measurement', 'length', 'width'

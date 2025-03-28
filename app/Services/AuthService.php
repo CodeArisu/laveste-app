@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Enums\UserRoles;
+use App\Enum\UserRoles;
 use App\Models\Role as ModelsRole;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -26,7 +26,7 @@ class AuthService
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
-            'role_id' => UserRoles::EMPLOYEE->value,
+            'role_id' => UserRoles::MANAGER->value,
             'user_details_id' => $request['user_details_id'] ?? null
         ]);
     }

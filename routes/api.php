@@ -1,19 +1,26 @@
 <?php
 
+use App\Http\Controllers\Api\{GarmentController, ProductController};
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\api\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::controller(AuthController::class)->group( function () {
+    Route::post('/register', 'registerUser')->name('register');
+    Route::post('/login', 'loginUser')->name('login');
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    Route::group(['middleware' => 'auth:sanctum'], function () {
+        Route::post('/logout', 'logout')->name('logout');
+    });
+});
 
-Route::post('/register', [AuthController::class, 'registerUser'])->name('register');
-Route::post('/login', [AuthController::class, 'loginUser'])->name('login');
+Route::name('product.')->prefix('product')->group( function () {
+    Route::controller(ProductController::class)->group( function () {
+        Route::post('/new', 'store')->name('store');
+        Route::put('/{product}', 'update')->name('update');
+    });
+});
 
-Route::post('/product', [ProductController::class, 'store'])->name('store.product');
-Route::put('/product/{product}', [ProductController::class, 'update'])->name('update.product');
+Route::post('/garment/new', [GarmentController::class, 'store'])->name('store.garment');
 
 Route::put('/test', [ProductController::class, 'test'])->name('test.product');

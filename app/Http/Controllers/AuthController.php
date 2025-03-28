@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {   
     public function registerUser(AuthRequest $request, AuthService $authService)
-    {      
+    {   
         try {
             $userData = $authService->registerUser($request->validated());
             
@@ -40,12 +40,17 @@ class AuthController extends Controller
 
     public function logoutUser(Request $request)
     {   
-        // revokes user access token
-        $request->user()->currentAccessToken()->delete();
+        try {
+            // revokes user access token
+            $request->user()->currentAccessToken()->delete();
 
-        return response()->json([
-            'message' => 'Logged out Successfully'
-        ], 200);
+            return response()->json([
+                'message' => 'Logged out Successfully'
+            ], 200);
+        } catch (\Exception $e) {
+            return $this->sendError('An Error has Occurred', $e->getMessage());
+        }
+        
     }
 
     private function userResponse($authToken, $user, $message)

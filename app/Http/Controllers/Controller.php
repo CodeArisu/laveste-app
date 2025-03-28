@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\StatusCode;
+
 abstract class Controller
 {
     protected function isValidated($validator)
-    {  
+    {   
         if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Invalid Input(s)',
-                'errors' => $validator->errors(),
-            ], 422); // Using standard 422 Unprocessable Entity status
+            abort(StatusCode::BAD_REQUEST, $validator->errors()->first());
         }
         return;
     }
