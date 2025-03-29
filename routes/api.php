@@ -17,6 +17,7 @@ Route::name('product.')->prefix('product')->group( function () {
     Route::controller(ProductController::class)->group( function () {
         Route::post('/new', 'store')->name('store');
         Route::put('/{product}', 'update')->name('update');
+        Route::delete('/{product}/remove', 'destroy')->name('delete');
     });
 });
 

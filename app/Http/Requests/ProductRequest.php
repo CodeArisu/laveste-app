@@ -29,7 +29,7 @@ class ProductRequest extends FormRequest
             'supplier_name' => 'nullable|string|max:65',
             'company_name' => 'nullable|string|max:65',
             'address' => 'required|string|max:255',
-            'contact' => 'required|digits:10|unique:App\Models\Supplier,contact',
+            'contact' => 'required|digits:10',
 
             'type' => 'required|string',
             'subtype' => 'required|array|prohibited_if:subtype.*,string',

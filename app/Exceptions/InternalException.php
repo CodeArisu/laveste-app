@@ -6,8 +6,14 @@ use Exception;
 
 class InternalException extends Exception
 {
-    public static function failedRequest() : self
+    public static function failedRequest($message, $code, $e)
     {   
-        return new self('Failed to send request');
+        return response()->json(
+            [
+                'message' => $message,
+                'code' => $code,
+                'exception' => $e
+            ]
+        );
     }
 }

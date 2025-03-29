@@ -7,7 +7,6 @@ use App\Http\Requests\ProductRequest;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 
 class ProductController extends ApiBaseController
 {   
@@ -20,46 +19,21 @@ class ProductController extends ApiBaseController
         return response()->json($product);
     }
 
-    public function store(ProductRequest $request, ProductService $productService) : JsonResponse
+    public function store(ProductRequest $request) : JsonResponse
     {   
-        try {
-            return DB::transaction(function () use ($request, $productService) {
-                $products = $productService->createProduct($request);
-
-                array_walk($products, fn($prod) => $this->isChecked($prod, 'Failed to create product!'));
-
-                return $this->sendSuccess('Created Successfully!');
-            });
-        } catch (\Exception $e) {
-            return $this->sendError($e);
-        }
+        $product = $this->productService->requestProduct($request);
+        return $this->sendCreateResponse($product['message'], $product['product']);
     }
 
-    public function update(ProductRequest $request, Product $product) 
-    {
-        try {
-            return DB::transaction(function () use ($request, $product) {
-                $result = $this->productService->updateProduct($request, $product);
-                
-                collect($result)->each(fn($item, $key) => 
-                    $this->isChecked($item, ucfirst($key).' update failed')
-                );
-        
-                return $this->sendSuccess('Product successfully updated!');
-            });
-        } catch (\Exception $e) {
-            return $this->sendError($e);
-        }
+    public function update(ProductRequest $request, Product $product) : JsonResponse
+    {   
+        $updatedProduct = $this->productService->requestUpdateProduct($request, $product);
+        return $this->sendUpdateResponse($updatedProduct['message'], $updatedProduct['product'], $updatedProduct['updated_fields']);
     }
 
     public function destroy(Product $product)
     {
-        try {
-            $product->delete();
-
-            return $this->sendSuccess('Deleted Successfully!');
-        } catch (\Exception $e) {
-            return $this->sendError($e);
-        }
+        $deletedProduct = $this->productService->requestDeleteProduct($product);
+        return $this->sendDeleteResponse($deletedProduct['message'], $deletedProduct['deleted'], $deletedProduct['product_name']);
     }
 }

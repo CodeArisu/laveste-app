@@ -18,7 +18,7 @@ class Product extends Model
 
     public function productType()
     {
-        return $this->belongsTo(ProductType::class);
+        return $this->hasOne(ProductType::class);
     }
     public function supplier()
     {

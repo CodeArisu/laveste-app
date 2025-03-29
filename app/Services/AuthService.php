@@ -30,8 +30,10 @@ class AuthService
 
     private function registerUser($request)
     {   
-        $this->registerRoles();
-
+        if (!ModelsRole::exists()) {
+            $this->registerRoles();
+        }
+       
         $user = $this->handleRegister($request);
         $authToken = $user->createToken('auth_token')->plainTextToken;
 
@@ -54,7 +56,7 @@ class AuthService
         if (!Auth::attempt($request->safe()->only('email', 'password'), $request->boolean('remember'))) {
             return response()->json([
                 'message' => 'Invalid login details'
-            ], 401);
+            ], StatusCode::UNAUTHORIZED->value);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();

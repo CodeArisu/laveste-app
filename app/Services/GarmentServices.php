@@ -7,7 +7,8 @@ use App\Http\Requests\GarmentRequest;
 use App\Models\{ConditionStatus, Size, Garment};
 
 class GarmentServices
-{
+{   
+    
     public function createGarment(GarmentRequest $request): array
     {
         $validated = $request->safe();
