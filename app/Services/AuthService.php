@@ -6,26 +6,45 @@ use App\Enum\{StatusCode, UserRoles};
 use App\Exceptions\InternalException;
 use App\Http\Requests\AuthRequest;
 use App\Models\{Role as ModelsRole, User};
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\{Auth, Hash};
 
 class AuthService
 {   
     public function registerRequest(AuthRequest $request)
     {   
-        if (!$request) {
-            throw InternalException::failedRequest();
+        try {
+            $user =  $this->registerUser($request->validated());
+            return ['token' => $user['authToken'], 'message' => 'User signed up'];
+        } catch (\Exception $e) {
+            Log::error("User registration failed: " . $e->getMessage());
+            throw new InternalException($e->getMessage(), $e->getCode(), $e);
         }
-        $user =  $this->registerUser($request->validated());
-        return $user;
     }
 
     public function loginRequest(AuthRequest $request)
     {   
-        if (!$request) {
-            throw InternalException::failedRequest();
+        try {
+            $user = $this->loginUser($request);
+            return ['token' => $user['authToken'], 'message' => 'User signed in'];
+        } catch (\Exception $e) {
+            Log::error("User authentication failed: " . $e->getMessage());
+            throw new InternalException($e->getMessage(), $e->getCode(), $e);
         }
-        $user = $this->loginUser($request);
-        return $user;
+    }
+
+    public function logoutRequest($request)
+    {   
+        try {
+            if ($request->user()) {
+                $request->user()->currentAccessToken->delete();
+                return ['token' => null, 'message' => 'User signed out'];
+            }
+            return ['token' => null, 'message' => 'Try again later'];
+        } catch (\Exception $e) {
+            Log::error("User logout failed: " . $e->getMessage());
+            throw new InternalException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     private function registerUser($request)
@@ -84,7 +103,7 @@ class AuthService
     {
         return response()->json([
             'message' => $params['message'],
-            'access_token' => $params['token'],
+            'access_token' => $params['token'] ?? null,
             'token_type' => empty($params['token']) ? 'bearer' : 'revoked'
         ], StatusCode::SUCCESS->value);
     }

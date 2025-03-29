@@ -7,27 +7,27 @@ use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class AuthController extends Controller
+class AuthController
 {   
-    public function registerUser(AuthRequest $request, AuthService $authService)
+    public function __construct(
+        protected AuthService $authService
+    ){}
+
+    public function registerUser(AuthRequest $request)
     {   
-        $user = $authService->registerRequest($request);
-        return $authService->userResponse(['token' => $user['authToken'], 'message' => 'Registration Successful']);
+        $user = $this->authService->registerRequest($request);
+        return $this->authService->userResponse([$user['token'], $user['message']]);
     }
         
-    public function loginUser(AuthRequest $request, AuthService $authService) 
+    public function loginUser(AuthRequest $request) 
     {    
-        $user = $authService->loginRequest($request);
-        return $authService->userResponse(['token' => $user['authToken'], 'message' => 'Login Successful']);
+        $user = $this->authService->loginRequest($request);
+        return $this->authService->userResponse([$user['token'], $user['message']]);
     }
 
-    public function logoutUser(Request $request, AuthService $authService) : JsonResponse
+    public function logoutUser(Request $request) : JsonResponse
     {   
-        if ($request->user()) {
-            $request->user()->currentAccessToken()->delete();
-            return $authService->userResponse(['token' => null, 'message' => 'Logout Successful']);
-        }
-
-        return response()->json(['message' => 'User not authenticated'], 401);
+        $user = $this->authService->logoutRequest($request);
+        return $this->authService->userResponse([$user['token'], $user['message']]);
     }
 }

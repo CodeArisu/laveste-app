@@ -7,7 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 
 abstract class ApiBaseController    
-{   
+{    
     protected function sendCreateResponse($message, $data) : JsonResponse
     {   
         return response()->json([
@@ -33,5 +33,4 @@ abstract class ApiBaseController
             'response' => $message,
         ], StatusCode::SUCCESS->value);
     }
-
 }
