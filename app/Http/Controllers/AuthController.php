@@ -9,9 +9,7 @@ use Illuminate\Http\Request;
 
 class AuthController
 {   
-    public function __construct(
-        protected AuthService $authService
-    ){}
+    public function __construct(protected AuthService $authService){}
 
     public function registerUser(AuthRequest $request)
     {   

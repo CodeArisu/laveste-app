@@ -12,6 +12,6 @@ class DisplayProduct extends Model
     protected $fillable = [
         'user_id',
         'garment_id',
-        'product_status'
+        'product_status_id'
     ];
 }

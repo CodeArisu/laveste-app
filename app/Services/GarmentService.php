@@ -94,7 +94,7 @@ class GarmentService
         $garment = $this->handleGarment($validated->only([
             'product_id', 'additional_description', 'poster', 'renting_price'
         ]), 
-            ['sizes_id' => $size->id, 'condition' => Condition::UNAVAILABLE->value] // default condition UNAVAILABLE
+            ['sizes_id' => $size->id, 'condition' => Condition::OK->value] // default condition UNAVAILABLE
         );
 
         // return as arrays
@@ -121,7 +121,7 @@ class GarmentService
                 'renting_price'
             ]), [
                  'sizes_id' => $size->id, 
-                 'condition' => Condition::UNAVAILABLE->value
+                 'condition' => Condition::OK->value
                 ]
             )
         );
