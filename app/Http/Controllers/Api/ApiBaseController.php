@@ -25,11 +25,11 @@ abstract class ApiBaseController
         ], StatusCode::SUCCESS->value);
     }
 
-    protected function sendDeleteResponse($message, $isDeleted, $productName) : JsonResponse
+    protected function sendDeleteResponse($message, $isDeleted, $dataName) : JsonResponse
     {   
         return response()->json([
             'success' => $isDeleted,
-            'data_name' => $productName ?? null,
+            'data_name' => $dataName ?? null,
             'response' => $message,
         ], StatusCode::SUCCESS->value);
     }

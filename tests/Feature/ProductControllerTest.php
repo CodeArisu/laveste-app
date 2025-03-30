@@ -22,13 +22,13 @@ class ProductControllerTest extends TestCase
             "supplier_name" => "test supplier",
             "company_name" => "test company",
             "address" => "lorem ipsum",
-            "contact" => "92345678921",
+            "contact" => "9234567892",
 
-            "type" => "test type",
-            "subtype" => "test subtype",
+            "type" => "testtype",
+            "subtype" => ['type1', 'type2'],
         ];
 
-        $response = $this->postJson(route('store.product'), $productData);
+        $response = $this->postJson(route('product.store'), $productData);
 
         $response->assertStatus(202)->assertJson([
             'message' => 'Product created successfully',

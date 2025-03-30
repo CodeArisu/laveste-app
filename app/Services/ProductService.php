@@ -10,30 +10,29 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\{DB, Log};
 
 class ProductService
-{   
-    public function requestProduct(ProductRequest $request)
+{
+    public function requestCreateProduct(ProductRequest $request)
     {
         try {
             return DB::transaction(function () use ($request) {
                 $products = $this->createProduct($request);
-                
+
                 if (empty($products)) {
                     throw new \RuntimeException('No products were created');
                 }
-                
+
                 // Validate all products were created successfully
                 foreach ($products as $product) {
-                    if (!$product->exists) {
-                        throw new \RuntimeException('Failed to create product');
+                    if (!Product::exists()) {
+                        throw new \RuntimeException("Failed to create {$product}");
                     }
                 }
-                
+
                 return ['product' => $products, 'message' => 'Added Success'];
             });
-            
         } catch (\Exception $e) {
             // Log the error for debugging
-            Log::error("Product creation failed: " . $e->getMessage());
+            Log::error('Product creation failed: ' . $e->getMessage());
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
         }
     }
@@ -42,113 +41,105 @@ class ProductService
     {
         try {
             return DB::transaction(function () use ($request, $product) {
-                $updatedData = $this->updateProduct($request, $product);
-                
-                $this->validateUpdateResults($updatedData);
-                
+                $updatedProducts = $this->updateProduct($request, $product);
+
+                $this->validateUpdateResults($updatedProducts);
+
                 return [
                     'product' => $product->fresh(),
-                    'updated_fields' => array_keys($updatedData),
-                    'message' => 'Updated Success'
+                    'updated_fields' => array_keys($updatedProducts),
+                    'message' => 'Updated Success',
                 ];
             });
         } catch (\Exception $e) {
             Log::error("Product update failed - ID: {$product->id}", [
                 'error' => $e->getMessage(),
-                'request' => $request->validated()
+                'request' => $request->validated(),
             ]);
-            
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);;
+
+            throw new InternalException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
     public function requestDeleteProduct(Product $product)
-    {   
+    {
         $productName = $product->product_name;
         try {
             $product->deleteOrFail();
-            
+
             return [
                 'deleted' => true,
                 'message' => 'Deleted Success',
-                'product_name' => $productName
+                'product_name' => $productName,
             ];
-            
         } catch (\Exception $e) {
             Log::error("Product delete failed - ID: {$product->id}", [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);;
+            throw new InternalException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    private function createProduct(ProductRequest $request) : array
+    private function createProduct(ProductRequest $request): array
     {
         $validated = $request->safe();
 
-        $supplier = $this->handleSupplier($validated->only([
-            'supplier_name', 'company_name', 'address', 'contact'
-        ]));
+        $supplier = $this->handleSupplier($validated->only(['supplier_name', 'company_name', 'address', 'contact']));
 
-        $product = $this->handleProduct($validated->only([
-            'product_name', 'original_price', 'description'
-        ]), 
-        [ 'supplier_id' => $supplier->id]);
+        $product = $this->handleProduct($validated->only(['product_name', 'original_price', 'description']), [
+            'supplier_id' => $supplier->id,
+        ]);
 
-        $productType = $this->handleProductType($validated->only([
-            'type', 'subtype'
-        ]), ['product_id' => $product->id]);
+        $productType = $this->handleProductType($validated->only(['type', 'subtype']), [
+            'product_id' => $product->id
+        ]);
 
         return compact('supplier', 'productType', 'product');
     }
 
-    private function updateProduct(ProductRequest $request, Product $product) : array
+    private function updateProduct(ProductRequest $request, Product $product): array
     {
         $validated = $request->safe();
 
         // Update supplier (unchanged)
-        $supplier = $this->updateOrKeepSupplier(
-            $product->supplier, 
-            $validated->only(['supplier_name', 'company_name', 'address', 'contact'])
-        );
-    
+        $supplier = $this->updateOrKeepSupplier($product->supplier, $validated->only(['supplier_name', 'company_name', 'address', 'contact']));
+
         // Handle product types
         $typeData = array_merge($validated->only(['type', 'subtype']), ['product_id' => $product]);
         if ($this->typeDataChanged($product, $typeData)) {
             $productTypes = $this->updateOrKeepProductTypes($product, $typeData);
-            
+
             // Refresh the relationship
             $product->load('productType');
-            
+
             // Get primary type (first or only one)
             $primaryProductType = $product->productType->first();
         } else {
             $primaryProductType = $product->productType;
         }
-    
-        $product = $this->updateProductDetails(
-            $product,
-            $validated->only(['product_name', 'original_price', 'description']),
-            ['supplier_id' => $supplier->id,]
-        );
+
+        $product = $this->updateProductDetails($product, $validated->only(['product_name', 'original_price', 'description']), ['supplier_id' => $supplier->id]);
 
         return compact('supplier', 'primaryProductType', 'product');
     }
-    
-    private function handleProduct(array $productData, array $relations) : Product
-    {   
+
+    private function handleProduct(array $productData, array $relations): Product
+    {
         // creates new product if not exists
-        return Product::firstOrCreate([ 
-            'product_name' => $productData['product_name'],
-            'supplier_id' => $relations['supplier_id'], 
-        ], [
-            'original_price' => $productData['original_price'],
-            'description' => $productData['description']
-        ]);
+        return Product::firstOrCreate(
+            [
+                'product_name' => $productData['product_name'],
+                'supplier_id' => $relations['supplier_id'],
+            ],
+            [
+                'original_price' => $productData['original_price'],
+                'description' => $productData['description'],
+            ],
+        );
     }
 
-    private function updateProductDetails(Product $product, array $productData, array $relations) : Product
-    {   
+    private function updateProductDetails(Product $product, array $productData, array $relations): Product
+    {
         // Update product details
         $product->update([
             'product_name' => $productData['product_name'],
@@ -159,20 +150,23 @@ class ProductService
 
         return $product->fresh();
     }
-    
-    private function handleSupplier(array $supplierData) : Supplier
-    {  
+
+    private function handleSupplier(array $supplierData): Supplier
+    {
         // creates new supplier if not exists
-       return Supplier::firstOrCreate([
-            'supplier_name' => $supplierData['supplier_name'],
-            'company_name' => $supplierData['company_name'],
-       ], [
-            'address' => $supplierData['address'],
-            'contact' => $supplierData['contact']
-       ]);
+        return Supplier::firstOrCreate(
+            [
+                'supplier_name' => $supplierData['supplier_name'],
+                'company_name' => $supplierData['company_name'],
+            ],
+            [
+                'address' => $supplierData['address'],
+                'contact' => $supplierData['contact'],
+            ],
+        );
     }
 
-    private function updateOrKeepSupplier(?Supplier $supplier, array $supplierData) : Supplier
+    private function updateOrKeepSupplier(?Supplier $supplier, array $supplierData): Supplier
     {
         if (!$supplier || $this->supplierDataChanged($supplier, $supplierData)) {
             return $this->handleSupplier($supplierData);
@@ -183,12 +177,11 @@ class ProductService
 
     private function supplierDataChanged(Supplier $supplier, array $supplierData): bool
     {
-        return $supplier->supplier_name !== $supplierData['supplier_name'] || $supplier->company_name !== $supplierData['company_name'] ||
-               $supplier->address !== $supplierData['address'] || $supplier->contact !== $supplierData['contact'];
+        return $supplier->supplier_name !== $supplierData['supplier_name'] || $supplier->company_name !== $supplierData['company_name'] || $supplier->address !== $supplierData['address'] || $supplier->contact !== $supplierData['contact'];
     }
 
-    private function handleProductType(array $typeData, array $relations) : ProductType|Collection
-    {   
+    private function handleProductType(array $typeData, array $relations): ProductType|Collection
+    {
         $mainType = Type::firstOrCreate(['type_name' => $typeData['type']]);
         $subtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
 
@@ -199,65 +192,69 @@ class ProductService
                 ProductType::firstOrCreate([
                     'type_id' => $mainType->id,
                     'subtype_id' => $subType->id,
-                    'product_id' => $relations['product_id']
-                ])
+                    'product_id' => $relations['product_id'],
+                ]),
             );
         }
         return $productTypes->count() === 1 ? $productTypes->first() : $productTypes;
     }
 
-    private function updateOrKeepProductTypes(Product $product, array $typeData) : array
+    private function updateOrKeepProductTypes(Product $product, array $typeData): array
     {
-    $mainType = Type::firstOrCreate(['type_name' => $typeData['type']]);
+        $mainType = Type::firstOrCreate(['type_name' => $typeData['type']]);
 
-    $subtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
+        $subtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
 
-    // Get existing product types for this product
-    $existingTypes = $product->productType->with(['type', 'subtype'])->get();
+        // Get existing product types for this product
+        $existingTypes = $product->productType->with(['type', 'subtype'])->get();
 
-    // Determine which subtypes to keep, add, and remove
-    $subtypesToKeep = [];
-    $subtypesToAdd = $subtypes;
-    
-    foreach ($existingTypes as $existingType) {
-        if (in_array($existingType->subtype->subtype_name, $subtypes)) {
-            // Keep this relationship
-            $subtypesToKeep[] = $existingType->subtype->subtype_name;
-            $subtypesToAdd = array_diff($subtypesToAdd, [$existingType->subtype->subtype_name]);
+        // Determine which subtypes to keep, add, and remove
+        $subtypesToKeep = [];
+        $subtypesToAdd = $subtypes;
+
+        foreach ($existingTypes as $existingType) {
+            if (in_array($existingType->subtype->subtype_name, $subtypes)) {
+                // Keep this relationship
+                $subtypesToKeep[] = $existingType->subtype->subtype_name;
+                $subtypesToAdd = array_diff($subtypesToAdd, [$existingType->subtype->subtype_name]);
+            }
         }
-    }
-    
-    // Add new types
-    $newProductTypes = collect();
-    foreach ($subtypesToAdd as $subtypeName) {
-        $subType = Subtype::firstOrCreate(['subtype_name' => $subtypeName]);
-        $productType = ProductType::firstOrCreate([
-            'type_id' => $mainType->id,
-            'subtype_id' => $subType->id,
-            'product_id' => $product->id
-        ]);
 
-        $newProductTypes->push($productType);
-    }
+        // Add new types
+        $newProductTypes = collect();
+        foreach ($subtypesToAdd as $subtypeName) {
+            $subType = Subtype::firstOrCreate(['subtype_name' => $subtypeName]);
+            $productType = ProductType::firstOrCreate([
+                'type_id' => $mainType->id,
+                'subtype_id' => $subType->id,
+                'product_id' => $product->id,
+            ]);
 
-    // Return all current product types (kept + new)
-    return $product->productType
-        ->whereIn('subtype_id', Subtype::whereIn('subtype_name', $subtypes)
-        ->pluck('id'))
-        ->get()
-        ->toArray();
+            $newProductTypes->push($productType);
+        }
+
+        // Return all current product types (kept + new)
+        return $product->productType
+            ->whereIn('subtype_id', Subtype::whereIn('subtype_name', $subtypes)->pluck('id'))
+            ->get()
+            ->toArray();
     }
 
     private function typeDataChanged(Product $product, array $typeData): bool
-    {   
+    {
         $currentMainType = $product->productType->first()->type->type_name ?? null;
         // dd($product->productType->with('subtype')->get());
-        $currentSubtypes = $product->productType->with('subtype')
-            ->get()->map(function ($productType){
+        $currentSubtypes = $product->productType
+            ->with('subtype')
+            ->get()
+            ->map(function ($productType) {
                 return $productType->subtype->subtype_name ?? null;
             })
-            ->filter()->unique()->values()->toArray();
-        
+            ->filter()
+            ->unique()
+            ->values()
+            ->toArray();
+
         $newSubtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
         sort($currentSubtypes);
         sort($newSubtypes);
@@ -265,7 +262,7 @@ class ProductService
         return $currentMainType !== $typeData['type'] || $currentSubtypes !== $newSubtypes;
     }
 
-    public function isChecked($object, $message) : void
+    public function isChecked($object, $message): void
     {
         if ($object === false || $object === null) {
             abort(StatusCode::ERROR->value, $message);

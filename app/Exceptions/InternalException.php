@@ -5,7 +5,7 @@ namespace App\Exceptions;
 use Exception;
 
 class InternalException extends Exception
-{
+{   
     public static function failedRequest($message, $code, $e)
     {   
         return response()->json(

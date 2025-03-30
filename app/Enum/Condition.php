@@ -9,7 +9,7 @@ enum Condition : int
     case RESERVED = 3;
     case OUT_OF_STOCK = 4;
     case UNAVAILABLE = 5;
-    case DELETED = 6;
+    case REMOVED = 6;
     
     public function label(): string
     {
@@ -20,7 +20,7 @@ enum Condition : int
             self::RESERVED => 'Reserved',
             self::OUT_OF_STOCK => 'Out of Stock',
             self::UNAVAILABLE => 'Unavailable',
-            self::DELETED => 'Deleted',
+            self::REMOVED => 'Removed',
         };
     }
 }

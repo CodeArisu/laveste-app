@@ -37,7 +37,7 @@ class AuthService
     {   
         try {
             if ($request->user()) {
-                $request->user()->currentAccessToken->delete();
+                $request->user()->currentAccessToken()->delete();
                 return ['token' => null, 'message' => 'User signed out'];
             }
             return ['token' => null, 'message' => 'Try again later'];
@@ -104,7 +104,7 @@ class AuthService
         return response()->json([
             'message' => $params['message'],
             'access_token' => $params['token'] ?? null,
-            'token_type' => empty($params['token']) ? 'bearer' : 'revoked'
+            'token_type' => !empty($params['token']) ? 'bearer' : 'revoked'
         ], StatusCode::SUCCESS->value);
     }
 }

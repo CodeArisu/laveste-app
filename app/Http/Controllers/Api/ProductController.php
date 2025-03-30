@@ -10,9 +10,7 @@ use Illuminate\Http\JsonResponse;
 
 class ProductController extends ApiBaseController
 {   
-    public function __construct(    
-        protected ProductService $productService
-    ) {}
+    public function __construct(protected ProductService $productService) {}
 
     public function show(Product $product)
     {
@@ -21,7 +19,7 @@ class ProductController extends ApiBaseController
 
     public function store(ProductRequest $request) : JsonResponse
     {   
-        $product = $this->productService->requestProduct($request);
+        $product = $this->productService->requestCreateProduct($request);
         return $this->sendCreateResponse($product['message'], $product['product']);
     }
 
