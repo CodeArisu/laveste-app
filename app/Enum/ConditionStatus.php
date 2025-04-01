@@ -2,11 +2,12 @@
 
 namespace App\Enum;
 
-enum Condition : int
+enum ConditionStatus : int
 {
     case OK = 1;
     case DAMAGED = 2;
     case MAINTENANCE = 3;
+    case UNAVAILABLE = 4;
     
     public function label(): string
     {
@@ -14,7 +15,8 @@ enum Condition : int
         {
             self::OK => 'ok',
             self::DAMAGED => 'damaged',
-            self::MAINTENANCE => 'maintenance'
+            self::MAINTENANCE => 'maintenance',
+            self::UNAVAILABLE => 'unavailable'
         };
     }
 }

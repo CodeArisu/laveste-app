@@ -13,6 +13,15 @@ class Garment extends Model
         'additional_description',
         'poster',
         'size_id',
-        'condition',
+        'condition_id',
     ];
+
+    public function condition()
+    {
+        return $this->belongsTo(Condition::class);
+    }
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

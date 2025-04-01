@@ -22,11 +22,12 @@ class GarmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|integer',
+            'product_id' => 'required|integer|unique:garments,product_id',
             'additional_description' => 'required|string|max:255',
-            'renting_price' => 'required|numeric',
+            'rent_price' => 'required|numeric',
+            'poster' => 'required|unique:garments,poster',
 
-            'measurement' => 'required|array',
+            'measurement' => 'required|string',
             'length' => 'required|numeric',
             'width' => 'required|numeric',
         ];

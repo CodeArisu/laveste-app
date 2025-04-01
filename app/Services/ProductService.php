@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enum\StatusCode;
 use App\Exceptions\InternalException;
 use App\Http\Requests\ProductRequest;
 use App\Models\{Product, ProductType, Supplier, Type, Subtype};
@@ -126,12 +125,10 @@ class ProductService
     private function handleProduct(array $productData, array $relations): Product
     {
         // creates new product if not exists
-        return Product::firstOrCreate(
-            [
+        return Product::firstOrCreate([
                 'product_name' => $productData['product_name'],
                 'supplier_id' => $relations['supplier_id'],
-            ],
-            [
+            ],[
                 'original_price' => $productData['original_price'],
                 'description' => $productData['description'],
             ],
@@ -260,13 +257,6 @@ class ProductService
         sort($newSubtypes);
 
         return $currentMainType !== $typeData['type'] || $currentSubtypes !== $newSubtypes;
-    }
-
-    public function isChecked($object, $message): void
-    {
-        if ($object === false || $object === null) {
-            abort(StatusCode::ERROR->value, $message);
-        }
     }
 
     protected function validateUpdateResults(array $updatedData): void

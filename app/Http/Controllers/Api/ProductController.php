@@ -19,8 +19,8 @@ class ProductController extends ApiBaseController
 
     public function store(ProductRequest $request) : JsonResponse
     {   
-        $product = $this->productService->requestCreateProduct($request);
-        return $this->sendCreateResponse($product['message'], $product['product']);
+        $createdProduct = $this->productService->requestCreateProduct($request);
+        return $this->sendCreateResponse($createdProduct['message'], $createdProduct['product']);
     }
 
     public function update(ProductRequest $request, Product $product) : JsonResponse

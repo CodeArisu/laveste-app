@@ -1,6 +1,6 @@
 <?php
 
-use App\Enum\Measurement;
+use App\Enum\{ConditionStatus, Measurement};
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,9 +20,9 @@ return new class extends Migration
             $table->timestamps();
         });
         
-        Schema::create('condition_status', function (Blueprint $table) {
+        Schema::create('conditions', function (Blueprint $table) {
             $table->id();
-            $table->string('condition', 50);
+            $table->string('condition_name');
             $table->timestamps();
         });
 
@@ -31,9 +31,9 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->double('rent_price', 16, 2);
             $table->string('poster');
-            $table->unsignedBigInteger('condition_id');
+            $table->longText('additional_description');
+            $table->unsignedBigInteger('condition_id')->default(ConditionStatus::UNAVAILABLE->value);
             $table->unsignedBigInteger('size_id');
-            $table->unsignedBigInteger('images_id');
             $table->timestamps();
 
             $table->foreign('product_id')
@@ -43,7 +43,7 @@ return new class extends Migration
 
             $table->foreign('condition_id')
             ->references('id')
-            ->on('condition_status')
+            ->on('conditions')
             ->onDelete('cascade');
 
             $table->foreign('size_id')

@@ -2,14 +2,16 @@
 
 namespace App\Services;
 
-use App\Enum\Condition;
+use App\Enum\ConditionStatus;
 use App\Exceptions\InternalException;
 use App\Http\Requests\GarmentRequest;
-use App\Models\{ConditionStatus, Size, Garment};
+use App\Models\{Product, Condition, Size, Garment};
 use Illuminate\Support\Facades\{DB, Log};
 
 class GarmentService
-{    
+{   
+    private $productId;
+    
     public function requestCreateGarment(GarmentRequest $request)
     {
         try {
@@ -79,23 +81,27 @@ class GarmentService
     private function createGarment(GarmentRequest $request): array
     {
         $validated = $request->safe();
-
         // creates new status first
-        if (!ConditionStatus::exists()) {
-            $this->generateStatus();
+        if (!Condition::exists()) {
+            $this->generateCondition();
         }
-       
         // creates new size
         $size = $this->handleSize($validated->only([
-            'measurement', 'length', 'width'
+            'measurement', 
+            'length', 
+            'width'
         ]));
-
+    
         // creates new garment
         $garment = $this->handleGarment($validated->only([
-            'product_id', 'additional_description', 'poster', 'renting_price'
-        ]), 
-            ['sizes_id' => $size->id, 'condition' => Condition::OK->value] // default condition UNAVAILABLE
-        );
+            'product_id', 
+            'additional_description', 
+            'poster', 
+            'rent_price'
+        ]), [ // 
+            'size_id' => $size->id, 
+            'condition_id' => ConditionStatus::UNAVAILABLE->value
+        ]);
 
         // return as arrays
         return compact('garment', 'size');
@@ -118,10 +124,10 @@ class GarmentService
                 'product_id', 
                 'additional_description', 
                 'poster', 
-                'renting_price'
-            ]), [
+                'rent_price'
+            ]), [ // related data
                  'sizes_id' => $size->id, 
-                 'condition' => Condition::OK->value
+                 'condition_id' => ConditionStatus::OK->value
                 ]
             )
         );
@@ -160,38 +166,45 @@ class GarmentService
                 $size->width !== $sizeData['width'];
     }
 
-    private function handleGarment(array $garmentData): Garment
-    {
-        return Garment::firstOrCreate(
-            [
-                'product_id' => $garmentData['product_id'],
+    private function handleGarment(array $garmentData, array $relations): Garment
+    {   
+        $product = $this->getProduct($garmentData);
+        return Garment::firstOrCreate([
+                'product_id' => $product->id,
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
                 'poster' => $garmentData['poster'],
-                'size_id' => $garmentData['size_id'],
-                'condition' => $garmentData['condition']
+                'size_id' => $relations['size_id'],
+                'condition_id' => $relations['condition_id'] // error
             ]
         );
     }
 
-    private function handleUpdateGarment(array $garmentData) : Garment
+    private function getProduct($garmentData) : Product
     {
-        return Garment::createOrUpdate(
-            [
+        $product = Product::findOrFail($garmentData['product_id']);
+        if (!$product) {
+            throw new \Exception("Invalid product_id: {$garmentData['product_id']}");
+        }
+        return $product;
+    }
+
+    private function handleUpdateGarment(array $garmentData) : Garment
+    {   
+        return Garment::createOrUpdate([
                 'product_id' => $garmentData['product_id'],
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
                 'poster' => $garmentData['poster'],
                 'size_id' => $garmentData['size_id'],
-                'condition' => $garmentData['condition']
+                'condition_id' => $garmentData['condition_id']
             ]
         );
     }
 
     private function handleSize(array $sizeData) : Size
     {
-        return Size::firstOrCreate(
-            [
+        return Size::firstOrCreate([
                 'measurement' => $sizeData['measurement'],
                 'length' => $sizeData['length'],
                 'width' => $sizeData['width'],
@@ -201,8 +214,7 @@ class GarmentService
 
     private function handleUpdateSize(array $sizeData) : Size
     {
-        return Size::createOrUpdate(
-            [
+        return Size::createOrUpdate([
                 'measurement' => $sizeData['measurement'],
                 'length' => $sizeData['length'],
                 'width' => $sizeData['width'],
@@ -210,25 +222,18 @@ class GarmentService
         );
     }
 
-    private function generateStatus() : void
+    private function generateCondition() : void
     {   
-        // get all existing conditions
-        $existingConditions = ConditionStatus::value('condition')->toArray();
-        $allConditions = array_map( fn($condition) => $condition
-            ->label(), 
-            Condition::cases()
-        );
+        // get all existing statuses
+        $existingStatuses = array_map('strtolower', Condition::pluck('condition_name')->toArray());
+        $allStatuses = array_map(fn($status) => strtolower($status->label()), ConditionStatus::cases());
 
-        // counts the difference between existing and all conditions
-        if (count(array_diff($allConditions, $existingConditions)) > 0) {
-            foreach (Condition::cases() as $condition) {
-                ConditionStatus::firstOrCreate([
-                    'condition' => $condition->label()
-                ]);
-            }   
+        // counts the difference between existing and all statuses
+        if (count(array_diff($allStatuses, $existingStatuses))) {
+            foreach (ConditionStatus::cases() as $status) {
+                Condition::updateOrCreate(['id' => $status->value, 'condition_name' => $status->label()]);
+            }
         }
-
-        return;
     }
 
     protected function validateUpdateResults(array $updatedData): void

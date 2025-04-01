@@ -24,4 +24,8 @@ class Product extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+    public function garment()
+    {
+        return $this->hasOne(Garment::class);
+    }
 }

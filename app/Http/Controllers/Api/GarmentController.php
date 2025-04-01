@@ -13,8 +13,8 @@ class GarmentController extends ApiBaseController
 
     public function store(GarmentRequest $request)
     {
-        $garment = $this->garmentService->requestCreateGarment($request);
-        return $this->sendCreateResponse($garment['message'], $garment['garment']);
+        $createdGarment = $this->garmentService->requestCreateGarment($request);
+        return $this->sendCreateResponse($createdGarment['message'], $createdGarment['garment']);
     }
 
     public function update(GarmentRequest $request, Garment $garment)
@@ -25,7 +25,7 @@ class GarmentController extends ApiBaseController
 
     public function delete(Garment $garment)
     {
-        $garment = $this->garmentService->requestDeleteGarment($garment);
-        return $this->sendDeleteResponse($garment['message'], $garment['deleted'], $garment['garment_name']);
+        $deletedGarment = $this->garmentService->requestDeleteGarment($garment);
+        return $this->sendDeleteResponse($deletedGarment['message'], $deletedGarment['deleted'], $garment['garment_name']);
     }
 }

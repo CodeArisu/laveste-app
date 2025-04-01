@@ -21,6 +21,12 @@ Route::name('product.')->prefix('product')->group( function () {
     });
 });
 
-Route::post('/garment/new', [GarmentController::class, 'store'])->name('store.garment');
+Route::name('garment.')->prefix('garment')->group( function () {
+    Route::controller(GarmentController::class)->group( function() {
+        Route::post('/new', [GarmentController::class, 'store'])->name('store');
+        Route::put('/{garment}', [GarmentController::class, 'update'])->name('update');
+        Route::delete('/{garment}/remove', [GarmentController::class, 'destroy'])->name('delete');
+    });
+});
 
 Route::put('/test', [ProductController::class, 'test'])->name('test.product');
