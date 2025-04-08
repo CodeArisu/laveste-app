@@ -27,12 +27,12 @@ class ProductService
                     }
                 }
 
-                return ['product' => $products, 'message' => 'Added Success'];
+                return ['product' => array_keys($products), 'message' => 'Product added successfully'];
             });
         } catch (\Exception $e) {
-            // Log the error for debugging
             Log::error('Product creation failed: ' . $e->getMessage());
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return ['product' => $products, 'message' => 'Failed to add product'];
         }
     }
 
@@ -46,17 +46,13 @@ class ProductService
 
                 return [
                     'product' => $product->fresh(),
-                    'updated_fields' => array_keys($updatedProducts),
-                    'message' => 'Updated Success',
+                    'message' => 'Product updated successfully',
                 ];
             });
         } catch (\Exception $e) {
-            Log::error("Product update failed - ID: {$product->id}", [
-                'error' => $e->getMessage(),
-                'request' => $request->validated(),
-            ]);
-
+            Log::error("Product update failed - ID: {$product->id}", ['error' => $e->getMessage(), 'request' => $request->validated(),]);
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return ['product' => $products, 'message' => 'Failed to update product'];
         }
     }
 
@@ -67,15 +63,13 @@ class ProductService
             $product->deleteOrFail();
 
             return [
-                'deleted' => true,
-                'message' => 'Deleted Success',
-                'product_name' => $productName,
+                'message' => 'Product Deleted Successfully',
+                'product' => $productName,
             ];
         } catch (\Exception $e) {
-            Log::error("Product delete failed - ID: {$product->id}", [
-                'error' => $e->getMessage(),
-            ]);
+            Log::error("Product delete failed - ID: {$product->id}", ['error' => $e->getMessage()]);
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return ['product' => $productName, 'message' => 'Failed to delete product'];
         }
     }
 
@@ -151,7 +145,7 @@ class ProductService
     private function handleSupplier(array $supplierData): Supplier
     {
         // creates new supplier if not exists
-        return Supplier::firstOrCreate(
+        return Supplier::updateOrCreate(
             [
                 'supplier_name' => $supplierData['supplier_name'],
                 'company_name' => $supplierData['company_name'],

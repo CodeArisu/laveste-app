@@ -21,11 +21,12 @@ class DisplayService
                     throw new \RuntimeException('No garment were added');
                 }
 
-                return ['display' => $display, 'message' => 'Display added successfully'];
+                return ['display' => $display, 'message' => 'Added to display successfully'];
             });
         } catch (\Exception $e) {
             Log::error("Display creation failed: " . $e->getMessage());
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return ['display' => $display, 'message' => 'Failed to add to Display'];
         }
     }
 

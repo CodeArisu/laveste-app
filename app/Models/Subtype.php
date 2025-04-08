@@ -15,6 +15,6 @@ class Subtype extends Model
 
     public function productType() 
     {
-        return $this->hasMany(ProductType::class);
+        return $this->belongsToMany(ProductType::class);
     }
 }

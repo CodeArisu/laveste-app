@@ -22,7 +22,7 @@ class GarmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|integer|unique:garments,product_id',
+            'product_id' => 'required|integer',
             'additional_description' => 'required|string|max:255',
             'rent_price' => 'required|numeric',
             'poster' => 'required|unique:garments,poster',
@@ -30,6 +30,8 @@ class GarmentRequest extends FormRequest
             'measurement' => 'required|string',
             'length' => 'required|numeric',
             'width' => 'required|numeric',
+
+            'condition_id' => 'nullable|integer'
         ];
     }
 }

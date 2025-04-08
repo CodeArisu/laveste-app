@@ -2,9 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Requests\ProductRequest;
+use App\Services\ProductService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use Mockery;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Tests\TestCase;
 
 class ProductControllerTest extends TestCase
@@ -13,7 +17,9 @@ class ProductControllerTest extends TestCase
 
     #[Test]
     public function stores_products_successfully()
-    {
+    {   
+        $productServiceMock = Mockery::mock(ProductService::class);
+
         $productData = [
             "product_name" => "test product",
             "original_price" => 999,
@@ -28,10 +34,30 @@ class ProductControllerTest extends TestCase
             "subtype" => ['type1', 'type2'],
         ];
 
-        $response = $this->postJson(route('product.store'), $productData);
-
-        $response->assertStatus(202)->assertJson([
+        $fakeResponse = [
             'message' => 'Product created successfully',
-        ]);
+        ];
+
+        $requestMock = Mockery::mock(ProductRequest::class);
+        $requestMock->shouldReceive('all')->andReturn($productData);
+
+        $productServiceMock->shouldReceive('requestCreateProduct')
+        ->once()
+        ->with($requestMock)
+        ->andReturn($fakeResponse);
+
+        // Create an instance of ProductController with mock service
+        $controller = new ProductController($productServiceMock);
+
+        // Call store method
+        $response = $controller->store($requestMock);
+
+        // Assert response type
+        $this->assertInstanceOf(JsonResponse::class, $response);
+
+        // Assert response structure
+        $responseData = $response->getData(true);
+        $this->assertEquals($fakeResponse['message'], $responseData['message']);
+        $this->assertEquals($fakeResponse['product'], $responseData['data']);
     }
 }

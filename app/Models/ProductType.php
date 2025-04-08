@@ -12,7 +12,6 @@ class ProductType extends Model
     protected $fillable = [
         'product_id',
         'type_id',
-        'subtype_id'
     ];
     
     public function product()
@@ -25,6 +24,6 @@ class ProductType extends Model
     }
     public function subtype()
     {
-        return $this->belongsTo(Subtype::class);
+        return $this->belongsToMany(Subtype::class);
     }
 }

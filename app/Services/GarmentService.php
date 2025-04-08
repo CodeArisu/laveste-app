@@ -33,6 +33,7 @@ class GarmentService
         } catch (\Exception $e) {
             Log::error("Garment creation failed: " . $e->getMessage());
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return ['garment' => $garments, 'message' => 'Failed to add garment'];
         }
     }
 
@@ -46,8 +47,7 @@ class GarmentService
 
                 return [
                     'garment' => $garment->fresh(),
-                    'updated_fields' => array_keys($updatedGarments),
-                    'message' => 'Updated Success'
+                    'message' => 'Garment updated successfully'
                 ];
             });
         } catch (\Exception $e) {
@@ -56,6 +56,7 @@ class GarmentService
                 'request' => $request->validated(),
             ]);
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return ['garment' => $garment, 'message' => 'Failed to update garment'];
         }
     }
 
@@ -66,15 +67,15 @@ class GarmentService
             $garment->deleteOrFail();
 
             return [
-                'deleted' => true,
                 'message' => 'Deleted Success',
-                'garment_name' => $garmentName
+                'garment' => $garmentName
             ];
         } catch (\Exception $e) {
             Log::error("Product delete failed - ID: {$garment->id}", [
                 'error' => $e->getMessage()
             ]);
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);;
+            throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return ['garment' => $garment, 'message' => 'Failed to delete garment'];
         }
     }
 
@@ -85,22 +86,25 @@ class GarmentService
         if (!Condition::exists()) {
             $this->generateCondition();
         }
+
         // creates new size
         $size = $this->handleSize($validated->only([
             'measurement', 
             'length', 
             'width'
         ]));
+
+        $garmentCondition = $this->checkForConditionEntry($validated);
     
         // creates new garment
         $garment = $this->handleGarment($validated->only([
             'product_id', 
             'additional_description', 
             'poster', 
-            'rent_price'
+            'rent_price',
         ]), [ // 
-            'size_id' => $size->id, 
-            'condition_id' => ConditionStatus::UNAVAILABLE->value
+            'size_id' => $size->id,
+            'condition_id' => $garmentCondition
         ]);
 
         // return as arrays
@@ -119,15 +123,17 @@ class GarmentService
             ])
         );
 
+        $garmentCondition = $this->checkForConditionEntry($validated);
+
         $garment = $this->updateOrKeepGarment($garment, array_merge(
             $validated->only([
                 'product_id', 
                 'additional_description', 
                 'poster', 
-                'rent_price'
+                'rent_price',
             ]), [ // related data
-                 'sizes_id' => $size->id, 
-                 'condition_id' => ConditionStatus::OK->value
+                 'size_id' => $size->id, 
+                 'condition_id' => $garmentCondition
                 ]
             )
         );
@@ -136,7 +142,7 @@ class GarmentService
     }
 
     private function updateOrKeepGarment(?Garment $garment, array $garmentData) : Garment
-    {
+    {   
         if (!$garment || $this->garmentDataChange($garment, $garmentData)) {
             return $this->handleUpdateGarment($garmentData);
         }
@@ -145,10 +151,10 @@ class GarmentService
     }
 
     private function garmentDataChange(Garment $garment, array $garmentData) : bool
-    {
+    {   
         return $garment->product_id !== $garmentData['product_id'] || $garment->additional_description !== $garmentData['additional_description'] || 
                 $garment->poster !== $garmentData['poster'] || $garment->renting_price !== $garmentData['renting_price'] || 
-                $garment->size_id !== $garmentData['garment_size'] || $garment->condition !== $garmentData['condition'];
+                $garment->size_id !== $garmentData['size_id'] || $garment->condition !== $garmentData['condition'];
     }
 
     private function updateOrKeepSize(?Size $size, array $sizeData) : Size
@@ -175,7 +181,7 @@ class GarmentService
                 'additional_description' => $garmentData['additional_description'],
                 'poster' => $garmentData['poster'],
                 'size_id' => $relations['size_id'],
-                'condition_id' => $relations['condition_id'] // error
+                'condition_id' => $relations['condition_id']
             ]
         );
     }
@@ -191,7 +197,7 @@ class GarmentService
 
     private function handleUpdateGarment(array $garmentData) : Garment
     {   
-        return Garment::createOrUpdate([
+        return Garment::updateOrCreate([
                 'product_id' => $garmentData['product_id'],
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
@@ -214,7 +220,7 @@ class GarmentService
 
     private function handleUpdateSize(array $sizeData) : Size
     {
-        return Size::createOrUpdate([
+        return Size::updateOrCreate([
                 'measurement' => $sizeData['measurement'],
                 'length' => $sizeData['length'],
                 'width' => $sizeData['width'],
@@ -243,5 +249,12 @@ class GarmentService
                 throw new \RuntimeException("Failed to update {$field}");
             }
         }
+    }
+
+    private function checkForConditionEntry($validated)
+    {
+        return $validated->has('condition_id') && $validated->filled('condition_id') 
+        ? $validated->only('condition_id')['condition_id'] 
+        : ConditionStatus::UNAVAILABLE->value;
     }
 }

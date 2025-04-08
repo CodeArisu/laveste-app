@@ -13,7 +13,7 @@ class DisplayController extends ApiBaseController
     public function store(GarmentProductRequest $request) 
     {
         $display = $this->displayService->requestDisplayGarment($request);
-        return $this->sendCreateResponse($display['message'], $display['display']);
+        return $this->sendResponse($display['message'], $display['display']);
     }
 
     public function update()

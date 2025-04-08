@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Api\{GarmentController, ProductController};
-use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::controller(AuthController::class)->group( function () {
     Route::post('/register', 'registerUser')->name('register');
@@ -28,5 +29,3 @@ Route::name('garment.')->prefix('garment')->group( function () {
         Route::delete('/{garment}/remove', [GarmentController::class, 'destroy'])->name('delete');
     });
 });
-
-Route::put('/test', [ProductController::class, 'test'])->name('test.product');

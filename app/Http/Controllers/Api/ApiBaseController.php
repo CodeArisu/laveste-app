@@ -3,34 +3,22 @@
 namespace App\Http\Controllers\api;
 
 use App\Enum\StatusCode;
-use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 
 abstract class ApiBaseController    
 {    
-    protected function sendCreateResponse($message, $data) : JsonResponse
+    protected function sendResponse($message, $data) : JsonResponse
     {   
-        return response()->json([
-            'success' => !empty($data) ?? false,
-            'response' => $message,
-        ], StatusCode::SUCCESS->value);
-    }
+        // checks if the data is not empty returns true
+        $data = !empty($data) ?? false;
+        if ($data !== true) {
+            return response()->json([
+                'Failed' => $message,
+            ], StatusCode::ERROR->value);
+        }
 
-    protected function sendUpdateResponse($message, $data, $newFields) : JsonResponse
-    {   
         return response()->json([
-            'success' => !empty($data) ?? false,
-            'updated_data' => $newFields ?? null,
-            'response' => $message,
-        ], StatusCode::SUCCESS->value);
-    }
-
-    protected function sendDeleteResponse($message, $isDeleted, $dataName) : JsonResponse
-    {   
-        return response()->json([
-            'success' => $isDeleted,
-            'data_name' => $dataName ?? null,
-            'response' => $message,
+            'Success' => $message,
         ], StatusCode::SUCCESS->value);
     }
 }
