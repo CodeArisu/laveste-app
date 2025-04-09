@@ -38,9 +38,8 @@ class DisplayService
             $this->generateStatus();
         }
 
-        $display = $this->handleDisplayGarment($validated->only(
-                ['user_id', 'garment_id']
-            ), 
+        $display = $this->handleDisplayGarment(
+            $validated->only(['user_id', 'garment_id']), 
             ['product_status_id' => ProductStatus::UNAVAILABLE->value]
         );
 
@@ -73,7 +72,7 @@ class DisplayService
         return DisplayProduct::create([
             'user_id' => $data['user_id'],
             'garment_id' => $data['garment_id'],
-            'product_status_id' => $data['product_status_id']
+            'product_status_id' => $relations['product_status_id']
         ]);
     }
 }

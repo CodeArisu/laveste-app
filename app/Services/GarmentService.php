@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\{DB, Log};
 
 class GarmentService
 {   
-    private $productId;
-    
     public function requestCreateGarment(GarmentRequest $request)
     {
         try {
@@ -82,7 +80,7 @@ class GarmentService
     private function createGarment(GarmentRequest $request): array
     {
         $validated = $request->safe();
-        // creates new status first
+        // creates new status first if not exists
         if (!Condition::exists()) {
             $this->generateCondition();
         }
@@ -102,7 +100,7 @@ class GarmentService
             'additional_description', 
             'poster', 
             'rent_price',
-        ]), [ // 
+        ]), [ // related data
             'size_id' => $size->id,
             'condition_id' => $garmentCondition
         ]);
@@ -255,6 +253,6 @@ class GarmentService
     {
         return $validated->has('condition_id') && $validated->filled('condition_id') 
         ? $validated->only('condition_id')['condition_id'] 
-        : ConditionStatus::UNAVAILABLE->value;
+        : ConditionStatus::OK->value;
     }
 }

@@ -70,12 +70,15 @@ class AuthService
         ]);
     }
 
+    /**
+     * @param Request creates new roles enums exists
+     */
     private function loginUser($request)
     {
         if (!Auth::attempt($request->safe()->only('email', 'password'), $request->boolean('remember'))) {
             return response()->json([
                 'message' => 'Invalid login details'
-            ], StatusCode::UNAUTHORIZED->value);
+            ], StatusCode::INVALID->value);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
