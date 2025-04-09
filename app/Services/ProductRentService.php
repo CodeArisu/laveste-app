@@ -9,7 +9,7 @@ use App\Models\Transactions\ProductRentedStatus;
 use Illuminate\Support\Facades\{DB, Log};
 
 class ProductRentService
-{
+{   
     public function __construct() {}
 
     /**
@@ -51,11 +51,16 @@ class ProductRentService
 
         $validated = $request->safe();
         $productRent = $this->handleProductRent(
-            $validated,
-            RentStatus::RENTED->value
+            $validated->only(['customer_rented_id', 'rent_details_id']),
+            ['rent_status' => RentStatus::RENTED->value]
         );
 
         return compact('productRent');
+    }
+
+    public function execProductRent($request)
+    {
+        return $this->createProductRent($request);
     }
 
     /**
@@ -70,7 +75,7 @@ class ProductRentService
         return ProductRent::create([
             'customer_rented_id' => $data['customer_rented_id'],
             'rent_details_id' => $data['rent_details_id'],
-            'product_rented_status_id' => $relation,
+            'product_rented_status_id' => $relation['rent_status'],
         ]);
     }
 

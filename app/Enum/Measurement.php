@@ -4,10 +4,10 @@ namespace App\Enum;
 
 enum Measurement : string
 {
-    case XS = 'Extra Small';
-    case S = 'Small';
-    case M = 'Medium';
-    case L = 'Large';
-    case XL = 'Extra Large';
-    case XXL = 'Double Extra Large';
+    case XS = 'extra_small';
+    case S = 'small';
+    case M = 'medium';
+    case L = 'large';
+    case XL = 'extra_large';
+    case XXL = 'double_extra_large';
 }
