@@ -21,19 +21,25 @@ class ProductRentService
      */
     public function requestProductRent($request) {
         try {
-            return DB::transaction(function () use ($request) {
+            DB::transaction(function () use ($request) {
                 $productRent = $this->createProductRent($request);
 
                 if (empty($productRent)) {
                     throw new \RuntimeException('No product were rented');
                 }
 
-                return ['product_rent' => $productRent, 'message' => 'Rented successfully'];
+                return [
+                    'product_rent' => $productRent, 
+                    'message' => 'Rented successfully'
+                ];
             });
         } catch (\Exception $e) {
             Log::error("Product rent failed: " . $e->getMessage());
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
-            return ['product_rent' => $productRent, 'message' => 'Failed to rent product'];
+            return [
+                'product_rent' => $productRent, 
+                'message' => 'Failed to rent product'
+            ];
         }
     }
 

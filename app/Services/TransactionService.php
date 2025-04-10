@@ -6,11 +6,45 @@ use App\Enum\PaymentMethods;
 use App\Models\Transactions\PaymentMethod;
 use App\Models\Transactions\ProductRent;
 use App\Models\Transactions\Transaction;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TransactionService
 {
     public function __construct(protected ProductRentService $productRentService){}
 
+    /**
+     * Request transaction creation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return array transaction data and message response
+     * @throws \Exception RuntimeException / InternalException
+     */
+    public function requestTransaction($request)
+    {   
+        try {
+            DB::transaction(function () use ($request) {
+                $transaction = $this->createTransaction($request);
+
+                if (empty($transaction)) {
+                    throw new \RuntimeException('No transaction was created');
+                }
+
+                return [
+                    'transaction' => $transaction,
+                    'message' => 'Transaction created successfully',
+                ];
+            });
+        } catch (\Exception $e) {
+            Log::error("Transaction creation failed: " . $e->getMessage());
+            throw new \RuntimeException('Invalid request: ' . $e->getMessage());
+            return [
+                'transaction' => null,
+                'message' => 'Failed to create transaction',
+            ];
+        }
+
+    }
     /**
      * Request transaction creation.
      *
@@ -75,8 +109,8 @@ class TransactionService
             throw new \RuntimeException('No product were rented');
         }
 
-        $productFound = ProductRent::where('customer_rented_id', $customerRentedId)
-        ->firstOrFail();
+        // finds if the product is already rented
+        $productFound = ProductRent::where('customer_rented_id', $customerRentedId)->firstOrFail();
 
         if (empty($productFound)) {
             throw new \RuntimeException('No rented product found');

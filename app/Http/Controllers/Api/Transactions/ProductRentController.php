@@ -14,12 +14,4 @@ class ProductRentController extends ApiBaseController
         $rentedProduct = $this->productRentService->requestProductRent($request);
         return $this->sendResponse($rentedProduct['message'], $rentedProduct['product_rent']);
     }
-
-    public function update() {
-
-    }
-
-    public function show() {
-
-    }
 }
