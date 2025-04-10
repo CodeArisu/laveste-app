@@ -18,10 +18,14 @@ class Garment extends Model
 
     public function condition()
     {
-        return $this->belongsTo(Condition::class);
+        return $this->belongsTo(Condition::class, 'condition_id');
     }
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+    public function size()
+    {
+        return $this->belongsTo(Size::class, 'size_id');
     }
 }

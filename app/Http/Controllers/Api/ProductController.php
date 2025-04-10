@@ -15,7 +15,7 @@ class ProductController extends ApiBaseController
 
     public function index()
     {
-        
+        //
     }
 
     public function store(ProductRequest $request) : JsonResponse

@@ -28,7 +28,7 @@ class Product extends Model
     }
     public function garment()
     {
-        return $this->hasOne(Garment::class);
+        return $this->hasOne(Garment::class, 'product_id');
     }
 
     // public function getProductTypes()
