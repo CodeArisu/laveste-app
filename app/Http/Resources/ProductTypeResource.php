@@ -15,10 +15,8 @@ class ProductTypeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'product_id' => $this->product_id,
-            'type' => new TypeResource($this->type),
-            'subtype' => SubtypeResource::collection($this->whenLoaded('subtype')),
+            'type' => $this->type ? new TypeResource($this->whenLoaded('type')) : null,
+            'subtypes' => $this->subtype ? new SubtypeResource($this->whenLoaded('subtype')) : [],
         ];
     }
 }

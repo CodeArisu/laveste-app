@@ -15,7 +15,6 @@ class SubtypeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'subtype_name' => $this->subtype_name,
         ];
     }

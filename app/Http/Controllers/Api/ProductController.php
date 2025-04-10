@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\ProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
@@ -24,8 +25,9 @@ class ProductController extends ApiBaseController
     }
 
     public function show(Product $product)
-    {
-        return response()->json($product);
+    {   
+        $products = $product->with(['subtypes', 'supplier'])->find($product);
+        return ProductResource::collection($products);
     }
 
     public function update(ProductRequest $request, Product $product) : JsonResponse

@@ -2,15 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Models\ProductType;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
 {   
-    public $preserveKeys = true;
-    public static $wrap = "products";
     /**
      * Transform the resource into an array.
      *
@@ -22,9 +19,10 @@ class ProductResource extends JsonResource
             'product_name' => $this->product_name,
             'original_price' => $this->original_price,
             'description' => $this->description,
-            'supplier' => new SupplierResource(Supplier::find($this->supplier_id)),
-            'product_type' => new ProductTypeResource(ProductType::where('product_id', $this->id)->first()),
-            
+            'supplier' => new SupplierResource($this->whenLoaded('supplier')),
+            'type' => $this->productTypes->first() ? new TypeResource($this->productTypes->first()->type) : null, 
+            'subtypes' => SubtypeResource::collection($this->whenLoaded('subtypes')) ?? null,
+            'added_at' => $this->created_at,
         ];
     }
 }

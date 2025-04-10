@@ -9,4 +9,4 @@ Route::get('/', function () {
     return view('src.landing');
 });
 
-// Route::get('/test/{product}', [\App\Http\Controllers\Api\ProductController::class, 'test'])->name('test');
+Route::get('/test/{product}', [\App\Http\Controllers\Api\ProductController::class, 'show'])->name('test');

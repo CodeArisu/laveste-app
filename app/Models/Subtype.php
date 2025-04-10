@@ -9,12 +9,14 @@ class Subtype extends Model
 {
     use HasFactory;
 
+    protected $table = 'subtypes';
+
     protected $fillable = [
         'subtype_name'
     ];
 
-    public function productType() 
+    public function productTypes() 
     {
-        return $this->belongsToMany(ProductType::class);
+        return $this->hasMany(ProductType::class, 'subtype_id');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enum\StatusCode;
 use App\Exceptions\InternalException;
 use App\Http\Requests\ProductRequest;
 use App\Models\{Product, ProductType, Supplier, Type, Subtype};
@@ -31,7 +32,7 @@ class ProductService
             });
         } catch (\Exception $e) {
             Log::error('Product creation failed: ' . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            throw new InternalException($e->getMessage(), StatusCode::ERROR->value, $e);
             return ['product' => $products, 'message' => 'Failed to add product'];
         }
     }
@@ -50,7 +51,7 @@ class ProductService
                 ];
             });
         } catch (\Exception $e) {
-            Log::error("Product update failed - ID: {$product->id}", ['error' => $e->getMessage(), 'request' => $request->validated(),]);
+            Log::error("Product update failed - ID: {$product->id}", ['error' => $e->getMessage(), 'request' => $request->validated()]);
             throw new InternalException($e->getMessage(), $e->getCode(), $e);
             return ['product' => $products, 'message' => 'Failed to update product'];
         }
@@ -84,7 +85,7 @@ class ProductService
         ]);
 
         $productType = $this->handleProductType($validated->only(['type', 'subtype']), [
-            'product_id' => $product->id
+            'product_id' => $product->id,
         ]);
 
         return compact('supplier', 'productType', 'product');
@@ -119,14 +120,12 @@ class ProductService
     private function handleProduct(array $productData, array $relations): Product
     {
         // creates new product if not exists
-        return Product::firstOrCreate([
-                'product_name' => $productData['product_name'],
-                'supplier_id' => $relations['supplier_id'],
-            ],[
-                'original_price' => $productData['original_price'],
-                'description' => $productData['description'],
-            ],
-        );
+        return Product::create([
+            'product_name' => $productData['product_name'] ?? 'No Name',
+            'supplier_id' => $relations['supplier_id'],
+            'original_price' => $productData['original_price'],
+            'description' => $productData['description'],
+        ]);
     }
 
     private function updateProductDetails(Product $product, array $productData, array $relations): Product
@@ -145,16 +144,12 @@ class ProductService
     private function handleSupplier(array $supplierData): Supplier
     {
         // creates new supplier if not exists
-        return Supplier::updateOrCreate(
-            [
-                'supplier_name' => $supplierData['supplier_name'],
-                'company_name' => $supplierData['company_name'],
-            ],
-            [
-                'address' => $supplierData['address'],
-                'contact' => $supplierData['contact'],
-            ],
-        );
+        return Supplier::updateOrCreate([
+            'supplier_name' => $supplierData['supplier_name'],
+            'company_name' => $supplierData['company_name'],
+            'address' => $supplierData['address'],
+            'contact' => $supplierData['contact'],
+        ]);
     }
 
     private function updateOrKeepSupplier(?Supplier $supplier, array $supplierData): Supplier
@@ -181,8 +176,8 @@ class ProductService
             $subType = Subtype::firstOrCreate(['subtype_name' => $subtypeName]);
             $productTypes->push(
                 ProductType::firstOrCreate([
-                    'type_id' => $mainType->id,
-                    'subtype_id' => $subType->id,
+                    'type_id' => $mainType->id ?? 1,
+                    'subtype_id' => $subType->id ?? 1,
                     'product_id' => $relations['product_id'],
                 ]),
             );
@@ -197,7 +192,7 @@ class ProductService
         $subtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
 
         // Get existing product types for this product
-        $existingTypes = $product->productType->with(['type', 'subtype'])->get();
+        $existingTypes = $product->productTypes->with(['type', 'subtype'])->get();
 
         // Determine which subtypes to keep, add, and remove
         $subtypesToKeep = [];
@@ -215,13 +210,13 @@ class ProductService
         $newProductTypes = collect();
         foreach ($subtypesToAdd as $subtypeName) {
             $subType = Subtype::firstOrCreate(['subtype_name' => $subtypeName]);
-            $productType = ProductType::firstOrCreate([
+            $productTypes = ProductType::firstOrCreate([
                 'type_id' => $mainType->id,
                 'subtype_id' => $subType->id,
                 'product_id' => $product->id,
             ]);
 
-            $newProductTypes->push($productType);
+            $newProductTypes->push($productTypes);
         }
 
         // Return all current product types (kept + new)
@@ -233,13 +228,13 @@ class ProductService
 
     private function typeDataChanged(Product $product, array $typeData): bool
     {
-        $currentMainType = $product->productType->first()->type->type_name ?? null;
-        // dd($product->productType->with('subtype')->get());
-        $currentSubtypes = $product->productType
+        $currentMainType = $product->productTypes->first()->type->type_name ?? null;
+        dd($product->productTypes->subtype_id);
+        $currentSubtypes = $product->productTypes
             ->with('subtype')
             ->get()
-            ->map(function ($productType) {
-                return $productType->subtype->subtype_name ?? null;
+            ->map(function ($productTypes) {
+                return $productTypes->subtype->subtype_name ?? null;
             })
             ->filter()
             ->unique()

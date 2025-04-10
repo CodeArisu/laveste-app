@@ -15,7 +15,7 @@ class TypeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'type_name' => $this->type_name,
+            'type_name' => $this->type_name ?? null,
         ];
     }
 }

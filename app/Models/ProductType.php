@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductType extends Model
-{
+{   
     use HasFactory;
+
+    protected $table = 'product_types';
 
     protected $fillable = [
         'product_id',
         'type_id',
+        'subtype_id',
     ];
     
     public function product()
@@ -24,6 +27,6 @@ class ProductType extends Model
     }
     public function subtype()
     {
-        return $this->belongsToMany(Subtype::class);
+        return $this->belongsTo(Subtype::class, 'subtype_id');
     }
 }
