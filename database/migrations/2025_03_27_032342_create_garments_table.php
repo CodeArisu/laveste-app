@@ -31,8 +31,8 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->double('rent_price', 16, 2);
             $table->string('poster');
-            $table->longText('additional_description');
-            $table->unsignedBigInteger('condition_id')->default(ConditionStatus::UNAVAILABLE->value);
+            $table->longText('additional_description')->nullable();
+            $table->unsignedBigInteger('condition_id')->default(ConditionStatus::OK->value);
             $table->unsignedBigInteger('size_id');
             $table->timestamps();
 

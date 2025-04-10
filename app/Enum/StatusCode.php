@@ -6,6 +6,7 @@ enum StatusCode : int
 {
     case SUCCESS = 202;
     case ERROR = 500;
+    case INVALID = 422;
     case NOT_FOUND = 404;
     case UNAUTHORIZED = 401;
     case FORBIDDEN = 403;

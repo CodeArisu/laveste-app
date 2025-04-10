@@ -18,6 +18,6 @@ class DisplayController extends ApiBaseController
 
     public function update()
     {
-        //
+        // should only be the status
     }
 }
