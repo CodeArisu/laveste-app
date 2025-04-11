@@ -10,7 +10,11 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\{Auth, Hash};
 
 class AuthService
-{   
+{      
+    /**
+     * @param AuthRequest $request
+     * @return array
+     */
     public function registerRequest(AuthRequest $request)
     {   
         try {
@@ -22,6 +26,10 @@ class AuthService
         }
     }
 
+    /**
+     * @param AuthRequest $request
+     * @return array
+     */
     public function loginRequest(AuthRequest $request)
     {   
         try {
@@ -33,6 +41,10 @@ class AuthService
         }
     }
 
+    /**
+     * @param AuthRequest $request
+     * @return array
+     */
     public function logoutRequest($request)
     {   
         try {
@@ -47,6 +59,10 @@ class AuthService
         }
     }
 
+    /**
+     * @param AuthRequest $request
+     * @return array
+     */
     private function registerUser($request)
     {   
         if (!ModelsRole::exists()) {
@@ -54,11 +70,27 @@ class AuthService
         }
        
         $user = $this->handleRegister($request);
+
+        // $user = User::where('email', $request['email'])
+        // ->where('email', $request['email'])
+        // ->where($user->role, '!=', UserRoles::EMPLOYEE->value)
+        // ->firstOrFail();
+
+        // if ($user->exists()) {
+        //     return response()->json([
+        //         'message' => 'User already exists'
+        //     ], StatusCode::INVALID->value);
+        // }
+    
         $authToken = $user->createToken('auth_token')->plainTextToken;
 
         return compact('user', 'authToken');
     }
 
+    /**
+     * @param AuthRequest $request
+     * @return array
+     */
     private function handleRegister($request)
     {   
         return User::firstOrCreate([
@@ -102,6 +134,10 @@ class AuthService
         }
     }
 
+    /**
+     * @param array $params
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function userResponse(array $params)
     {
         return response()->json([

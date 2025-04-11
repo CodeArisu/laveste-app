@@ -7,7 +7,7 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\JsonResponse;   
 
 class ProductController extends ApiBaseController
 {   
@@ -26,7 +26,8 @@ class ProductController extends ApiBaseController
 
     public function show(Product $product)
     {   
-        $products = $product->with(['subtypes', 'supplier'])->find($product);
+        // Eager load the relationships to avoid N+1 query problem
+        $products = $product->with(['subtypes', 'type', 'supplier'])->findOrFail($product);
         return ProductResource::collection($products);
     }
 

@@ -20,6 +20,7 @@ class ProductRentService
      * @throws \Exception RuntimeException / InternalException
      */
     public function requestProductRent($request) {
+        
         try {
             DB::transaction(function () use ($request) {
                 $productRent = $this->createProductRent($request);

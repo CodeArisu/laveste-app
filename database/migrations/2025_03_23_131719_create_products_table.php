@@ -36,7 +36,7 @@ return new class extends Migration
             $table->id();
             $table->string('product_name', 50);
 
-            $table->unsignedBigInteger('supplier_id');
+            $table->unsignedBigInteger('supplier_id')->nullable();
             $table->foreign('supplier_id')
             ->references('id')
             ->on('suppliers')
