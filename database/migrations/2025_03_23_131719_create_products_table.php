@@ -47,7 +47,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('product_types', function (Blueprint $table) {
+        Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('type_id');

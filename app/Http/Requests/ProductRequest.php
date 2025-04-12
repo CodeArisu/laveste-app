@@ -23,13 +23,13 @@ class ProductRequest extends FormRequest
     {
         return [
             'product_name' => 'required|string|max:50',
-            'original_price' => 'required|integer',
+            'original_price' => 'required|numeric',
             'description' => 'nullable|max:255',
 
             'supplier_name' => 'nullable|string|max:65',
             'company_name' => 'nullable|string|max:65',
             'address' => 'required|string|max:255',
-            'contact' => 'required|digits:10',
+            'contact' => 'required|integer|digits:10',
 
             'type' => 'required|string',
             'subtype' => 'required|array|prohibited_if:subtype.*,string',

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Enum\ConditionStatus;
 use App\Exceptions\InternalException;
 use App\Http\Requests\GarmentRequest;
-use App\Models\{Product, Condition, Size, Garment};
+use App\Models\{Products\Product, Condition, Size, Garment};
 use Illuminate\Support\Facades\{DB, Log};
 
 class GarmentService
