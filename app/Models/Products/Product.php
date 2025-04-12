@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Products;
 
-use App\Http\Resources\SubtypeResource;
-use App\Http\Resources\TypeResource;
+use App\Models\Garment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,9 +33,9 @@ class Product extends Model
         ];
     }
 
-    public function productTypes()
+    public function productCategories()
     {
-        return $this->hasMany(ProductType::class, 'product_id');
+        return $this->hasMany(ProductCategories::class, 'product_id');
     }
     public function supplier()
     {
@@ -50,10 +49,10 @@ class Product extends Model
     // direct access to subtypes and types
     public function subtypes()
     {
-        return $this->hasManyThrough(Subtype::class, ProductType::class, 'product_id', 'id', 'id', 'subtype_id');
+        return $this->hasManyThrough(Subtype::class, ProductCategories::class, 'product_id', 'id', 'id', 'subtype_id');
     }
     public function types()
     {
-        return $this->hasManyThrough(Type::class, ProductType::class, 'product_id', 'id', 'id', 'type_id');
+        return $this->hasManyThrough(Type::class, ProductCategories::class, 'product_id', 'id', 'id', 'type_id');
     }
 }

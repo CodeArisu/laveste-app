@@ -1,21 +1,28 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Products;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ProductType extends Model
+class ProductCategories extends Model
 {   
     use HasFactory;
 
-    protected $table = 'product_types';
-
+    protected $table = 'product_categories';
     protected $fillable = [
         'product_id',
         'type_id',
         'subtype_id',
     ];
+
+    protected function casts()
+    {
+        return [
+            'type_id' => 'integer:nullable',
+            'subtype_id' => 'integer:nullable',
+        ];
+    }
     
     public function product()
     {

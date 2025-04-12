@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->foreign('customer_rented_id')
             ->references('id')
-            ->on('customer_rented')
+            ->on('customer_rents')
             ->onDelete('cascade');
 
             $table->foreign('payment_method_id')

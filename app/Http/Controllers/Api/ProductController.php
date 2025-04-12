@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\api\ApiBaseController;
-use App\Http\Requests\ProductRequest;
-use App\Http\Resources\ProductResource;
-use App\Models\Product;
+use App\Http\{Requests\ProductRequest, Resources\ProductResource};
+use App\Models\Products\Product;
 use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;   
 
@@ -21,7 +20,7 @@ class ProductController extends ApiBaseController
     public function store(ProductRequest $request) : JsonResponse
     {   
         $createdProduct = $this->productService->requestCreateProduct($request);
-        return $this->sendResponse($createdProduct['message'], $createdProduct['product']);
+        return $this->sendResponse($createdProduct['message'], $createdProduct['data']);
     }
 
     public function show(Product $product)
@@ -34,12 +33,12 @@ class ProductController extends ApiBaseController
     public function update(ProductRequest $request, Product $product) : JsonResponse
     {   
         $updatedProduct = $this->productService->requestUpdateProduct($request, $product);
-        return $this->sendResponse($updatedProduct['message'], $updatedProduct['product']);
+        return $this->sendResponse($updatedProduct['message'], $updatedProduct['data']);
     }
 
     public function destroy(Product $product)
     {
         $deletedProduct = $this->productService->requestDeleteProduct($product);
-        return $this->sendResponse($deletedProduct['message'], $deletedProduct['product']);
+        return $this->sendResponse($deletedProduct['message'], $deletedProduct['deleted']);
     }
 }

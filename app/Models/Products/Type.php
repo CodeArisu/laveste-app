@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Products;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Type extends Model
 {   
-    protected $table = 'types';
     use HasFactory;
 
+    protected $table = 'types';
     protected $fillable = [
         'type_name',
     ];
 
-    public function productTypes()
+    public function productCategories()
     {
-        return $this->hasOne(ProductType::class, 'type_id');
+        return $this->hasOne(ProductCategories::class, 'type_id');
     }
 }
