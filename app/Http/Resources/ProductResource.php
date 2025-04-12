@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
 {   
+    public static $wrap = 'data';
     /**
      * Transform the resource into an array.
      *`
@@ -19,7 +20,7 @@ class ProductResource extends JsonResource
             'original_price' => $this->original_price,
             'description' => $this->description,
             'supplier' => $this->supplier ? new SupplierResource($this->whenLoaded('supplier')) : null,
-            'type' => TypeResource::collection($this->whenLoaded('types')) ?? null, 
+            'type' => $this->types->first() ? new TypeResource($this->whenLoaded('types')->first()) : null, 
             'subtypes' => SubtypeResource::collection($this->whenLoaded('subtypes')) ?? null,
             'added_at' => $this->created_at,
         ];

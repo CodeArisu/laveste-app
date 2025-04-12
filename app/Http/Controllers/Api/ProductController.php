@@ -26,7 +26,7 @@ class ProductController extends ApiBaseController
     public function show(Product $product)
     {   
         // Eager load the relationships to avoid N+1 query problem
-        $products = $product->with(['subtypes', 'type', 'supplier'])->findOrFail($product);
+        $products = $product->with(['subtypes', 'types', 'supplier'])->find($product);
         return ProductResource::collection($products);
     }
 
