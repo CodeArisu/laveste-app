@@ -19,7 +19,7 @@ return new class extends Migration
 
         Schema::create('display_products', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->string('user_id')->nullable();
             $table->unsignedBigInteger('garment_id');
             $table->unsignedBigInteger('product_status_id');
 

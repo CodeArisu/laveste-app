@@ -23,6 +23,23 @@ trait ResponsesTrait
         ], StatusCode::SUCCESS->value);
     }
 
+    /**
+     * @param array $params
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function userResponse(array $params)
+    {
+        return response()->json([
+            'message' => $params['message'],
+            'access_token' => $params['token'] ?? null,
+            'token_type' => !empty($params['token']) ? 'bearer' : 'revoked'
+        ], StatusCode::SUCCESS->value);
+    }
+    public function userSuccessResponse($message, $user)
+    {
+        return ['token' => $user['authToken'], 'message' => $message];
+    }
+
     protected function successResponse($message, $data) : array 
     {   
         Log::info($message);
