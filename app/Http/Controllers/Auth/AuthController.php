@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\AuthRequest;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class AuthController
+class AuthController extends ApiBaseController
 {   
     public function __construct(protected AuthService $authService){}
 
     public function registerUser(AuthRequest $request)
     {   
         $user = $this->authService->registerRequest($request);
-        return $this->authService->userResponse(["token" => $user['token'], 'message' => $user['message']]);
+        return $this->userResponse(['message' => $user['message'], 'token' => $user['token']]);
     }
         
     public function loginUser(AuthRequest $request) 
     {    
         $user = $this->authService->loginRequest($request);
-        return $this->authService->userResponse(["token" => $user['token'], 'message' => $user['message']]);
+        return $this->userResponse(['message' => $user['message'], 'token' => $user['token']]);
     }
 
     public function logoutUser(Request $request) : JsonResponse

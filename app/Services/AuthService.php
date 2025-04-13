@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Enum\{StatusCode, UserRoles};
-use App\Exceptions\InternalException;
+use App\Exceptions\InvalidUserException;
+use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\AuthRequest;
 use App\Models\{Role as ModelsRole, User};
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\{Auth, Hash};
 
-class AuthService
+class AuthService extends ApiBaseController
 {      
     /**
      * @param AuthRequest $request
@@ -18,11 +19,12 @@ class AuthService
     public function registerRequest(AuthRequest $request)
     {   
         try {
-            $user =  $this->registerUser($request->validated());
-            return ['token' => $user['authToken'], 'message' => 'User signed up'];
+            return DB::transaction(function () use ($request) {
+                $user =  $this->registerUser($request);
+                return ['token' => $user['authToken'], 'message' => 'User registered'];
+            });
         } catch (\Exception $e) {
-            Log::error("User registration failed: " . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return $this->exceptionResponse($e, 'Failed to register user');
         }
     }
 
@@ -36,8 +38,7 @@ class AuthService
             $user = $this->loginUser($request);
             return ['token' => $user['authToken'], 'message' => 'User signed in'];
         } catch (\Exception $e) {
-            Log::error("User authentication failed: " . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return $this->exceptionResponse($e, 'Failed to login user');
         }
     }
 
@@ -54,8 +55,7 @@ class AuthService
             }
             return ['token' => null, 'message' => 'Try again later'];
         } catch (\Exception $e) {
-            Log::error("User logout failed: " . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            return $this->exceptionResponse($e, 'Failed to logout user');
         }
     }
 
@@ -69,18 +69,10 @@ class AuthService
             $this->registerRoles();
         }
        
-        $user = $this->handleRegister($request);
+        $user = $this->handleRegister($request->validated());
 
-        // $user = User::where('email', $request['email'])
-        // ->where('email', $request['email'])
-        // ->where($user->role, '!=', UserRoles::EMPLOYEE->value)
-        // ->firstOrFail();
-
-        // if ($user->exists()) {
-        //     return response()->json([
-        //         'message' => 'User already exists'
-        //     ], StatusCode::INVALID->value);
-        // }
+        // checks if the user already exists
+        // function for handling user exists
     
         $authToken = $user->createToken('auth_token')->plainTextToken;
 
@@ -108,9 +100,8 @@ class AuthService
     private function loginUser($request)
     {
         if (!Auth::attempt($request->safe()->only('email', 'password'), $request->boolean('remember'))) {
-            return response()->json([
-                'message' => 'Invalid login details'
-            ], StatusCode::INVALID->value);
+            throw InvalidUserException::InvalidUserCredentials('Invalid user credentials');
+            // send message
         }
 
         $user = User::where('email', $request->email)->firstOrFail();

@@ -8,7 +8,7 @@ enum RentStatus : int
     case RETURNED = 2;
     case MISSING = 3;
     case UNPAID = 4;
-    case CANCELLED = 5; // or archived
+    case CANCELLED = 5;
     
     public function label(): string
     {
