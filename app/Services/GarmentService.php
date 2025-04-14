@@ -5,7 +5,8 @@ namespace App\Services;
 use App\Enum\ConditionStatus;
 use App\Exceptions\InternalException;
 use App\Http\Requests\GarmentRequest;
-use App\Models\{Products\Product, Condition, Size, Garment};
+use App\Models\Products\Product;
+use App\Models\Garments\{Condition, Size, Garment};
 use Illuminate\Support\Facades\{DB, Log};
 
 class GarmentService
@@ -29,9 +30,7 @@ class GarmentService
                 return ['garment' => $garments, 'message' => 'Garment added successfully'];
             });
         } catch (\Exception $e) {
-            Log::error("Garment creation failed: " . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
-            return ['garment' => $garments, 'message' => 'Failed to add garment'];
+            dd($e);
         }
     }
 
@@ -40,7 +39,7 @@ class GarmentService
         try {
             return DB::transaction(function () use ($request, $garment) {
                 $updatedGarments  = $this->updateGarment($request, $garment);
-
+                
                 $this->validateUpdateResults($updatedGarments);
 
                 return [
@@ -49,12 +48,7 @@ class GarmentService
                 ];
             });
         } catch (\Exception $e) {
-            Log::error("Product update failed - ID: {$garment->id}", [
-                'error' => $e->getMessage(),
-                'request' => $request->validated(),
-            ]);
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
-            return ['garment' => $garment, 'message' => 'Failed to update garment'];
+            dd($e->getMessage(), $e);
         }
     }
 
@@ -62,6 +56,7 @@ class GarmentService
     {
         $garmentName = $garment->product->product_name;
         try {
+            $garment->size->deleteOrFail();
             $garment->deleteOrFail();
 
             return [
@@ -69,11 +64,7 @@ class GarmentService
                 'garment' => $garmentName
             ];
         } catch (\Exception $e) {
-            Log::error("Product delete failed - ID: {$garment->id}", [
-                'error' => $e->getMessage()
-            ]);
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
-            return ['garment' => $garment, 'message' => 'Failed to delete garment'];
+            dd($e);
         }
     }
 
@@ -93,7 +84,7 @@ class GarmentService
         ]));
 
         $garmentCondition = $this->checkForConditionEntry($validated);
-    
+
         // creates new garment
         $garment = $this->handleGarment($validated->only([
             'product_id', 
@@ -125,7 +116,6 @@ class GarmentService
 
         $garment = $this->updateOrKeepGarment($garment, array_merge(
             $validated->only([
-                'product_id', 
                 'additional_description', 
                 'poster', 
                 'rent_price',
@@ -142,7 +132,7 @@ class GarmentService
     private function updateOrKeepGarment(?Garment $garment, array $garmentData) : Garment
     {   
         if (!$garment || $this->garmentDataChange($garment, $garmentData)) {
-            return $this->handleUpdateGarment($garmentData);
+            return $this->handleUpdateGarment($garmentData, $garment);
         }
 
         return $garment;
@@ -150,7 +140,7 @@ class GarmentService
 
     private function garmentDataChange(Garment $garment, array $garmentData) : bool
     {   
-        return $garment->product_id !== $garmentData['product_id'] || $garment->additional_description !== $garmentData['additional_description'] || 
+        return  $garment->additional_description !== $garmentData['additional_description'] || 
                 $garment->poster !== $garmentData['poster'] || $garment->renting_price !== $garmentData['renting_price'] || 
                 $garment->size_id !== $garmentData['size_id'] || $garment->condition !== $garmentData['condition'];
     }
@@ -185,18 +175,18 @@ class GarmentService
     }
 
     private function getProduct($garmentData) : Product
-    {
-        $product = Product::findOrFail($garmentData['product_id']);
+    {   
+        $product = Product::findOrFail($garmentData['product_id']) ?? Garment::where('product_id', $garmentData['product_id'])->findOrFail();
         if (!$product) {
             throw new \Exception("Invalid product_id: {$garmentData['product_id']}");
         }
         return $product;
     }
 
-    private function handleUpdateGarment(array $garmentData) : Garment
+    private function handleUpdateGarment(array $garmentData, $garment) : Garment
     {   
-        return Garment::updateOrCreate([
-                'product_id' => $garmentData['product_id'],
+        $garment = Garment::where('id', $garment->id)->first();
+        $garment->update([
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
                 'poster' => $garmentData['poster'],
@@ -204,6 +194,7 @@ class GarmentService
                 'condition_id' => $garmentData['condition_id']
             ]
         );
+        return $garment;
     }
 
     private function handleSize(array $sizeData) : Size
