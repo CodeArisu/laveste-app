@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\GarmentRequest;
 use App\Http\Resources\GarmentResource;
-use App\Models\Garment;
+use App\Models\Garments\Garment;
 use App\Services\GarmentService;
 
 class GarmentController extends ApiBaseController
@@ -28,7 +28,7 @@ class GarmentController extends ApiBaseController
     public function update(GarmentRequest $request, Garment $garment)
     {
         $updatedGarment = $this->garmentService->requestUpdateGarment($request, $garment);
-        $this->sendResponse($updatedGarment['message'], $updatedGarment['garment']);
+        return $this->sendResponse($updatedGarment['message'], $updatedGarment['garment']);
     }
 
     public function destroy(Garment $garment)

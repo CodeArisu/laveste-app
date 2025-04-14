@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Transactions;
+namespace App\Models\Statuses;
 
 use Illuminate\Database\Eloquent\Model;
 

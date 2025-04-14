@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\StatusCode;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class GarmentRequest extends FormRequest
 {
@@ -22,7 +25,7 @@ class GarmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required|integer',
+            'product_id' => 'integer',
             'additional_description' => 'required|string|max:255',
             'rent_price' => 'required|numeric',
             'poster' => 'required|unique:garments,poster',
@@ -33,5 +36,17 @@ class GarmentRequest extends FormRequest
 
             'condition_id' => 'nullable|integer'
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+
+        $response = response()->json([
+            'message' => 'Invalid data request',
+            'details' => $errors->messages(),
+        ], StatusCode::INVALID->value);
+
+        throw new HttpResponseException($response);
     }
 }
