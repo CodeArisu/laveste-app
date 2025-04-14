@@ -2,13 +2,15 @@
 
 namespace App\Models\Products;
 
-use App\Models\Garment;
+use App\Models\Garments\Garment;
+use Illuminate\Database\Eloquent\Concerns\HasUniqueStringIds;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUniqueStringIds;
     
     protected $table = 'products';
     protected $fillable = [
@@ -54,5 +56,15 @@ class Product extends Model
     public function types()
     {
         return $this->hasManyThrough(Type::class, ProductCategories::class, 'product_id', 'id', 'id', 'type_id');
+    }
+
+    protected function isValidUniqueId($value): bool
+    {
+        return true;
+    }
+
+    public function newUniqueId()
+    {
+        return 'PRD-' . Str::ulid();
     }
 }

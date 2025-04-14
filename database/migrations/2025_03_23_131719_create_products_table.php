@@ -33,7 +33,7 @@ return new class extends Migration
         });
 
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('product_name', 50);
 
             $table->unsignedBigInteger('supplier_id')->nullable();
@@ -62,7 +62,7 @@ return new class extends Migration
             ->on('subtypes')
             ->onDelete('cascade');
 
-            $table->unsignedBigInteger('product_id');
+            $table->string('product_id');
             $table->foreign('product_id')
             ->references('id')
             ->on('products')
