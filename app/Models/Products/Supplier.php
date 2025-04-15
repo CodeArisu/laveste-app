@@ -20,6 +20,16 @@ class Supplier extends Model
         'contact'
     ];
 
+    protected function casts()
+    {
+        return [
+            'supplier_name' => 'string',
+            'company_name' => 'string:nullable',
+            'address' => 'string:nullable',
+            'contact' => 'string', // ?
+        ];
+    }
+
     public function products()
     {
         return $this->hasMany(Product::class);

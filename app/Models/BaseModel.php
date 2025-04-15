@@ -14,7 +14,14 @@ class BaseModel extends Model
 
     protected function isValidUniqueId($value): bool
     {
-        return true;
+        try {
+
+            // some checking
+            return true;
+        } catch (\Exception $e)
+        {
+            return false;
+        }
     }
 
     public function newUniqueId()

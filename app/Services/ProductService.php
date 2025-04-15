@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Http\Requests\ProductRequest;
 use App\Models\Products\{Product, ProductCategories, Supplier, Type, Subtype};
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\{DB, Log};
+use Illuminate\Support\Facades\DB;
 
 class ProductService extends BaseServicesClass
 {
@@ -203,6 +203,7 @@ class ProductService extends BaseServicesClass
             'original_price' => $productData['original_price'],
             'description' => $productData['description'],
             'supplier_id' => $relations['supplier_id'],
+            'updated_at' => now()
         ]);
 
         return $product->fresh();
@@ -248,6 +249,36 @@ class ProductService extends BaseServicesClass
         // Normalize subtypes to array
         $subtypes = is_array($typeData['subtype']) ? $typeData['subtype'] : [$typeData['subtype']];
 
+        // Get existing categories and new subtype to supply
+        $existingData = $this->getExistingCategories($product, $subtypes);
+
+        $this->handleProductCategoryUpdate($product, ['existingData' => $existingData, 'mainType' => $mainType]);
+
+        // Update type for all remaining categories (in case main type changed)
+        if ($existingData['existingCategories']->isNotEmpty()) {
+            $product
+                ->productCategories()
+                ->whereIn('subtype_id', Subtype::whereIn('subtype_name', $subtypes)->pluck('id'))
+                ->update(['type_id' => $mainType->id]);
+        }
+
+        // Return the updated product categories
+        return $product
+            ->productCategories()
+            ->with(['type', 'subtype'])
+            ->whereIn('subtype_id', Subtype::whereIn('subtype_name', $subtypes)->pluck('id'))
+            ->get()
+            ->toArray();
+    }
+
+    /**
+     * get existing categories
+     * @param Product $product, 
+     * @param $subtypes
+     * @return array
+     */
+    private function getExistingCategories($product, $subtypes)
+    {
         // Get existing product categories for this product
         $existingCategories = $product
             ->productCategories()
@@ -262,43 +293,40 @@ class ProductService extends BaseServicesClass
 
         // Determine which subtypes need to be removed (not in the new list but exist in DB)
         $subtypesToRemove = array_diff($existingSubtypeNames, $subtypes);
-
+        
         // Remove obsolete categories
         if (!empty($subtypesToRemove)) {
             $subtypeIdsToRemove = Subtype::whereIn('subtype_name', $subtypesToRemove)->pluck('id');
             $product->productCategories()->whereIn('subtype_id', $subtypeIdsToRemove)->delete();
         }
 
+        return ['subtypesToAdd' => $subtypesToAdd, 'existingCategories' => $existingCategories];
+    }
+    
+    /**
+     * get existing categories
+     * @param Product $product, 
+     * @param mixed|array $attributes 
+     */
+    private function handleProductCategoryUpdate($product, array $attribute) : void
+    {
         // Add new categories
-        foreach ($subtypesToAdd as $subtypeName) {
+        foreach ($attribute['existingData']['subtypesToAdd'] as $subtypeName) {
             $subType = Subtype::firstOrCreate(['subtype_name' => $subtypeName]);
 
             // Check if this combination already exists to avoid duplicates
-            $exists = $product->productCategories()->where('type_id', $mainType->id)->where('subtype_id', $subType->id)->exists();
+            $exists = $product->productCategories()->where('type_id', $attribute['mainType']->id)->where('subtype_id', $subType->id)->exists();
 
             if (!$exists) {
                 $product->productCategories()->create([
-                    'type_id' => $mainType->id,
+                    'type_id' => $attribute['mainType']->id,
                     'subtype_id' => $subType->id,
+                    'updated_at' => now()
                 ]);
             }
-        }
 
-        // Update type for all remaining categories (in case main type changed)
-        if ($existingCategories->isNotEmpty()) {
-            $product
-                ->productCategories()
-                ->whereIn('subtype_id', Subtype::whereIn('subtype_name', $subtypes)->pluck('id'))
-                ->update(['type_id' => $mainType->id]);
+            return;
         }
-
-        // Return the updated product categories
-        return $product
-            ->productCategories()
-            ->with(['type', 'subtype'])
-            ->whereIn('subtype_id', Subtype::whereIn('subtype_name', $subtypes)->pluck('id'))
-            ->get()
-            ->toArray();
     }
 
     /**

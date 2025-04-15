@@ -26,9 +26,9 @@ class ProductRequest extends FormRequest
             'original_price' => 'required|numeric',
             'description' => 'nullable|max:255',
 
-            'supplier_name' => 'nullable|string|max:65',
+            'supplier_name' => 'required|string|max:65',
             'company_name' => 'nullable|string|max:65',
-            'address' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
             'contact' => 'required|integer|digits:10',
 
             'type' => 'required|string',

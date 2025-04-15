@@ -3,16 +3,14 @@
 namespace App\Services;
 
 use App\Enum\ProductStatus;
-use App\Exceptions\InternalException;
 use App\Http\Requests\GarmentProductRequest;
-use App\Models\{DisplayProduct, ProductStatus as ModelProductStatus};
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Models\{Catalog, Statuses\DisplayStatus};
+use Illuminate\Support\Facades\{DB, Log};
 
-class DisplayService
-{   
+class CatalogService
+{
     public function requestDisplayGarment(GarmentProductRequest $request)
-    {   
+    {
         try {
             return DB::transaction(function () use ($request) {
                 $display = $this->createDisplayGarment($request);
@@ -24,8 +22,7 @@ class DisplayService
                 return ['display' => $display, 'message' => 'Added to display successfully'];
             });
         } catch (\Exception $e) {
-            Log::error("Display creation failed: " . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
+            Log::error('Display creation failed: ' . $e->getMessage());
             return ['display' => $display, 'message' => 'Failed to add to Display'];
         }
     }
@@ -34,45 +31,42 @@ class DisplayService
     {
         $validated = $request->safe();
 
-        if(!ModelProductStatus::exists()) {
+        if (!DisplayStatus::exists()) {
             $this->generateStatus();
         }
 
-        $display = $this->handleDisplayGarment(
-            $validated->only(['user_id', 'garment_id']), 
-            ['product_status_id' => ProductStatus::UNAVAILABLE->value]
-        );
+        $display = $this->handleDisplayGarment($validated->only(['garment_id']), [
+            'user_id' => $request->user()->id,
+            'product_status_id' => ProductStatus::UNAVAILABLE->value,
+        ]);
 
         return compact('display');
     }
 
-    private function generateStatus() : void
+    private function generateStatus(): void
     {
         // get all existing conditions
-        $existingConditions = ModelProductStatus::value('status_name')->toArray();
-        $allConditions = array_map( fn($condition) => $condition
-            ->label(), 
-            ProductStatus::cases()
-        );
+        $existingConditions = DisplayStatus::value('status_name')->toArray();
+        $allConditions = array_map(fn($condition) => $condition->label(), ProductStatus::cases());
 
         // counts the difference between existing and all conditions
         if (count(array_diff($allConditions, $existingConditions)) > 0) {
             foreach (ProductStatus::cases() as $condition) {
-                ModelProductStatus::firstOrCreate([
-                    'condition' => $condition->label()
+                DisplayStatus::firstOrCreate([
+                    'condition' => $condition->label(),
                 ]);
-            }   
+            }
         }
 
         return;
     }
 
-    private function handleDisplayGarment(array $data, $relations) : DisplayProduct
+    private function handleDisplayGarment(array $data, $relations): Catalog
     {
-        return DisplayProduct::create([
-            'user_id' => $data['user_id'],
+        return Catalog::create([
+            'user_id' => $relations['user_id'],
             'garment_id' => $data['garment_id'],
-            'product_status_id' => $relations['product_status_id']
+            'product_status_id' => $relations['product_status_id'],
         ]);
     }
 }

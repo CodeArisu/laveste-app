@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('poster');
             $table->longText('additional_description')->nullable();
             $table->unsignedBigInteger('condition_id')->default(ConditionStatus::OK->value);
-            $table->unsignedBigInteger('size_id');
+            $table->unsignedBigInteger('size_id')->nullable();
             $table->timestamps();
 
             $table->foreign('product_id')

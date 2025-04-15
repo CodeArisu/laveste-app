@@ -10,6 +10,7 @@ class Subtype extends Model
     use HasFactory;
 
     protected $table = 'subtypes';
+    
     protected $fillable = [
         'subtype_name'
     ];

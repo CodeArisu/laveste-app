@@ -6,21 +6,21 @@ use App\Enum\{StatusCode, UserRoles};
 use App\Exceptions\InvalidUserException;
 use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\AuthRequest;
-use App\Models\{Role as ModelsRole, User};
+use App\Models\Auth\{Role, User};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\{Auth, Hash};
 
 class AuthService extends ApiBaseController
-{      
+{
     /**
      * @param AuthRequest $request
      * @return array
      */
     public function registerRequest(AuthRequest $request)
-    {   
+    {
         try {
             return DB::transaction(function () use ($request) {
-                $user =  $this->registerUser($request);
+                $user = $this->registerUser($request);
                 return ['token' => $user['authToken'], 'message' => 'User registered'];
             });
         } catch (\Exception $e) {
@@ -33,7 +33,7 @@ class AuthService extends ApiBaseController
      * @return array
      */
     public function loginRequest(AuthRequest $request)
-    {   
+    {
         try {
             $user = $this->loginUser($request);
             return ['token' => $user['authToken'], 'message' => 'User signed in'];
@@ -47,7 +47,7 @@ class AuthService extends ApiBaseController
      * @return array
      */
     public function logoutRequest($request)
-    {   
+    {
         try {
             if ($request->user()) {
                 $request->user()->currentAccessToken()->delete();
@@ -64,16 +64,16 @@ class AuthService extends ApiBaseController
      * @return array
      */
     private function registerUser($request)
-    {   
-        if (!ModelsRole::exists()) {
+    {
+        if (!Role::exists()) {
             $this->registerRoles();
         }
-       
+
         $user = $this->handleRegister($request->validated());
 
         // checks if the user already exists
         // function for handling user exists
-    
+
         $authToken = $user->createToken('auth_token')->plainTextToken;
 
         return compact('user', 'authToken');
@@ -84,13 +84,13 @@ class AuthService extends ApiBaseController
      * @return array
      */
     private function handleRegister($request)
-    {   
+    {
         return User::firstOrCreate([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
             'role_id' => UserRoles::MANAGER->value,
-            'user_details_id' => $request['user_details_id'] ?? null
+            'user_details_id' => $request['user_details_id'] ?? null,
         ]);
     }
 
@@ -113,14 +113,14 @@ class AuthService extends ApiBaseController
     /**
      * @param void creates new roles enums exists
      */
-    private function registerRoles() : void
-    {   
-        $existingRoles = ModelsRole::pluck('role_name')->toArray();
-        $allRoles = array_map( fn($role) => $role->label(), UserRoles::cases());
+    private function registerRoles(): void
+    {
+        $existingRoles = Role::pluck('role_name')->toArray();
+        $allRoles = array_map(fn($role) => $role->label(), UserRoles::cases());
 
         if (count(array_diff($allRoles, $existingRoles))) {
             foreach (UserRoles::cases() as $role) {
-                ModelsRole::firstOrCreate(['role_name' => $role->label()]);
+                Role::firstOrCreate(['role_name' => $role->label()]);
             }
         }
     }
@@ -131,10 +131,13 @@ class AuthService extends ApiBaseController
      */
     public function userResponse(array $params)
     {
-        return response()->json([
-            'message' => $params['message'],
-            'access_token' => $params['token'] ?? null,
-            'token_type' => !empty($params['token']) ? 'bearer' : 'revoked'
-        ], StatusCode::SUCCESS->value);
+        return response()->json(
+            [
+                'message' => $params['message'],
+                'access_token' => $params['token'] ?? null,
+                'token_type' => !empty($params['token']) ? 'bearer' : 'revoked',
+            ],
+            StatusCode::SUCCESS->value,
+        );
     }
 }

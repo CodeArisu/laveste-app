@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enum\ConditionStatus;
-use App\Exceptions\InternalException;
 use App\Http\Requests\GarmentRequest;
 use App\Models\Products\Product;
 use App\Models\Garments\{Condition, Size, Garment};
@@ -101,7 +100,7 @@ class GarmentService
     }
 
     private function updateGarment(GarmentRequest $request, Garment $garment) : array
-    {
+    {   
         $validated = $request->safe();
 
         $size = $this->updateOrKeepSize($garment->size, 
@@ -169,7 +168,7 @@ class GarmentService
                 'additional_description' => $garmentData['additional_description'],
                 'poster' => $garmentData['poster'],
                 'size_id' => $relations['size_id'],
-                'condition_id' => $relations['condition_id']
+                'condition_id' => $relations['condition_id'],
             ]
         );
     }
@@ -184,17 +183,33 @@ class GarmentService
     }
 
     private function handleUpdateGarment(array $garmentData, $garment) : Garment
-    {   
-        $garment = Garment::where('id', $garment->id)->first();
+    {
+        $oldSizeId = $garment->size_id;
         $garment->update([
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
                 'poster' => $garmentData['poster'],
                 'size_id' => $garmentData['size_id'],
-                'condition_id' => $garmentData['condition_id']
+                'condition_id' => $garmentData['condition_id'],
+                'updated_at' => now()
             ]
         );
+        $this->deleteOldSize($oldSizeId, $garmentData);
         return $garment;
+    }
+
+    private function deleteOldSize($oldSizeId, $garmentData)
+    {
+        if ($oldSizeId !== $garmentData['size_id']) {
+            // finds the size added if exists
+            $sizeInUse = Garment::where('size_id', $oldSizeId)->exists();
+
+            // if the use data doesnt exists delete
+            if (!$sizeInUse)
+            {
+                Size::find($oldSizeId)->delete();
+            }
+        }
     }
 
     private function handleSize(array $sizeData) : Size
@@ -213,6 +228,7 @@ class GarmentService
                 'measurement' => $sizeData['measurement'],
                 'length' => $sizeData['length'],
                 'width' => $sizeData['width'],
+                'updated_at' => now()
             ]
         );
     }
