@@ -60,4 +60,5 @@ class ProductControllerTest extends TestCase
         $this->assertEquals($fakeResponse['message'], $responseData['message']);
         $this->assertEquals($fakeResponse['product'], $responseData['data']);
     }
+    
 }

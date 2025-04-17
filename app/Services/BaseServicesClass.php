@@ -8,4 +8,6 @@ use App\Traits\ResponsesTrait;
 abstract class BaseServicesClass 
 {
     use DoubleValidation, ResponsesTrait;
+
+    abstract function checkIfExists($request);
 }

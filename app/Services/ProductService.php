@@ -346,4 +346,9 @@ class ProductService extends BaseServicesClass
 
         return $currentMainType !== $typeData['type'] || $currentSubtypes !== $newSubtypes;
     }
+
+    private function checkIfExists($request)
+    {
+        return;
+    }
 }

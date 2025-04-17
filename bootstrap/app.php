@@ -1,8 +1,6 @@
 <?php
 
-use App\Enum\StatusCode;
-use App\Exceptions\InvalidUserException;
-use App\Http\Requests\AuthRequest;
+use App\Exceptions\InternalExceptions;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -19,11 +17,13 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render( function (InvalidUserException $e) {
+        $exceptions->render( function (InternalExceptions $e) {
+            $code = $e->getStatusCode();
             return response()->json([
                 'status' => 'error',
-                'code' => $e->getStatusCode(),
-                'message' => $e->getMessage()
+                'code' => $code->value,
+                'message' => $e->getMessage(),
+                'description' => $e->getDescription(),
             ], $e->getCode());
         });
     })->create();

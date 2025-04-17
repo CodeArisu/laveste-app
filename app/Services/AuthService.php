@@ -2,15 +2,19 @@
 
 namespace App\Services;
 
-use App\Enum\{StatusCode, UserRoles};
-use App\Exceptions\InvalidUserException;
-use App\Http\Controllers\api\ApiBaseController;
+use App\Enum\ResponseCode;
+use App\Enum\UserRoles;
+use App\Exceptions\AuthException;
 use App\Http\Requests\AuthRequest;
-use App\Models\Auth\{Role, User};
+use App\Models\Auth\User;
+use App\Models\Auth\Role;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\{Auth, Hash};
 
-class AuthService extends ApiBaseController
+class AuthService
 {
     /**
      * @param AuthRequest $request
@@ -23,8 +27,17 @@ class AuthService extends ApiBaseController
                 $user = $this->registerUser($request);
                 return ['token' => $user['authToken'], 'message' => 'User registered'];
             });
-        } catch (\Exception $e) {
-            return $this->exceptionResponse($e, 'Failed to register user');
+        } catch (QueryException $e) {
+            // Database errors (e.g., unique constraint violations)
+            report($e); // Log to error tracking system
+            throw AuthException::userRegistrationFailed();
+        } catch (ModelNotFoundException $e) {
+            // Missing required relations (if your registration has dependencies)
+            throw AuthException::userRegistrationFailed();
+        } catch (\Throwable $e) {
+            // Catch-all for unexpected errors
+            report($e);
+            throw AuthException::userRegistrationFailed();
         }
     }
 
@@ -37,8 +50,13 @@ class AuthService extends ApiBaseController
         try {
             $user = $this->loginUser($request);
             return ['token' => $user['authToken'], 'message' => 'User signed in'];
-        } catch (\Exception $e) {
-            return $this->exceptionResponse($e, 'Failed to login user');
+        }
+        catch (AuthException $e) {
+            // Re-throw Auth-specific exceptions (invalid credentials, locked account, etc.)
+            throw $e;
+        } catch (ModelNotFoundException $e) {
+            // User not found (though loginUser should prevent this)
+            throw AuthException::userNotFound();
         }
     }
 
@@ -49,13 +67,18 @@ class AuthService extends ApiBaseController
     public function logoutRequest($request)
     {
         try {
-            if ($request->user()) {
-                $request->user()->currentAccessToken()->delete();
-                return ['token' => null, 'message' => 'User signed out'];
+            if (!$request->user()) {
+                throw AuthException::unauthenticated('No authenticated user found');
             }
-            return ['token' => null, 'message' => 'Try again later'];
-        } catch (\Exception $e) {
-            return $this->exceptionResponse($e, 'Failed to logout user');
+            $request->user()->currentAccessToken()->delete();
+            return ['token' => null, 'message' => 'User signed out'];
+        } catch (AuthException $e) {
+            // Re-throw pre-formatted auth exceptions
+            throw $e;
+        } catch (\Throwable $e) {
+            // Log unexpected errors
+            report($e);
+            throw AuthException::logoutFailed('Could not complete logout');
         }
     }
 
@@ -69,14 +92,29 @@ class AuthService extends ApiBaseController
             $this->registerRoles();
         }
 
-        $user = $this->handleRegister($request->validated());
+        if (User::where('email', $request->safe()->only(['email']))->exists()) {
+            throw AuthException::userEmailAlreadyTaken();
+        }
 
-        // checks if the user already exists
-        // function for handling user exists
+        $this->checkIfExists($request);
+
+        $user = $this->handleRegister($request->validated());
 
         $authToken = $user->createToken('auth_token')->plainTextToken;
 
         return compact('user', 'authToken');
+    }
+
+    // checks if the function does exists
+    private function checkIfExists($request)
+    {
+        $exist = User::where('email', $request->email)
+        ->orWhere('name', $request->name)
+        ->exists();
+
+        if ($exist) {
+            throw AuthException::userAlreadyRegistered();
+        }
     }
 
     /**
@@ -98,14 +136,14 @@ class AuthService extends ApiBaseController
      * @param Request creates new roles enums exists
      */
     private function loginUser($request)
-    {
-        if (!Auth::attempt($request->safe()->only('email', 'password'), $request->boolean('remember'))) {
-            throw InvalidUserException::InvalidUserCredentials('Invalid user credentials');
-            // send message
+    {   
+        if (!Auth::attempt($request->safe()->only(['email', 'password']))) {
+            Log::warning('Invalid Credentials');
+            throw AuthException::invalidUserCredentials();
         }
-
+        
         $user = User::where('email', $request->email)->firstOrFail();
-        $authToken = $user->createToken('auth_token')->plainTextToken;
+        $authToken = $user->createToken('auth_token', ['*'], now()->addDays(7))->plainTextToken;
 
         return compact('user', 'authToken');
     }
@@ -130,14 +168,15 @@ class AuthService extends ApiBaseController
      * @return \Illuminate\Http\JsonResponse
      */
     public function userResponse(array $params)
-    {
-        return response()->json(
-            [
+    {   
+        Log::info('Status: Success \n' .  $params['message']);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
                 'message' => $params['message'],
                 'access_token' => $params['token'] ?? null,
                 'token_type' => !empty($params['token']) ? 'bearer' : 'revoked',
             ],
-            StatusCode::SUCCESS->value,
-        );
+        ], ResponseCode::OK->value);
     }
 }
