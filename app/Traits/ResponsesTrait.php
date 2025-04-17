@@ -7,31 +7,29 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 trait ResponsesTrait
-{
-    protected function sendResponse($message, $data) : JsonResponse
+{   
+    protected function sendResponse(
+        $data,
+        string $message
+        ) : JsonResponse
     {   
         if (empty($data)) {
             return response()->json([
-                'Failed' => $message,
-                'Response' => ResponseCode::ERROR->value
+                'status' => 'failed',
+                'data' => [
+                    'message' => $message ?? $this->message,
+                    'code' => ResponseCode::ERROR->value
+                ] 
             ], ResponseCode::ERROR->value);
         }
 
         return response()->json([
-            'Success' => $message,
-            'Response' => ResponseCode::OK->value
+            'status' => 'success',
+            'data' => [
+                'data' => $data['product']->id ?? null,
+                'message' => $message,
+                'Response' => ResponseCode::OK->value
+            ],
         ], ResponseCode::OK->value);
-    }
-
-    protected function successResponse($message, $data) : array 
-    {   
-        Log::info($message);
-        return ['message' => $message, 'data' => $data];
-    }
-
-    protected function successDeleteResponse($message, $isDeleted = true)
-    {   
-        Log::info($message);
-        return ['message' => $message, 'deleted' => $isDeleted];
     }
 }

@@ -40,12 +40,6 @@ enum StatusCode : int
         return $translations;
     }
 
-    // cases for authentication
-
-    case UserRegisteredSuccessfully = 9_000;
-    case UserLoggedInSuccessfully = 9_001;
-    case UserLoggedOffSuccessfully = 9_002;
-
     // error responses
     case UserIsAlreadyRegistered = 10_000;
     case InvalidUserCredential = 10_001;
@@ -58,14 +52,12 @@ enum StatusCode : int
     case Unauthenticated = 10_008;
     case LogoutFailed = 10_009;
 
-    // cases for products
-    // success responses
-    case ProductAddedSuccessfully = 11_000;
-    case ProductUpdatedSuccessfully = 11_001;
-    case ProductDeletedSuccessfully = 11_002;
-
-    // error responses
-    case NoProductFound = 12_000;
+    // product error responses
+    case ProductNotFound = 12_000;
     case ProductAlreadyAdded = 12_001;
     case ProductCannotBeAdded = 12_002;
+    case ProductCreateFailed = 12_003;
+    case ProductValidationFailed = 12_004;
+    case ProductUpdateFailed = 12_005;
+    case ProductDeleteFailed = 12_006;
 }

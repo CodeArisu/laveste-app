@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+use \RuntimeException;
+use App\Enum\ResponseCode;
+use App\Exceptions\ProductException;
 use App\Http\Requests\ProductRequest;
 use App\Models\Products\{Product, ProductCategories, Supplier, Type, Subtype};
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ProductService extends BaseServicesClass
 {
@@ -20,18 +26,33 @@ class ProductService extends BaseServicesClass
             return DB::transaction(function () use ($request) {
                 $products = $this->createProduct($request);
                 if (empty($products)) {
-                    throw new \RuntimeException('No products were created');
+                    throw ProductException::productNotFound();
                 }
                 // Validate all products were created successfully
                 foreach ($products as $product) {
                     if (!Product::exists()) {
-                        throw new \RuntimeException("Failed to create {$product}");
+                        throw ProductException::productCreateFailed();
                     }
                 }
-                return $this->successResponse('Product added successfully', $products);
+
+                return ['message' => 'Successfully created', 'data' => $products];
             });
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            report($e);
+            throw ProductException::productCreateFailed();
+        } catch (ModelNotFoundException $e) {
+            report($e);
+            throw ProductException::productNotFound();
+        } catch (QueryException $e) {
+            // Database query errors (constraint violations, etc.)
+            report($e);
+            throw ProductException::productNotFound();
+        } catch (ValidationException $e) {
+            // If any validation fails (though ProductRequest should handle most)
+            throw ProductException::productValidationFailed();
+        } catch (RuntimeException $e) {
+            // Your custom runtime exceptions
+            throw ProductException::productCreateFailed();
         }
     }
 
@@ -47,10 +68,24 @@ class ProductService extends BaseServicesClass
             return DB::transaction(function () use ($request, $product) {
                 $updatedProducts = $this->updateProduct($request, $product);
                 $this->validateUpdateResults($updatedProducts);
-                return $this->successResponse('Product updated successfully', $updatedProducts);
+                return ['message' => 'Successfully updated', 'data' => $updatedProducts];
             });
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            report($e);
+            throw ProductException::productUpdateFailed();
+        } catch (ModelNotFoundException $e) {
+            report($e);
+            throw ProductException::productNotFound();
+        } catch (QueryException $e) {
+            // Database query errors (constraint violations, etc.)
+            report($e);
+            throw ProductException::productNotFound();
+        } catch (ValidationException $e) {
+            // If any validation fails (though ProductRequest should handle most)
+            throw ProductException::productValidationFailed();
+        } catch (RuntimeException $e) {
+            // Your custom runtime exceptions
+            throw ProductException::productUpdateFailed();
         }
     }
 
@@ -64,9 +99,13 @@ class ProductService extends BaseServicesClass
         try {
             $product->productCategories()->delete();
             $product->deleteOrFail();
-            return $this->successDeleteResponse('Product deleted successfully');
+            return ['message' => 'Successfully deleted', 'data' => $product];
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            report($e);
+            throw ProductException::productDeleteFailed();
+        } catch (ModelNotFoundException $e) {
+            report($e);
+            throw ProductException::productNotFound();
         }
     }
 
@@ -89,7 +128,7 @@ class ProductService extends BaseServicesClass
 
         // categorize product types
         // if product type already exists, it will not create a new one
-        $productCategory = $this->handleProductType($validated->only(['type', 'subtype']), [
+        $this->handleProductType($validated->only(['type', 'subtype']), [
             'product_id' => $product->id,
         ]);
 
@@ -121,7 +160,7 @@ class ProductService extends BaseServicesClass
     private function handleProduct(array $productData, $relations): Product
     {
         // creates new product if not exists
-        return Product::create([
+        return Product::firstOrCreate([
             'product_name' => $productData['product_name'] ?? 'No Name',
             'supplier_id' => $relations['supplier_id'],
             'original_price' => $productData['original_price'],
@@ -345,10 +384,5 @@ class ProductService extends BaseServicesClass
         sort($newSubtypes);
 
         return $currentMainType !== $typeData['type'] || $currentSubtypes !== $newSubtypes;
-    }
-
-    private function checkIfExists($request)
-    {
-        return;
     }
 }

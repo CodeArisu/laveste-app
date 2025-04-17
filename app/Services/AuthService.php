@@ -10,6 +10,7 @@ use App\Models\Auth\User;
 use App\Models\Auth\Role;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\{Auth, Hash};
@@ -25,7 +26,10 @@ class AuthService
         try {
             return DB::transaction(function () use ($request) {
                 $user = $this->registerUser($request);
-                return ['token' => $user['authToken'], 'message' => 'User registered'];
+                return [
+                    'token' => $user['authToken'], 
+                    'message' => 'User registered'
+                ];
             });
         } catch (QueryException $e) {
             // Database errors (e.g., unique constraint violations)
@@ -49,7 +53,10 @@ class AuthService
     {
         try {
             $user = $this->loginUser($request);
-            return ['token' => $user['authToken'], 'message' => 'User signed in'];
+            return [
+                'token' => $user['authToken'], 
+                'message' => 'User signed in'
+            ];
         }
         catch (AuthException $e) {
             // Re-throw Auth-specific exceptions (invalid credentials, locked account, etc.)
@@ -105,7 +112,9 @@ class AuthService
         return compact('user', 'authToken');
     }
 
-    // checks if the function does exists
+    /**
+     * @param Request $request
+     */
     private function checkIfExists($request)
     {
         $exist = User::where('email', $request->email)
@@ -167,7 +176,7 @@ class AuthService
      * @param array $params
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userResponse(array $params)
+    public function userResponse(array $params) : JsonResponse
     {   
         Log::info('Status: Success \n' .  $params['message']);
         return response()->json([

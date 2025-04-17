@@ -12,7 +12,7 @@ class ExceptionTest extends TestCase
     /**
      * A basic feature test example.
      */
-    public function test_returns_a_successful_response(): void
+    public function test_returns_a_user_already_registered_exception(): void
     {
         $this->withoutExceptionHandling();
 
