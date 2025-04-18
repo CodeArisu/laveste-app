@@ -13,7 +13,7 @@
 
         @stack('styles')
 
-        @vite(['resources/js/app.js', 'resources/scss/app.scss'])
+        {{-- @vite(['resources/js/app.js', 'resources/scss/app.scss']) --}}
 
     </head>
 

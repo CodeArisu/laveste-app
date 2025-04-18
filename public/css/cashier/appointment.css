@@ -1,0 +1,132 @@
+/* Container of the whole side panel */
+.side-panel-container3 {
+    position: fixed;              /* Make it fixed on screen */
+    top: 0;                       /* Align to top */
+    right: 0;                     /* Align to right side */
+    width: 1000px;                /* Increase the width of the side panel */
+    height: 100vh;                /* Full viewport height */
+    background-color: #f9efd4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 2rem 3rem;           /* Increase padding */
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1); /* shadow to the left side now */
+    overflow-y: auto;            /* Scroll if content overflows */
+    z-index: 1000;               /* Stay on top if needed */
+}
+
+/* Main content container */
+.appointment-container3 {
+    width: 100%;
+    max-width: 800px;             /* Increase max width of the container */
+    padding: 1rem 1rem 2rem 1rem; /* Increase padding */
+    color: #933636;
+    overflow-y: auto;
+    margin-top: 1rem;
+}
+
+/* Page title */
+.page-title {
+    font-size: 2.5rem;            /* Increase font size */
+    font-weight: 400;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;        /* Increase margin bottom */
+    color: #933636;
+}
+
+/* Section headings */
+.section-title {
+    font-size: 1.5rem;            /* Increase font size */
+    margin-top: 2rem;
+    margin-bottom: 1rem;          /* Increase bottom margin */
+    border-bottom: 2px solid #933636; /* Thicker border */
+    padding-bottom: 0.25rem;
+    color: #933636;
+    font-weight: 300;
+}
+
+/* Labels */
+.form-label {
+    display: block;
+    margin: 1.5rem 0 1rem;         /* Increase margin */
+    color: #933636;
+    font-weight: normal;
+}
+
+/* Inputs (text and date) */
+.form-input {
+    width: 100%;
+    padding: 1rem;                /* Increase padding */
+    border: 1.5px solid #933636;
+    border-radius: 12px;
+    font-size: 1.2rem;             /* Increase font size */
+    font-family: 'Georgia', serif;
+    background-color: #f9efd4;
+    box-sizing: border-box;
+    outline: none;
+}
+
+/* Flex container for grouped inputs */
+.inline-inputs {
+    display: flex;
+    gap: 1.5rem;                  /* Increase gap between inputs */
+    margin-top: 1.5rem;           /* Increase margin */
+}
+
+/* Wrapper for individual inline input fields */
+.input-group {
+    flex: 1;
+}
+
+/* Row of buttons (back & next) */
+/* Remove default link styling for both buttons */
+a {
+    text-decoration: none; /* Ensure no underlining */
+}
+
+/* Back Button */
+.back-btn3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 3rem;           /* Increase padding */
+    font-size: 1.3rem;            /* Increase font size */
+    border: none;
+    border-radius: 50px;
+    background-color: #ffffff;
+    color: #000;
+    cursor: pointer;
+    font-weight: 200;
+    transition: all 0.3s ease;
+}
+
+/* Next Button */
+.next-btn3 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 3rem;           /* Increase padding */
+    font-size: 1.3rem;            /* Increase font size */
+    border: none;
+    border-radius: 50px;
+    background-color: #ffffff;
+    color: #000;
+    cursor: pointer;
+    font-weight: 200;
+    transition: all 0.3s ease;
+    height: 25px;
+}
+
+/* Hover effects for both buttons */
+.back-btn3:hover,
+.next-btn3:hover {
+    background-color: #933636;
+    color: #ffffff;
+}
+
+/* Button container */
+.button-row3 {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+}

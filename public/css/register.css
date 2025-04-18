@@ -1,0 +1,120 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #F8F1E6;
+    font-family: 'Ovo', serif;
+    margin: 0;
+}
+
+
+.container {
+    display: flex;
+    width: 1500px; 
+    background: #F8F1E6;
+    border-radius: 20px; 
+    overflow: hidden;
+    flex-direction: row;
+    padding: 60px; 
+}
+
+
+.form-container {
+    flex: 1;
+    padding: 60px; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%; 
+}
+
+
+h1 {
+    color: #973131;
+    font-size: 80px; 
+    margin-bottom: 20px; 
+    text-align: center;
+    font-weight: 400;
+}
+
+h2 {
+    font-size: 36px; 
+    color: #973131;
+    margin-bottom: 0px; 
+    text-align: left;
+    font-weight: lighter;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="password"] {
+    width: 100%; 
+    max-width: 900px; 
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px; 
+    border: 1px solid #D8B6A4; 
+    border-radius: 10px; 
+    background: #FDF7F2;
+    font-size: 22px; 
+    color: #57332E; 
+}
+
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="password"]:focus {
+    border: 1px solid #8B0000; 
+    outline: none; 
+}
+
+
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+input[type="password"]::placeholder{
+    color: #7A4A42;
+    font-size: 18px; 
+}
+
+
+input[type="submit"] {
+    width: 100%; 
+    max-width: 900px;
+    padding: 15px; 
+    background-color: #dbbcb7;
+    color: #973131;
+    border: 1px solid #973131; 
+    border-radius: 10px; 
+    font-size: 22px; 
+    cursor: pointer;
+    margin-top: 30px; 
+}
+
+
+input[type="submit"]:hover {
+    background-color: #b27f73; 
+}
+
+input[type="submit"]:hover {
+    background-color: #973131;
+    color: white;
+}
+
+
+
+.image-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px; 
+    max-width: 600px; 
+}
