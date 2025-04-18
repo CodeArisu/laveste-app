@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enum\StatusCode;
+use App\Enum\ResponseCode;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
@@ -45,7 +45,7 @@ class GarmentRequest extends FormRequest
         $response = response()->json([
             'message' => 'Invalid data request',
             'details' => $errors->messages(),
-        ], StatusCode::INVALID->value);
+        ], ResponseCode::INVALID->value);
 
         throw new HttpResponseException($response);
     }

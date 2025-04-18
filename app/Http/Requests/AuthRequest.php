@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\ResponseCode;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -49,5 +51,17 @@ class AuthRequest extends FormRequest
         }
         
         return request()->is('register') || request()->fullUrlIs('*/register');
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+
+        $response = response()->json([
+            'message' => 'Invalid data request',
+            'details' => $errors->messages(),
+        ], ResponseCode::INVALID->value);
+
+        throw new HttpResponseException($response);
     }
 }

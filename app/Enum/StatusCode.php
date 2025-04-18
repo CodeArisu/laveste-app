@@ -3,15 +3,61 @@
 namespace App\Enum;
 
 enum StatusCode : int
-{
-    case SUCCESS = 202;
-    case ERROR = 502;
-    case INVALID = 422;
+{   
+    public function getStatusCode(): int
+    {
+        $value = $this->value;
+        // return equivalence of exceeding throwable status
+        return match(true)
+        {
+            $value >= 10_000 => 401,
+            $value >= 11_000 => 202,
+            default => 500,
+        };
+    }
 
-    case CREATED = 201;
+    public function getMessage(): string
+    {  
+        $key = "Exceptions.{$this->value}.message";
+        $translations = __($key);
 
-    case NOT_FOUND = 404;
-    case UNAUTHORIZED = 401;
-    case FORBIDDEN = 403;
-    case BAD_REQUEST = 400;
+        if ($key === $translations) {
+            return 'something went wrong';
+        }
+
+        return $translations;
+    }
+
+    public function getDescription(): string
+    {  
+        $key = "Exceptions.{$this->value}.description";
+        $translations = __($key);
+
+        if ($key === $translations) {
+            return 'no further description added';
+        }
+
+        return $translations;
+    }
+
+    // error responses
+    case UserIsAlreadyRegistered = 10_000;
+    case InvalidUserCredential = 10_001;
+    case UserEmailAlreadyTaken = 10_002;
+    case IncorrectLoginPassword = 10_003;
+    case IncorrectRetypePassword = 10_004;
+    case UserRegistrationFailed = 10_005;
+    case UserLoginFailed = 10_006;
+    case UserNotFound = 10_007;
+    case Unauthenticated = 10_008;
+    case LogoutFailed = 10_009;
+
+    // product error responses
+    case ProductNotFound = 12_000;
+    case ProductAlreadyAdded = 12_001;
+    case ProductCannotBeAdded = 12_002;
+    case ProductCreateFailed = 12_003;
+    case ProductValidationFailed = 12_004;
+    case ProductUpdateFailed = 12_005;
+    case ProductDeleteFailed = 12_006;
 }

@@ -15,18 +15,27 @@ class AuthController extends ApiBaseController
     public function registerUser(AuthRequest $request)
     {   
         $user = $this->authService->registerRequest($request);
-        return $this->userResponse(['message' => $user['message'], 'token' => $user['token']]);
+        return $this->authService->userResponse([
+            'message' => $user['message'], 
+            'token' => $user['token']
+        ]);
     }
         
     public function loginUser(AuthRequest $request) 
     {    
         $user = $this->authService->loginRequest($request);
-        return $this->userResponse(['message' => $user['message'], 'token' => $user['token']]);
+        return $this->authService->userResponse([
+            'message' => $user['message'], 
+            'token' => $user['token']
+        ]);
     }
 
     public function logoutUser(Request $request) : JsonResponse
     {   
         $user = $this->authService->logoutRequest($request);
-        return $this->authService->userResponse(["token" => "", 'message' => $user['message']]);
+        return $this->authService->userResponse([
+            "token" => "", 
+            'message' => $user['message']
+        ]);
     }
 }

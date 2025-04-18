@@ -20,7 +20,7 @@ class ProductController extends ApiBaseController
     public function store(ProductRequest $request) : JsonResponse
     {   
         $createdProduct = $this->productService->requestCreateProduct($request);
-        return $this->sendResponse($createdProduct['message'], $createdProduct['data']);
+        return $this->sendResponse($createdProduct['data'], $createdProduct['message']);
     }
 
     public function show(Product $product)
@@ -33,12 +33,12 @@ class ProductController extends ApiBaseController
     public function update(ProductRequest $request, Product $product) : JsonResponse
     {   
         $updatedProduct = $this->productService->requestUpdateProduct($request, $product);
-        return $this->sendResponse($updatedProduct['message'], $updatedProduct['data']);
+        return $this->sendResponse($updatedProduct['data'], $updatedProduct['message']);
     }
 
     public function destroy(Product $product)
     {
         $deletedProduct = $this->productService->requestDeleteProduct($product);
-        return $this->sendResponse($deletedProduct['message'], $deletedProduct['deleted']);
+        return $this->sendResponse($deletedProduct['data'], $deletedProduct['message']);
     }
 }
