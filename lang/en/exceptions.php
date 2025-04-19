@@ -72,4 +72,34 @@ return [
         'message' => 'Product deletion failed',
         'description' => 'Something went wrong while deleting the product.',
     ],
+
+    // products
+    '13000' => [
+        'message' => 'Garment is not found',
+        'description' => 'Garment does not exists or not found.',
+    ],
+    '13001' => [
+        'message' => 'Garment is already added',
+        'description' => 'Garment already exists or created.',
+    ],
+    '13002' => [
+        'message' => 'Garment cannot be added',
+        'description' => 'Garment cant be added or there is something wrong with the syntax.',
+    ],
+    '13003' => [
+        'message' => 'Garment creation failed',
+        'description' => 'Something went wrong creating the Garment.',
+    ],
+    '13004' => [
+        'message' => 'Garment validation failed',
+        'description' => 'Garment incorrect inputs, try changing some inputs.',
+    ],
+    '13005' => [
+        'message' => 'Garment update failed',
+        'description' => 'Something went wrong while updating the Garment.',
+    ],
+    '13006' => [
+        'message' => 'Garment deletion failed',
+        'description' => 'Something went wrong while deleting the Garment.',
+    ],
 ]; 

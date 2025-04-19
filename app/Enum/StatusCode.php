@@ -60,4 +60,13 @@ enum StatusCode : int
     case ProductValidationFailed = 12_004;
     case ProductUpdateFailed = 12_005;
     case ProductDeleteFailed = 12_006;
+
+    // garment error responses
+    case GarmentNotFound = 13_000;
+    case GarmentAlreadyAdded = 13_001;
+    case GarmentCannotBeAdded = 13_002;
+    case GarmentCreateFailed = 13_003;
+    case GarmentValidationFailed = 13_004;
+    case GarmentUpdateFailed = 13_005;
+    case GarmentDeleteFailed = 13_006;
 }

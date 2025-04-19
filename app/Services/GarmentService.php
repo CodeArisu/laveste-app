@@ -3,10 +3,14 @@
 namespace App\Services;
 
 use App\Enum\ConditionStatus;
+use App\Exceptions\GarmentException;
 use App\Http\Requests\GarmentRequest;
-use App\Models\Products\Product;
 use App\Models\Garments\{Condition, Size, Garment};
+use App\Models\Products\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\{DB, Log};
+use Illuminate\Validation\ValidationException;
 
 class GarmentService
 {   
@@ -29,7 +33,21 @@ class GarmentService
                 return ['garment' => $garments, 'message' => 'Garment added successfully'];
             });
         } catch (\Exception $e) {
-            dd($e);
+            report($e);
+            throw GarmentException::garmentUpdateFailed();
+        } catch (ModelNotFoundException $e) {
+            report($e);
+            throw GarmentException::garmentNotFound();
+        } catch (QueryException $e) {
+            // Database query errors (constraint violations, etc.)
+            report($e);
+            throw GarmentException::garmentNotFound();
+        } catch (ValidationException $e) {
+            // If any validation fails (though GarmentRequest should handle most)
+            throw GarmentException::garmentValidationFailed();
+        } catch (\RuntimeException $e) {
+            // Your custom runtime exceptions
+            throw GarmentException::garmentUpdateFailed();
         }
     }
 
@@ -47,7 +65,21 @@ class GarmentService
                 ];
             });
         } catch (\Exception $e) {
-            dd($e->getMessage(), $e);
+            report($e);
+            throw GarmentException::garmentUpdateFailed();
+        } catch (ModelNotFoundException $e) {
+            report($e);
+            throw GarmentException::garmentNotFound();
+        } catch (QueryException $e) {
+            // Database query errors (constraint violations, etc.)
+            report($e);
+            throw GarmentException::garmentNotFound();
+        } catch (ValidationException $e) {
+            // If any validation fails (though GarmentRequest should handle most)
+            throw GarmentException::garmentValidationFailed();
+        } catch (\RuntimeException $e) {
+            // Your custom runtime exceptions
+            throw GarmentException::garmentUpdateFailed();
         }
     }
 
@@ -63,7 +95,11 @@ class GarmentService
                 'garment' => $garmentName
             ];
         } catch (\Exception $e) {
-            dd($e);
+            report($e);
+            throw GarmentException::garmentDeleteFailed();
+        } catch (ModelNotFoundException $e) {
+            report($e);
+            throw GarmentException::garmentNotFound();
         }
     }
 

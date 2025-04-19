@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use \RuntimeException;
-use App\Enum\ResponseCode;
 use App\Exceptions\ProductException;
 use App\Http\Requests\ProductRequest;
 use App\Models\Products\{Product, ProductCategories, Supplier, Type, Subtype};
@@ -50,7 +48,7 @@ class ProductService extends BaseServicesClass
         } catch (ValidationException $e) {
             // If any validation fails (though ProductRequest should handle most)
             throw ProductException::productValidationFailed();
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             // Your custom runtime exceptions
             throw ProductException::productCreateFailed();
         }
@@ -83,7 +81,7 @@ class ProductService extends BaseServicesClass
         } catch (ValidationException $e) {
             // If any validation fails (though ProductRequest should handle most)
             throw ProductException::productValidationFailed();
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             // Your custom runtime exceptions
             throw ProductException::productUpdateFailed();
         }
