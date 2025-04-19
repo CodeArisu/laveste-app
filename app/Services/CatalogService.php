@@ -3,22 +3,21 @@
 namespace App\Services;
 
 use App\Enum\ProductStatus;
-use App\Http\Requests\GarmentProductRequest;
+use App\Http\Requests\CatalogRequest;
+use App\Models\Garments\Garment;
 use App\Models\{Catalog, Statuses\DisplayStatus};
 use Illuminate\Support\Facades\{DB, Log};
 
 class CatalogService
 {
-    public function requestDisplayGarment(GarmentProductRequest $request)
+    public function requestDisplayGarment(CatalogRequest $request, Garment $garment)
     {
         try {
-            return DB::transaction(function () use ($request) {
-                $display = $this->createDisplayGarment($request);
-
+            return DB::transaction(function () use ($request, $garment) {
+                $display = $this->createDisplayGarment($request, $garment);
                 if (empty($display)) {
                     throw new \RuntimeException('No garment were added');
                 }
-
                 return ['display' => $display, 'message' => 'Added to display successfully'];
             });
         } catch (\Exception $e) {
@@ -27,16 +26,15 @@ class CatalogService
         }
     }
 
-    private function createDisplayGarment(GarmentProductRequest $request)
+    private function createDisplayGarment(CatalogRequest $request, $garment)
     {
         $validated = $request->safe();
-
         if (!DisplayStatus::exists()) {
             $this->generateStatus();
         }
-
-        $display = $this->handleDisplayGarment($validated->only(['garment_id']), [
+        $display = $this->handleDisplayGarment([
             'user_id' => $request->user()->id,
+            'garment_id' => $garment->id,
             'product_status_id' => ProductStatus::UNAVAILABLE->value,
         ]);
 
@@ -57,15 +55,14 @@ class CatalogService
                 ]);
             }
         }
-
         return;
     }
 
-    private function handleDisplayGarment(array $data, $relations): Catalog
+    private function handleDisplayGarment(array $relations): Catalog
     {
         return Catalog::create([
             'user_id' => $relations['user_id'],
-            'garment_id' => $data['garment_id'],
+            'garment_id' => $relations['garment_id'],
             'product_status_id' => $relations['product_status_id'],
         ]);
     }

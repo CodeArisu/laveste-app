@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class GarmentProductRequest extends FormRequest
+class CatalogRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,5 +25,5 @@ class GarmentProductRequest extends FormRequest
             'user_id' => 'required|integer',
             'garment_id' => 'required|integer|unique:garments,id',
         ];
-    }
+    } 
 }

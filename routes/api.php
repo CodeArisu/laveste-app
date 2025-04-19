@@ -13,24 +13,20 @@ Route::controller(AuthController::class)->group( function () {
     });
 });
 
-
-Route::controller(ProductController::class)->group( function () {
-    Route::name('product.')->prefix('product')->group( function () {
-        Route::post('/create', 'store')->name('store');
-        Route::put('/{product}', 'update')->name('update');
-        Route::delete('/{product}/r', 'destroy')->name('delete');
-    });
+Route::name('product.')->prefix('product')->group( function () {
+    Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');
+    Route::put('/{product}', [\App\Http\Controllers\Api\ProductController::class, 'update'])->name('update');
+    Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
 
     Route::resource('products', ProductController::class)->except(['create', 'edit', 'destroy', 'update']);
 });
 
-
-Route::controller(GarmentController::class)->group( function() {
-    Route::name('garment.')->prefix('garment')->group( function () {
-        Route::post('/create', [GarmentController::class, 'store'])->name('store');
-        Route::put('/{garment}', [GarmentController::class, 'update'])->name('update');
-        Route::delete('/{garment}/r', [GarmentController::class, 'destroy'])->name('delete');
-    });
+Route::name('garment.')->prefix('garment')->group( function () {
+    Route::post('/create', [\App\Http\Controllers\Api\GarmentController::class, 'store'])->name('store');
+    Route::put('/{garment}', [\App\Http\Controllers\Api\GarmentController::class, 'update'])->name('update');
+    Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
 
     Route::resource('garments', GarmentController::class)->except(['create', 'edit', 'destroy', 'update']);
 });
+
+Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
