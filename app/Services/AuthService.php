@@ -150,7 +150,6 @@ class AuthService
             Log::warning('Invalid Credentials');
             throw AuthException::invalidUserCredentials();
         }
-        $request->session()->regenerate();
         
         $user = User::where('email', $request->email)->firstOrFail();
         $authToken = $user->createToken('auth_token', ['*'], now()->addDays(7))->plainTextToken;

@@ -28,6 +28,13 @@ class AuthController extends ApiBaseController
             'message' => $user['message'], 
             'token' => $user['token']
         ]);
+
+        // return redirect()->route('landing');
+    }
+
+    public function loginIndex()
+    {
+        return view('src.login');
     }
 
     public function logoutUser(Request $request) : JsonResponse

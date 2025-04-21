@@ -15,7 +15,7 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, HasUniqueStringIds;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -54,15 +54,15 @@ class User extends Authenticatable
         ];
     }
 
-    public function newUniqueId()
-    {
-        return 'USR-' . Str::ulid();
-    }
+    // public function newUniqueId()
+    // {
+    //     return 'USR-' . Str::ulid();
+    // }
 
-    protected function isValidUniqueId($value): bool
-    {
-        return true;
-    }
+    // protected function isValidUniqueId($value): bool
+    // {
+    //     return true;
+    // }
 
     public function role() : BelongsTo
     {
