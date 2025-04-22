@@ -1,3 +1,0 @@
-<a href="{{ $uri }}" {{ $attributes->merge(['class' => $aClass]) }} >
-    {!! $label ?? '' !!}
-</a>

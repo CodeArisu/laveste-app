@@ -1,0 +1,355 @@
+/* Tabs and Buttons Container */
+.tabs-container {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    max-width: 95%;
+    margin-left: 1px;
+    margin-right: 1px;
+}
+
+
+.tabs-wrapper {
+    display: flex;
+    justify-content: flex-start; /* align to the left */
+    margin-bottom: 10px 0;
+    padding-left: 50px; /* optional: add padding from left */
+}
+
+
+.tabs {
+    position: relative;
+    display: flex;
+    background-color: #a33b3b;
+    border-radius: 20px;
+    padding: 5px;
+    width: fit-content;
+}
+
+.tab {
+    position: relative;
+    z-index: 1;
+    padding: 10px 10px;
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    min-width: 140px;
+}
+
+.tab.active {
+    color: #a33b3b;
+}
+
+.slider {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    width: 140px;
+    height: 40px;
+    background-color: white;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    z-index: 0;
+}
+
+
+
+/* Buttons Styling */
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-right: 0px;
+    margin-top: 10px;
+}
+
+/* Book Rental Button */
+.book-rental {
+    padding: 10px 15px;
+    border: 2px solid #a33b3b;
+    border-radius: 20px;
+    background: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #a33b3b;
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* In case it's an <a> tag */
+    transition: background 0.3s ease-in-out;
+}
+
+.book-rental img {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.book-rental:hover {
+    background-color: #a33b3b;
+    color: white;
+}
+
+
+/* Shedule Appointment Button */
+.sched-appointment {
+    padding: 10px 15px;
+    border: 2px solid #a33b3b;
+    border-radius: 20px;
+    background: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #a33b3b;
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Optional if using <a> */
+    transition: background 0.3s ease-in-out;
+}
+
+.sched-appointment img {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.sched-appointment:hover {
+    background-color: #a33b3b;
+    color: white;
+}
+
+/* Tab Hover (unchanged) */
+.tab:hover {
+    background-color: #a33b3b;
+    color: white;
+}
+
+
+/* Table Container - Increase max width and spacing */
+.table-container {
+    margin-top: 50px;
+    max-width: 95%; /* Make it wider */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: separate; /* allows cell spacing */
+    border-spacing: 0 10px; /* Adds vertical space between rows */
+    background: white;
+    font-size: 18px; /* Slightly larger font */
+}
+
+/* Table Header Styling */
+thead {
+    background: #f9f1dc;
+    font-weight: bold;
+    color: #983031;
+    font-family: 'Poppins', serif;
+    font-size: 19px;
+}
+
+/* Table Cell Styling */
+th, td {
+    padding: 18px 20px; /* Increased padding for bigger cells */
+    text-align: left;
+    border-bottom: 2px solid #e2bdbd; /* Lighter border for cleaner look */
+    color: #983031;
+}
+
+/* Status Badge Styling */
+.status {
+    padding: 8px 16px; /* Bigger badge */
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.status.pending {
+    background: #f9e89f;
+    color: #a33b3b;
+}
+
+.status.confirmed {
+    background: #a3d9a5;
+    color: #2a7d2e;
+}
+
+
+
+
+
+
+.appointment-side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50vw;
+    height: 100vh; /* Ensure it fills the entire screen height */
+    background-color: #f1e6d1;
+    padding: 60px 50px;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+    overflow-y: auto; /* enables scrolling */
+}
+
+
+.appointment-side-panel h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: #983031;
+    margin-bottom: 40px;
+    font-family: 'Ovo';
+}
+
+/* Calendar Container - Smaller Padding */
+.calendar-container {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px; /* reduced from 30px */
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 30px; /* reduced */
+}
+
+/* Calendar Header - Smaller Font */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px; /* reduced from 22px */
+    font-weight: bold;
+    color: #983031;
+    margin-bottom: 15px; /* reduced from 20px */
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 20px; /* reduced */
+    cursor: pointer;
+    color: #983031;
+}
+
+/* Calendar Grid - Smaller Padding and Font */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px; /* reduced gap */
+    text-align: center;
+    font-size: 14px; /* reduced from 18px */
+}
+
+.calendar-grid div {
+    padding: 12px 0; /* reduced from 18px */
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #333;
+}
+
+
+.calendar-grid div:hover {
+    background-color: #f0d8d8;
+}
+
+.calendar-grid .selected {
+    background-color: #983031;
+    color: white;
+}
+
+/* Time card stays the same */
+.time-card {
+    background: white;
+    border-radius: 25px;
+    padding: 25px;
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.15);
+    margin-bottom: 30px;
+}
+
+/* Wrapper to control layout and add arrow */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Center text and style select */
+.time-select {
+   
+
+    width: 100%;
+    padding: 1rem;                /* Increase padding */
+    border: 1.5px solid #933636;
+    border-radius: 12px;
+    font-size: 1.2rem;             /* Increase font size */
+    font-family: 'Georgia', serif;
+    background-color: #f9efd4;
+    box-sizing: border-box;
+    outline: none;
+}
+
+
+
+
+/* Custom arrow */
+.custom-select-wrapper::after {
+    content: "▼";
+    font-size: 18px;
+    color: #983031;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+
+/* Next button */
+.next-btn {
+    background-color: white;
+    border: none;
+    padding: 18px 36px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 25px;
+    color: #983031;
+    cursor: pointer;
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease-in-out;
+}
+
+.next-btn:hover {
+    background-color: #983031;
+    color: white;
+}
+
+.back-btn {
+    background-color: #983031;
+    color: white;
+    font-size: 20px;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease-in-out;
+}
+
+.back-btn:hover {
+    background-color: #7a2526;
+}
+
+
