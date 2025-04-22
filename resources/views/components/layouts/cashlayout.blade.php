@@ -3,28 +3,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashier</title>
-
-    
-    @stack('styles')
-
-    
+    @stack('styles')    
     <link rel="stylesheet" href="/css/cashier/cashierhead.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="navdiv">
             <div class="logo"><a href="#">La Veste Rentals</a></div>
-            
-            <div class="cashier">
-                <h3>Cashier Anna</h3>
-                <img src="/assets/images/cash.jpg" alt="CashierProfile">
-            </div>
+            @auth
+                <div class="cashier">
+                    <h3>{{ Auth::user()->name }}</h3>
+                    <img src="/assets/images/cash.jpg" alt="CashierProfile">
+                </div>
+            @else
+                <div class="cashier">
+                    <h3>Cashier</h3>
+                    <img src="/assets/images/cash.jpg" alt="CashierProfile">
+                </div>
+            @endauth
         </div>
 
         <ul class="nav-links">
-            <li><a href="/cashier/home" id="home-link">Home</a></li>
-            <li><a href="/cashier/products" id="products-link">Products</a></li>
-            <li><a href="/cashier/transactions" id="transactions-link">Transactions</a></li>
+            <li><a href="{{ route('cashier.home') }}" id="home-link">Home</a></li>
+            <li><a href="{{ route('cashier.catalog') }}" id="products-link">Products</a></li>
+            <li><a href="{{ route('cashier.transaction') }}" id="transactions-link">Transactions</a></li>
         </ul>
     </nav>
 

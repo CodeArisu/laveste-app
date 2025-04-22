@@ -19,11 +19,16 @@ class AuthController extends ApiBaseController
             'message' => $user['message'], 
         ]);
     }
+
+    public function registerIndex()
+    {
+        return view('src.register');
+    }
         
     public function loginUser(AuthRequest $request) 
     {    
         $user = $this->authService->loginRequest($request);
-        return redirect()->route('landing')->with($user['message']);
+        return redirect()->route($user['url'])->with($user['message']);
     }
 
     public function loginIndex()
@@ -35,8 +40,7 @@ class AuthController extends ApiBaseController
     {   
         $user = $this->authService->logoutRequest($request);
         return $this->authService->userResponse([
-            "token" => "", 
-            'message' => $user['message']
+            "message" => $user['message']
         ]);
     }
 }

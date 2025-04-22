@@ -1,5 +1,6 @@
 <x-layouts.app>
         <link rel="stylesheet" href="/css/login.css">
+        <link rel="stylesheet" href="/css/login.css">
         <div class="container">
             <div class="form-container">
                 <h1>La Veste Rentals</h1>
@@ -12,8 +13,11 @@
                     <label for="password"></label> 
                     <input type="password" id="password" name="password" placeholder="Password" required><br>
                 
-                    <button type="submit">Login</button>
-                </form>    
+                    <input type="submit" value='login' />
+                </form>
+            </div>
+            <div class="image-container">
+                <img src="/assets/images/img1.png" alt="login image">
             </div>
         </div>
 </x-layouts.app>

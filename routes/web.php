@@ -10,17 +10,31 @@ Route::get('/', function () {
     return view('src.landing');
 });
 
+Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerIndex'])->name('form.register'); // register form page
 Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerUser'])->name('register');
 
-Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login');
+Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login'); // login form page
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginUser'])->name('login');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'web'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'logoutUser'])->name('logout');
-    Route::get('/landing', function () {
-        return view('src.landing');
-    })->name('landing');
+
+    Route::name('cashier.')->prefix('cashier')->group( function () {
+        Route::get('/home', function () {
+            return view('src.cashier.home');
+        })->name('home');
+
+        Route::get('/catalog', function () {
+            return view('src.cashier.product');
+        })->name('catalog');
+
+        Route::get('/transaction', function () {
+            return view('src.cashier.transaction');
+        })->name('transaction');
+    });
 });
+
+
 
 Route::name('product.')->prefix('product')->group( function () {
     Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');
