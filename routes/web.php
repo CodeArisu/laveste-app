@@ -1,50 +1,41 @@
 <?php
 
+use App\Http\Controllers\Api\CatalogController;
+use App\Http\Controllers\Api\GarmentController;
+use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('src.cashier.home');
+    return view('src.landing');
 });
 
-Route::get('/cashier/home', function () {
-    return view('src.cashier.home');
+Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerUser'])->name('register');
+
+Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login');
+Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginUser'])->name('login');
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'logoutUser'])->name('logout');
+    Route::get('/landing', function () {
+        return view('src.landing');
+    })->name('landing');
 });
 
-Route::get('/cashier/home', function () {
-    return view('src.cashier.home');
-})->name('cashier.home');
+Route::name('product.')->prefix('product')->group( function () {
+    Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');
+    Route::put('/{product}', [\App\Http\Controllers\Api\ProductController::class, 'update'])->name('update');
+    Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
 
-Route::get('/cashier/products', function () {
-    return view('src.cashier.product');
+    Route::resource('products', ProductController::class)->except(['create', 'edit', 'destroy', 'update']);
 });
 
+Route::name('garment.')->prefix('garment')->group( function () {
+    Route::post('/create', [\App\Http\Controllers\Api\GarmentController::class, 'store'])->name('store');
+    Route::put('/{garment}', [\App\Http\Controllers\Api\GarmentController::class, 'update'])->name('update');
+    Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
 
-Route::get('/cashier/transactions', function () {
-    return view('src.cashier.transaction');
+    Route::resource('garments', GarmentController::class)->except(['create', 'edit', 'destroy', 'update']);
 });
 
-Route::get('/cashier/checkout2', function () {
-    return view('src.cashier.checkout2');
-});
-
-Route::get('/cashier/checkout3', function () {
-    return view('src.cashier.checkout3');
-})->name('cashier.checkout3');
-
-
-Route::get('/cashier/checkout', function () {
-    return view('src.cashier.checkout');
-});
-
-Route::get('/cashier/receipt', function () {
-    return view('src.cashier.receipt');
-});
-
-Route::get('/cashier/receipt2', function () {
-    return view('src.cashier.receipt2');
-});
-
-Route::get('/cashier/scheduleAppointment', function () {
-    return view('src.cashier.appointment');
-});
-
+Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');

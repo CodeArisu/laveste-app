@@ -1,16 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Auth;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Concerns\HasUniqueStringIds;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +26,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'user_details_id'
     ];
 
     /**
@@ -43,6 +50,22 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'user_details_id' => 'integer:nullable'
         ];
+    }
+
+    // public function newUniqueId()
+    // {
+    //     return 'USR-' . Str::ulid();
+    // }
+
+    // protected function isValidUniqueId($value): bool
+    // {
+    //     return true;
+    // }
+
+    public function role() : BelongsTo
+    {
+        return $this->belongsTo(Role::class);
     }
 }
