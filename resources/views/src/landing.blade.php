@@ -1,4 +1,6 @@
 <x-layouts.app>
-    test
+    @auth
+        {{ Auth::user()->email }}
+    @endauth
 </x-layouts.app>
 

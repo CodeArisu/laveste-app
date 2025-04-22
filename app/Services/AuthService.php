@@ -25,10 +25,10 @@ class AuthService
     {
         try {
             return DB::transaction(function () use ($request) {
-                $user = $this->registerUser($request);
+                $this->registerUser($request);
                 return [
-                    'token' => $user['authToken'], 
-                    'message' => 'User registered'
+                    'message' => 'User registered',
+                    'url' => ''
                 ];
             });
         } catch (QueryException $e) {
@@ -52,17 +52,15 @@ class AuthService
     public function loginRequest(AuthRequest $request)
     {
         try {
-            $user = $this->loginUser($request);
+            $this->loginUser($request);
             return [
-                'token' => $user['authToken'], 
-                'message' => 'User signed in'
+                'message' => 'User signed in',
+                'url' => 'landing'
             ];
         }
         catch (AuthException $e) {
             // Re-throw Auth-specific exceptions (invalid credentials, locked account, etc.)
             throw $e;
-        } catch (ModelNotFoundException $e) {
-            // User not found (though loginUser should prevent this)
             throw AuthException::userNotFound();
         }
     }
@@ -77,7 +75,7 @@ class AuthService
             if (!$request->user()) {
                 throw AuthException::unauthenticated('No authenticated user found');
             }
-            $request->user()->currentAccessToken()->delete();
+            Auth::logout();
             return ['token' => null, 'message' => 'User signed out'];
         } catch (AuthException $e) {
             // Re-throw pre-formatted auth exceptions
@@ -99,17 +97,8 @@ class AuthService
             $this->registerRoles();
         }
 
-        if (User::where('email', $request->safe()->only(['email']))->exists()) {
-            throw AuthException::userEmailAlreadyTaken();
-        }
-
         $this->checkIfExists($request);
-
-        $user = $this->handleRegister($request->validated());
-
-        $authToken = $user->createToken('auth_token')->plainTextToken;
-
-        return compact('user', 'authToken');
+        $this->handleRegister($request->validated());
     }
 
     /**
@@ -144,17 +133,18 @@ class AuthService
     /**
      * @param Request creates new roles enums exists
      */
-    private function loginUser($request)
+    private function loginUser(AuthRequest $request)
     {   
-        if (!Auth::attempt($request->safe()->only(['email', 'password']))) {
-            Log::warning('Invalid Credentials');
-            throw AuthException::invalidUserCredentials();
-        }
-        
-        $user = User::where('email', $request->email)->firstOrFail();
-        $authToken = $user->createToken('auth_token', ['*'], now()->addDays(7))->plainTextToken;
+            $authenticated = $request->authenticate();
+            $request = $request->safe();
+            
+            $user = User::where('email', $request['email'])->first();
+            if (!$authenticated || !$user || !Hash::check($request['password'], $user->password))
+            {
+                throw AuthException::invalidUserCredentials();
+            }
 
-        return compact('user', 'authToken');
+            return compact('user');
     }
 
     /**

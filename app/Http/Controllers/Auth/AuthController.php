@@ -17,19 +17,13 @@ class AuthController extends ApiBaseController
         $user = $this->authService->registerRequest($request);
         return $this->authService->userResponse([
             'message' => $user['message'], 
-            'token' => $user['token']
         ]);
     }
         
     public function loginUser(AuthRequest $request) 
     {    
         $user = $this->authService->loginRequest($request);
-        return $this->authService->userResponse([
-            'message' => $user['message'], 
-            'token' => $user['token']
-        ]);
-
-        // return redirect()->route('landing');
+        return redirect()->route('landing')->with($user['message']);
     }
 
     public function loginIndex()

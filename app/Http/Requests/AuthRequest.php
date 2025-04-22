@@ -3,9 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Enum\ResponseCode;
+use App\Exceptions\AuthException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthRequest extends FormRequest
 {
@@ -51,6 +54,17 @@ class AuthRequest extends FormRequest
         }
         
         return request()->is('register') || request()->fullUrlIs('*/register');
+    }
+
+    public function authenticate()
+    {
+        if (!Auth::attempt($this->safe()->only(['email', 'password']))) {
+            Log::warning('Invalid Credentials');
+            throw AuthException::invalidUserCredentials();
+            return false;
+        }
+
+        return true;
     }
 
     public function failedValidation(Validator $validator)
