@@ -16,10 +16,10 @@ Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'reg
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login'); // login form page
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginUser'])->name('login');
 
-Route::middleware(['auth', 'web', 'role:manager,admin'])->group(function () {
+Route::middleware(['auth', 'web'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'logoutUser'])->name('logout');
 
-    Route::name('cashier.')->prefix('cashier')->group( function () {
+    Route::middleware(['role:admin,manager,accountant'])->name('cashier.')->prefix('cashier')->group( function () {
         Route::get('/home', function () {
             return view('src.cashier.home');
         })->name('home');
@@ -33,8 +33,6 @@ Route::middleware(['auth', 'web', 'role:manager,admin'])->group(function () {
         })->name('transaction');
     });
 });
-
-
 
 Route::name('product.')->prefix('product')->group( function () {
     Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');

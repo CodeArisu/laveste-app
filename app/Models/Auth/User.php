@@ -51,16 +51,6 @@ class User extends Authenticatable
         ];
     }
 
-    // public function newUniqueId()
-    // {
-    //     return 'USR-' . Str::ulid();
-    // }
-
-    // protected function isValidUniqueId($value): bool
-    // {
-    //     return true;
-    // }
-
     public function role() : BelongsTo
     {
         return $this->belongsTo(Role::class);
