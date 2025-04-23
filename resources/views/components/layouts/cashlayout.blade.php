@@ -17,8 +17,14 @@
             
             <div class="cashier">
                 <h3>Cashier Anna</h3>
-                <img src="/assets/images/cash.jpg" alt="CashierProfile">
+                <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
+                <div class="logout-menu" id="logoutMenu">
+                    <a href="/index" style="color: #973131; text-decoration: none; font-weight: 400;">Logout</a>
+                </div>                
             </div>
+                   
+            
+               
         </div>
 
         <ul class="nav-links">
@@ -27,6 +33,9 @@
             <li><a href="/cashier/transactions" id="transactions-link">Transactions</a></li>
         </ul>
     </nav>
+
+
+   
 
     
     <main id="cashier-container">
@@ -53,6 +62,30 @@
                 this.classList.add('active');
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const image = document.getElementById('cashierImage');
+    const menu = document.getElementById('logoutMenu');
+
+    // Make sure it's hidden when page loads
+    menu.style.display = 'none';
+
+    image.addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent event bubbling
+        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    });
+
+    // Hide when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!menu.contains(event.target) && !image.contains(event.target)) {
+            menu.style.display = 'none';
+        }
+    });
+});
+
+
+
+
     </script>
 </body>
 </html>

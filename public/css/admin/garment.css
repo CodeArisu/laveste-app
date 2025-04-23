@@ -1,0 +1,178 @@
+
+.sidepanel {
+    position: fixed;
+    top: 0;
+    right: 0; /* Changed from left to right */
+    height: 100%;
+    width: 800px;
+    background-color: #FFF4D9;
+    padding: 2rem;
+    font-family: 'Segoe UI', sans-serif;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    transform: translateX(100%); /* Start off-screen to the right */
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.sidepanel-body {
+    display: flex;
+    flex-direction: column;
+  }
+  
+
+.sidepanel.visible {
+    transform: translateX(0); /* Slide in */
+}
+
+
+
+
+.sidepanel-title {
+    color: #802020;
+    font-weight: 500;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #802020;
+    padding-bottom: 0.5rem;
+    font-family: 'Ovo';
+}
+
+.sidepanel-content {
+    display: flex;
+    flex-direction: row; /* changed from column */
+    gap: 2rem; /* more spacing between image and text */
+    flex-wrap: wrap; /* allows responsive wrap on smaller screens */
+}
+
+
+.product-img {
+    flex: 1;
+    max-width: 300px;
+    border-radius: 4px;
+}
+
+.product-info {
+    flex: 2;
+    min-width: 200px;
+}
+
+
+.product-info h2 {
+    color: #802020;
+    font-size: 2rem;
+    font-weight: 500;
+    margin: 0.5rem 0;
+    font-family: 'Ovo';
+}
+
+.product-info p {
+    color: #802020;
+    font-size: 1.4rem;
+    margin: 1rem 0; /* increased vertical spacing */
+    font-weight: 400;
+}
+
+
+.description-section h4,
+.status-section h4 {
+    color: #802020;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.description-section p {
+    color: #802020;
+    line-height: 1.6;
+    margin-left: 1rem;
+    font-size: 1.2rem;
+}
+
+.status-pill {
+    width: 200px;
+    height: 40px;
+    background-color: #95f8a6;
+    border-radius: 999px;
+    margin-top: 0.5rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #1a1a1a;
+    text-transform: capitalize;
+}
+
+
+.add-button {
+    background-color: #6bfcb0;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    font-weight: bold;
+    color: #1a1a1a;
+    font-size: 1rem;
+    margin-top: 1rem;
+    align-self: flex-end;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #52e4a0;
+}
+
+
+
+.info-row {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.label {
+    width: 130px; /* consistent label width */
+    color: #802020;
+    font-weight: 400;
+    font-size: 1.2rem;
+}
+
+.value {
+    color: #802020;
+    font-weight: 500;
+    font-size: 1.2rem;
+}
+
+.action-footer {
+    display: flex;
+    justify-content: flex-end; /* aligns to right */
+    margin-top: auto; /* pushes to bottom if using flex column */
+    padding-top: 2rem;
+}
+
+.back-btn {
+    background-color: #551111;
+    color: #ffffff;
+    font-weight: 500;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Ovo';
+}
+
+.back-btn:hover {
+    background-color: #975050; /* slightly darker green */
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
