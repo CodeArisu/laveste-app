@@ -1,12 +1,11 @@
-<x-layouts.cashlayout>
-    @push('styles')
+@push('styles')
     <link rel="stylesheet" href="/css/cashier/home.css">
     <link rel="stylesheet" href="/css/cashier/appointside.css">
     <link rel="stylesheet" href="/css/cashier/rentalside.css">
     <link rel="stylesheet" href="/css/cashier/appointment.css">
+@endpush
 
-    @endpush
-
+<x-layouts.cashlayout>
     <div class="home-page">
         <div id="home-container">
             <!-- Tabs= -->
@@ -18,7 +17,7 @@
                         <button class="tab" data-tab="appointments">Appointment</button>
                     </div>
                 </div>
-                
+
                 <div class="buttons">
                     <a href="/cashier/products" class="book-rental">
                         <img src="/assets/icons/hanger.png" alt="Book Rental Icon" class="icon"> Book Rental
@@ -102,15 +101,15 @@
             </div>
 
             <div class="card time-card">
-                    <select id="appointmentTime" class="time-select">
-                        <option value="" disabled selected>Select time</option>
-                        <option value="09:00">09:00-10:00 AM</option>
-                        <option value="10:00">10:00-11:00 AM</option>
-                        <option value="11:00">01:00-02:00 PM</option>
-                        <option value="13:00">02:00-03:00 PM</option>
-                        <option value="14:00">03:00-04:00 PM</option>
-                        <option value="15:00">04:00-05:00 PM</option>
-                    </select>
+                <select id="appointmentTime" class="time-select">
+                    <option value="" disabled selected>Select time</option>
+                    <option value="09:00">09:00-10:00 AM</option>
+                    <option value="10:00">10:00-11:00 AM</option>
+                    <option value="11:00">01:00-02:00 PM</option>
+                    <option value="13:00">02:00-03:00 PM</option>
+                    <option value="14:00">03:00-04:00 PM</option>
+                    <option value="15:00">04:00-05:00 PM</option>
+                </select>
             </div>
 
             <button class="next-btn" id="nextAppointmentBtn">
@@ -126,9 +125,7 @@
     <div class="side-panel-container3">
         <div class="appointment-container3">
             <h1 class="page-title">Schedule Appointment</h1>
-
             <h2 class="section-title">Customer Information</h2>
-
             <form action="#" method="POST" class="appointment-form">
                 <label class="form-label">Customer Name</label>
                 <input type="text" name="customerName" class="form-input">
@@ -180,8 +177,8 @@
                 <br><br>
 
                 <div class="button-row3">
-                    <a href="{{ route('cashier.home') }}" class="back-btn3" id="backBtn3">← Back</a>
-                    <a href="{{ route('cashier.checkout3') }}" class="next-btn3" id="nextBtn3">Next →</a>  
+                    <a href="" class="back-btn3" id="backBtn3">← Back</a>
+                    <a href="" class="next-btn3" id="nextBtn3">Next →</a>
                 </div>
             </form>
         </div>
@@ -284,8 +281,8 @@
         let selectedDate = null;
         let currentMonth = new Date().getMonth();
         let currentYear = new Date().getFullYear();
-    
-        document.addEventListener("DOMContentLoaded", function () {
+
+        document.addEventListener("DOMContentLoaded", function() {
             const tabs = document.querySelectorAll(".tab");
             const rentalsTable = document.getElementById("rentals-table");
             const appointmentsTable = document.getElementById("appointments-table");
@@ -294,16 +291,16 @@
             const appointmentPanel = document.getElementById("appointmentPanel");
 
             const backBtn = document.getElementById("backBtn");
-            backBtn.addEventListener("click", function () {
+            backBtn.addEventListener("click", function() {
                 document.getElementById("appointmentPanel").style.display = "none";
             });
 
             // Tab switching logic
             tabs.forEach(tab => {
-                tab.addEventListener("click", function () {
+                tab.addEventListener("click", function() {
                     tabs.forEach(tab => tab.classList.remove("active"));
                     this.classList.add("active");
-    
+
                     if (this.getAttribute("data-tab") === "rentals") {
                         rentalsTable.style.display = "table";
                         appointmentsTable.style.display = "none";
@@ -320,19 +317,19 @@
             });
 
             // Show appointment panel
-            schedAppointmentBtn.addEventListener("click", function () {
+            schedAppointmentBtn.addEventListener("click", function() {
                 appointmentPanel.style.display = "block";
             });
 
             // Handle appointment confirmation
             document.getElementById("nextAppointmentBtn").addEventListener("click", () => {
                 const time = document.getElementById("appointmentTime").value;
-    
+
                 if (!selectedDate || !time) {
                     alert("Please select both date and time.");
                     return;
                 }
-    
+
                 const dateStr = selectedDate.toISOString().split("T")[0];
                 alert(`Appointment scheduled on ${dateStr} at ${time}`);
             });
@@ -340,7 +337,7 @@
 
             // Calendar setup
             generateCalendar(currentMonth, currentYear);
-    
+
             document.getElementById("prevMonth").addEventListener("click", () => {
                 currentMonth--;
                 if (currentMonth < 0) {
@@ -349,7 +346,7 @@
                 }
                 generateCalendar(currentMonth, currentYear);
             });
-    
+
             document.getElementById("nextMonth").addEventListener("click", () => {
                 currentMonth++;
                 if (currentMonth > 11) {
@@ -364,7 +361,7 @@
             const calendarGrid = document.getElementById("calendarGrid");
             const monthYear = document.getElementById("monthYear");
             const date = new Date(year, month, 1);
-    
+
             const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
             calendarGrid.innerHTML = "";
 
@@ -378,15 +375,15 @@
 
             const firstDay = date.getDay();
             const totalDays = new Date(year, month + 1, 0).getDate();
-    
+
             for (let i = 0; i < firstDay; i++) {
                 calendarGrid.appendChild(document.createElement("div"));
             }
-    
+
             for (let i = 1; i <= totalDays; i++) {
                 const dayCell = document.createElement("div");
                 dayCell.textContent = i;
-                dayCell.addEventListener("click", function () {
+                dayCell.addEventListener("click", function() {
                     document.querySelectorAll("#calendarGrid div").forEach(d => d.classList.remove("selected"));
                     this.classList.add("selected");
                     selectedDate = new Date(year, month, i);
@@ -394,105 +391,106 @@
                 calendarGrid.appendChild(dayCell);
             }
 
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+                "October", "November", "December"
+            ];
             monthYear.textContent = `${monthNames[month]} ${year}`;
         }
 
 
-        document.addEventListener("DOMContentLoaded", function () {
-    const rentalRows = document.querySelectorAll("#rentals-table tbody tr");
-    const appointRows = document.querySelectorAll("#appointments-table tbody tr");
+        document.addEventListener("DOMContentLoaded", function() {
+            const rentalRows = document.querySelectorAll("#rentals-table tbody tr");
+            const appointRows = document.querySelectorAll("#appointments-table tbody tr");
 
-    const rentalPanel = document.getElementById("rentalSidePanel");
-    const appointPanel = document.getElementById("appointmentSidePanel");
+            const rentalPanel = document.getElementById("rentalSidePanel");
+            const appointPanel = document.getElementById("appointmentSidePanel");
 
-    // Hide panels initially
-    rentalPanel.style.display = "none";
-    appointPanel.style.display = "none";
-
-    rentalRows.forEach(row => {
-        row.addEventListener("click", () => {
-            rentalPanel.style.display = "block";
-            appointPanel.style.display = "none";
-        });
-    });
-
-    appointRows.forEach(row => {
-        row.addEventListener("click", () => {
-            rentalPanel.style.display = "none";
-            appointPanel.style.display = "block";
-        });
-    });
-
-    // Optional: hide panels when switching tabs
-    const tabs = document.querySelectorAll(".tab");
-    tabs.forEach(tab => {
-        tab.addEventListener("click", () => {
+            // Hide panels initially
             rentalPanel.style.display = "none";
             appointPanel.style.display = "none";
+
+            rentalRows.forEach(row => {
+                row.addEventListener("click", () => {
+                    rentalPanel.style.display = "block";
+                    appointPanel.style.display = "none";
+                });
+            });
+
+            appointRows.forEach(row => {
+                row.addEventListener("click", () => {
+                    rentalPanel.style.display = "none";
+                    appointPanel.style.display = "block";
+                });
+            });
+
+            // Optional: hide panels when switching tabs
+            const tabs = document.querySelectorAll(".tab");
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    rentalPanel.style.display = "none";
+                    appointPanel.style.display = "none";
+                });
+            });
         });
-    });
-});
 
-document.addEventListener("click", (e) => {
-    const clickedInsideRental = e.target.closest("#rentals-table");
-    const clickedInsideAppoint = e.target.closest("#appointments-table");
+        document.addEventListener("click", (e) => {
+            const clickedInsideRental = e.target.closest("#rentals-table");
+            const clickedInsideAppoint = e.target.closest("#appointments-table");
 
-    if (!clickedInsideRental && !clickedInsideAppoint) {
-        rentalPanel.style.display = "none";
-        appointPanel.style.display = "none";
-    }
-});
-
-function closePanel(panelId) {
-        document.getElementById(panelId).style.display = "none";
-    }
-
-
-
-// Get the necessary elements
-const nextAppointmentBtn = document.getElementById('nextAppointmentBtn');
-const sidePanel = document.querySelector('.side-panel-container3');
-
-// Function to toggle side panel visibility
-function toggleSidePanel() {
-    // Toggle visibility of the side panel
-    sidePanel.style.display = (sidePanel.style.display === 'none' || sidePanel.style.display === '') ? 'flex' : 'none';
-}
-
-// Initially hide the side panel when page loads
-sidePanel.style.display = 'none';
-
-// Add event listener to the Next button to toggle the side panel on click
-nextAppointmentBtn.addEventListener('click', toggleSidePanel);
-
-
-
-const heightSelect = document.getElementById('height');
-
-for (let feet = 4; feet <= 7; feet++) {
-    for (let inches = 0; inches <= 11; inches++) {
-        if (feet === 7 && inches > 0) break; // Limit to 7'0"
-        const value = `${feet}-${inches}`;
-        const text = `${feet}'${inches}"`;
-        const option = new Option(text, value);
-        heightSelect.appendChild(option);
-    }
-}
-
-
-
-const tabs = document.querySelectorAll('.tab');
-    const slider = document.querySelector('.slider');
-
-    tabs.forEach((tab, index) => {
-        tab.addEventListener('click', () => {
-            document.querySelector('.tab.active')?.classList.remove('active');
-            tab.classList.add('active');
-            slider.style.left = `${index * 140 + 5}px`; // 140 = button width, 5 = padding
+            if (!clickedInsideRental && !clickedInsideAppoint) {
+                rentalPanel.style.display = "none";
+                appointPanel.style.display = "none";
+            }
         });
-    });
+
+        function closePanel(panelId) {
+            document.getElementById(panelId).style.display = "none";
+        }
 
 
+
+        // Get the necessary elements
+        const nextAppointmentBtn = document.getElementById('nextAppointmentBtn');
+        const sidePanel = document.querySelector('.side-panel-container3');
+
+        // Function to toggle side panel visibility
+        function toggleSidePanel() {
+            // Toggle visibility of the side panel
+            sidePanel.style.display = (sidePanel.style.display === 'none' || sidePanel.style.display === '') ? 'flex' :
+                'none';
+        }
+
+        // Initially hide the side panel when page loads
+        sidePanel.style.display = 'none';
+
+        // Add event listener to the Next button to toggle the side panel on click
+        nextAppointmentBtn.addEventListener('click', toggleSidePanel);
+
+
+
+        const heightSelect = document.getElementById('height');
+
+        for (let feet = 4; feet <= 7; feet++) {
+            for (let inches = 0; inches <= 11; inches++) {
+                if (feet === 7 && inches > 0) break; // Limit to 7'0"
+                const value = `${feet}-${inches}`;
+                const text = `${feet}'${inches}"`;
+                const option = new Option(text, value);
+                heightSelect.appendChild(option);
+            }
+        }
+
+
+
+        const tabs = document.querySelectorAll('.tab');
+        const slider = document.querySelector('.slider');
+
+        tabs.forEach((tab, index) => {
+            tab.addEventListener('click', () => {
+                document.querySelector('.tab.active')?.classList.remove('active');
+                tab.classList.add('active');
+                slider.style.left = `${index * 140 + 5}px`; // 140 = button width, 5 = padding
+            });
+        });
     </script>
 </x-layouts.cashlayout>
