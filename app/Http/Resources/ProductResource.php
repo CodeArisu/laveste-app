@@ -20,7 +20,12 @@ class ProductResource extends JsonResource
             'original_price' => $this->original_price,
             'description' => $this->description,
             'supplier' => $this->supplier ? new SupplierResource($this->whenLoaded('supplier')) : null,
-            'type' => $this->types->first() ? new TypeResource($this->whenLoaded('types')->first()) : null, 
+            'type' => $this->whenLoaded('types', function () {
+                return $this->types->first() ? [
+                    'type_name' => $this->types->first()->type_name,
+                    // Include other type fields if needed
+                ] : null;
+            }), 
             'subtypes' => SubtypeResource::collection($this->whenLoaded('subtypes')) ?? null,
             'added_at' => $this->created_at,
         ];

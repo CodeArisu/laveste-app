@@ -13,11 +13,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $files_arr = scandir(dirname(__FILE__)); // Get all files in the directory
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($files_arr as $file) {
+            if ($file !== 'DatabaseSeeder.php' && $file[0] !== '.' && pathinfo($file, PATHINFO_EXTENSION) === 'php') {
+                // Get class name without the .php extension
+                $className = pathinfo($file, PATHINFO_FILENAME);
+
+                // Add namespace for Laravel seeders
+                $fullyQualifiedClass = "Database\\Seeders\\$className";
+
+                // Ensure the class exists before calling it
+                if (class_exists($fullyQualifiedClass)) {
+                    $this->call($fullyQualifiedClass);
+                } else {
+                    echo "Class $fullyQualifiedClass not found.\n";
+                }
+            }
+        }
     }
 }

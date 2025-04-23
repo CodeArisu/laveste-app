@@ -27,7 +27,7 @@ h2 {
     font-weight: 400;
 }
 
-.form-sections {
+.form-sections form{
     display: flex;
     justify-content: space-between;
     gap: 60px;
@@ -74,7 +74,7 @@ textarea {
 }
 
 .button-group {
-    display: flex;
+    display: block;
     justify-content: flex-end;
     gap: 30px;
     margin-top: 30px;
