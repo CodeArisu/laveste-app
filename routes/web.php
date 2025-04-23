@@ -16,7 +16,7 @@ Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'reg
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login'); // login form page
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginUser'])->name('login');
 
-Route::middleware(['auth', 'web'])->group(function () {
+Route::middleware(['auth', 'web', 'role:manager,admin'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'logoutUser'])->name('logout');
 
     Route::name('cashier.')->prefix('cashier')->group( function () {
