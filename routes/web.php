@@ -6,12 +6,13 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('src.landing');
-});
+// 'src.admin.adproduct_blades.productadd'
+// 'src.admin.dashboard'
+// src.admin.adproduct_blades.infoprod
 
-Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerIndex'])->name('form.register'); // register form page
-Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerUser'])->name('register');
+Route::get('/', function () {
+    return view('src.cashier.home');
+});
 
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login'); // login form page
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginUser'])->name('login');

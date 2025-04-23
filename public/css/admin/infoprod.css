@@ -1,0 +1,354 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fdf3d8;
+    margin: 0;
+    padding: 30px; /* increased */
+    font-size: 18px; /* base font size bumped up */
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 30px; /* increased gap */
+}
+
+.product-section, .supplier-section {
+    background-color: #fdf3d8;
+    padding: 30px; /* increased */
+    flex: 1 1 45%;
+}
+
+h3 {
+    color: #823b36;
+    font-weight: normal;
+    border-bottom: 2px solid #d4a69f; /* thicker line */
+    padding-bottom: 10px;
+    font-size: 30px; /* increased */
+    font-family: 'Ovo';
+}
+
+.product-content {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.product-image {
+    width: 220px; /* bigger image */
+    height: auto;
+    object-fit: cover;
+}
+
+.product-details {
+    color: #823b36;
+    font-size: 23px;
+}
+
+.product-details h2 {
+    margin: 0 0 18px 0; /* added bottom margin for space below title */
+    font-size: 36px;
+    color: #823b36;
+    font-family: 'Ovo';
+}
+
+.product-details p {
+    margin: 18px 0; /* increased from 10px to 18px for more vertical gap */
+    font-size: 23px;
+}
+
+
+.description {
+    margin-top: 25px;
+    color: #823b36;
+    font-size: 23px; /* increased */
+}
+
+.description h4 {
+    margin-bottom: 15px;
+    font-size: 24px; /* increased */
+}
+
+.supplier-details p {
+    margin: 20px 0;
+    color: #823b36;
+    font-size: 23px;
+}
+
+.supplier-details .indented {
+    display: inline-block;
+    margin-left: 20px;     /* for indentation */
+    margin-top: 8px;       /* for vertical gap between label and value */
+}
+
+
+.buttons {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    gap: 40px;
+    margin-top: 5px; /* adjusted for more space between buttons and content */
+    margin-bottom: 50px; /* added margin at the end */
+}
+
+button {
+    border: none;
+    padding: 14px 35px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s; /* smooth transition */
+    width: 250px; /* fixed width */
+    min-width: 200px; /* ensures button is not smaller than 200px */
+}
+
+
+button:hover {
+    transform: scale(1.05); /* slight scale on hover */
+}
+
+.delete {
+    background-color: #ff7e79;
+    color: #551111;
+}
+
+.delete:hover {
+    background-color: #f25a5a; /* change color on hover */
+}
+
+.update {
+    background-color: #ffe463;
+    color: #5a4e00;
+}
+
+.update:hover {
+    background-color: #e1c14d; /* change color on hover */
+}
+
+.add {
+    background-color: #92e2a8;
+    color: #004d28;
+}
+
+.add:hover {
+    background-color: #75c68b; /* change color on hover */
+}
+
+/* Back Button */
+.back-btn {
+    background-color: #551111;
+    color: #ffffff;
+    font-weight: 500;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Ovo';
+}
+
+.back-btn:hover {
+    background-color: #975050; /* slightly darker green */
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+/* Add some margin at the top to position it nicely */
+.container > .back-btn {
+    margin-bottom: 20px; /* Adjust as needed */
+}
+
+
+
+
+
+
+.side-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 800px;
+    height: 100%;
+    background-color: #fdf3d8;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+    padding: 40px 30px;
+    font-family: 'Ovo';
+    color: #823b36;
+    overflow-y: auto;
+    display: none;
+    z-index: 9999;
+    font-family: 'Poppins', sans-serif;
+}
+
+.side-panel h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #823b36;
+    font-family: 'Ovo';
+}
+
+.garment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px; /* Increased from 20px to 30px */
+}
+
+.form-row {
+    display: flex;
+    gap: 30px; /* Increased from 20px to 30px */
+}
+
+
+.form-row > div {
+    flex: 1;
+}
+
+.garment-form label {
+    margin-bottom: 10px;
+    display: inline-block;
+    font-weight: 400;
+}
+
+
+
+.garment-form input,
+.garment-form textarea {
+    background-color: #e4bfae;
+    border: 1px solid #823b36;
+    border-radius: 15px;
+    padding: 12px;
+    font-size: 16px;
+    width: 100%;
+    outline: none;
+    margin-top: 5px;
+}
+
+.green-input {
+    background-color: #92e2a8 !important;
+    color: black;
+}
+
+.green-button {
+    background-color: #92e2a8;
+    border: none;
+    border-radius: 30px;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: 500;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    align-self: flex-end;
+}
+
+.green-button:hover {
+    background-color: #75c68b;
+}
+
+
+
+.tight-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+select {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #8b2e2e;
+    background-color: #e9c4b9;
+    font-size: 16px;
+    color: #5a1e1e;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    outline: none;
+}
+
+select:focus {
+    border-color: #8b2e2e;
+    background-color: #f1e1d0; /* Optional: light color on focus */
+}
+
+
+
+
+/* Delete Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.2);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: white;
+    border: 2px solid #e38888;
+    border-radius: 25px;
+    padding: 40px 50px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal-icon img {
+    width: 90px;
+    height: auto;
+    background-color: #f2f2f2;
+    border-radius: 50%;
+    padding: 20px;
+}
+
+.modal-text {
+    font-size: 24px;
+    color: #000;
+    font-weight: 500;
+    margin: 30px 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 14px 40px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid #e38888;
+    transition: transform 0.2s ease;
+}
+
+.modal-cancel {
+    background-color: #fff;
+    color: #000;
+}
+
+.modal-confirm {
+    background-color: #ff9d9d;
+    color: #000;
+}
+
+.modal-buttons button:hover {
+    transform: scale(1.05);
+}
+
+
+
+

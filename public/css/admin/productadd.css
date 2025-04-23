@@ -1,0 +1,145 @@
+body {
+    font-family: 'Ovo';
+    background-color: #fdf1d9;
+    margin: 0;
+    padding: 60px;
+    color: #8b2e2e;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 40px;
+    font-family: 'Ovo';
+    font-weight: 400;
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #8b2e2e;
+    padding-bottom: 8px;
+    font-family: 'Ovo';
+    font-weight: 400;
+}
+
+.form-sections {
+    display: flex;
+    justify-content: space-between;
+    gap: 60px;
+    margin-bottom: 40px;
+}
+
+.form-section {
+    flex: 1;
+}
+
+form label {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 10px;  /* Added space between label and input */
+    font-weight: 500;
+    font-size: 16px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #8b2e2e;
+    background-color: #e9c4b9;
+    font-size: 16px;
+    color: #5a1e1e;
+    box-sizing: border-box;
+    margin-bottom: 20px;  /* Optional: adds space before next label */
+    outline: none;
+}
+
+textarea {
+    resize: none;
+}
+
+.row {
+    display: flex;
+    gap: 30px;
+}
+
+.row > div {
+    flex: 1;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.clear-btn,
+.add-btn {
+    padding: 16px 32px;
+    font-size: 18px;
+    border: none;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.clear-btn {
+    background-color: transparent;
+    border: 2px solid #000;
+    color: #000;
+}
+
+.clear-btn:hover {
+    background-color: #eee;
+}
+
+.add-btn {
+    background-color: #7ce97c;
+    color: #000;
+}
+
+.add-btn:hover {
+    background-color: #5fd65f;
+}
+
+.back-btn {
+    display: inline-block;
+    margin-bottom: 20px;
+    background-color: #551111;
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: #975050;
+}
+
+
+select {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #8b2e2e;
+    background-color: #e9c4b9;
+    font-size: 16px;
+    color: #5a1e1e;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    outline: none;
+}
+
+select:focus {
+    border-color: #8b2e2e;
+    background-color: #f1e1d0; /* Optional: light color on focus */
+}

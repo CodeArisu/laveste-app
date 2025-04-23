@@ -1,0 +1,101 @@
+.product-page {
+    padding: 40px 60px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.section-title {
+    font-size: 2.5rem;
+    color: #9b3c3c;
+    font-weight: 700;
+}
+
+.add-product-btn {
+    background-color: #9bf99c;
+    color: #1a1a1a;
+    font-weight: 530;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.add-product-btn span {
+    font-size: 1.7rem;
+    margin-right: 8px;
+}
+
+.add-product-btn:hover {
+    background-color: #7ddc81; /* slightly darker green */
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.product-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 15px;  /* Adds vertical gap between rows */
+    text-align: left;
+}
+
+.product-table thead {
+    background-color: #f7ecd3;
+}
+
+.product-table th {
+    padding: 20px 15px;
+    color: #9b3c3c;
+    font-size: 1.1rem;
+}
+
+.product-table td {
+    padding: 20px 15px;
+    color: #9b3c3c;
+    font-size: 1rem;
+    background-color: #fff; /* Optional: add this to make gaps visible */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.product-table tr {
+    border-bottom: 1px solid #c48181;
+    cursor: pointer;  /* Changes cursor to indicate it's clickable */
+}
+
+.product-table td:hover {
+    background-color: #f7ecd3; /* Light gray background when hovered */
+}
+
+.product-table tr:last-child {
+    border-bottom: none;
+}
+
+.status {
+    padding: 8px 16px; /* Bigger badge */
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.status.damaged {
+    background: #d83939;
+    color: #eed6d6;
+}
+
+.status.good {
+    background: #a3d9a5;
+    color: #2a7d2e;
+}
+
