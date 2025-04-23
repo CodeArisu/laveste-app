@@ -16,7 +16,7 @@ Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginU
 Route::middleware(['auth', 'web'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'logoutUser'])->name('logout');
 
-    Route::name('cashier.')->prefix('cashier')->group( function () {
+    Route::middleware(['role:admin,manager,accountant'])->name('cashier.')->prefix('cashier')->group( function () {
         Route::get('/home', function () {
             return view('src.cashier.home');
         })->name('home');
