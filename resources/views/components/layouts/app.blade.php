@@ -13,13 +13,11 @@
 
         @stack('styles')
 
-        {{-- @vite(['resources/js/app.js', 'resources/scss/app.scss']) --}}
+        @vite(['resources/js/app.js', 'resources/scss/app.scss'])
 
     </head>
 
-    <body class='src'>
-        @include('components.layouts.header')
-        
+    <body>        
         {{-- main src component --}}
         @isset($slot)
             {{ $slot }}

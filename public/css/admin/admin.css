@@ -1,0 +1,148 @@
+/* Basic reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    background: #f2f2f2;
+}
+
+/* Main container */
+.main-container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 140px;
+    background: #f4ebd4;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+/* Navigation styling */
+.nav {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    padding: 10px 0;
+}
+
+/* Default nav item */
+.nav-item {
+    width: 70px;  /* Increased the width of the nav item */
+    height: 70px; /* Increased the height of the nav item */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b76e79;
+    position: relative;
+    margin: 20px auto; /* Increased margin for more gap between icons */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+/* Active nav item with red shape on the RIGHT */
+.nav-item.active {
+    background: #933;
+    width: 140px;  /* Increased width of the active item */
+    height: 70px;  /* Same height for consistency */
+    border-top-right-radius: 35px;  /* Adjusted for rounded corners */
+    border-bottom-right-radius: 35px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* Change icon color when the nav item is active */
+.nav-item.active img {
+    filter: brightness(0) invert(1) sepia(100%) saturate(400%) hue-rotate(180deg);  /* Changes the icon to a light color like #f4ebd4 */
+}
+
+/* Hover effect = expanded but preserves icon original color */
+.nav-item:hover {
+    background: #933;
+    width: 140px;  /* Increased hover width */
+    height: 70px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    color: white;
+}
+
+/* Change icon color when hovering over a nav item */
+.nav-item:hover img {
+    transform: scale(1.2);  /* Increased scale of icons on hover */
+    filter: brightness(0) invert(1) sepia(100%) saturate(400%) hue-rotate(180deg);  /* Changes the icon to a light color like #f4ebd4 */
+}
+
+/* Icon styling */
+.nav-item img {
+    transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
+    width: 40px;  /* Increased icon size */
+    height: 40px; /* Increased icon size */
+}
+
+/* Main content area */
+.main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header bar */
+.header {
+    height: 90px;
+    background: #f4ebd4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.title {
+    color: #993333;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-info span {
+    color: #993333;
+    font-size: 18px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #ccc;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Content area */
+.content-area {
+    background: #ffffff;
+    flex-grow: 1;
+}
