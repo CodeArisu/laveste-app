@@ -11,6 +11,9 @@ Route::get('/', function () {
     return redirect()->route('dashboard.home');
 });
 
+Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerIndex'])->name('form.register'); // register form page
+Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerUser'])->name('register');
+
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login'); // login form page
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginUser'])->name('login');
 
@@ -62,7 +65,6 @@ Route::middleware(['auth', 'web'])->group(function () {
 // });
 
 // Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
-
 
 Route::get('/dashboard/garments', function () {
     return view('src.admin.garment');

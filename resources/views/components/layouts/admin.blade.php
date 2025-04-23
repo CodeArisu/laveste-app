@@ -38,7 +38,7 @@
                             <img src="{{ asset('assets/icons/v4.png') }}" alt="Handshake Icon" class="icon">
                         </a>
                     </li>
-                    <li class="nav-item {{ request()->is('/dashboard/prodrented') ? 'active' : '' }}">
+                    <li class="nav-item {{ request()->is('/dashboard/rented') ? 'active' : '' }}">
                         <a href="{{ route('rented') }}">
                             <img src="{{ asset('assets/icons/v5.png') }}" alt="File Icon" class="icon">
                         </a>
@@ -51,10 +51,13 @@
                     </li>
                 </ul>
             </aside>
-
+            
             <div class="content-area">
                 {{ $slot }}
             </div>
         </div>
+
+
+
     </div>
 </x-layouts.app>
