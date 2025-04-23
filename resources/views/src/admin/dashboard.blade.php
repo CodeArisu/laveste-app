@@ -17,14 +17,14 @@
                 <img src="{{ asset('assets/icons/d2.png') }}" alt="Products Icon" class="card-icon">
                 <div class="card-info">
                     <p class="card-label">Total Products</p>
-                    <span class="card-value">50</span>
+                    <span class="card-value">{{ $productCount }}</span>
                 </div>
             </div>
             <div class="card">
                 <img src="{{ asset('assets/icons/d3.png') }}" alt="Displayed Products Icon" class="card-icon">
                 <div class="card-info">
                     <p class="card-label">Displayed Products</p>
-                    <span class="card-value">30</span>
+                    <span class="card-value">0</span>
                 </div>
             </div>
         </div>

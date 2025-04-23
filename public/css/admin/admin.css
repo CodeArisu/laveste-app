@@ -11,7 +11,7 @@ body {
 }
 
 /* Main container */
-.container {
+.main-container {
     display: flex;
     height: 100vh;
     position: relative;

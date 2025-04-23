@@ -32,10 +32,10 @@ class ProductRequest extends FormRequest
             'supplier_name' => 'required|string|max:65',
             'company_name' => 'nullable|string|max:65',
             'address' => 'nullable|string|max:255',
-            'contact' => 'required|integer|digits:10',
+            'contact' => 'required|string|digits:11',
 
             'type' => 'required|string',
-            'subtype' => 'required|array|prohibited_if:subtype.*,string',
+            'subtype' => 'required|prohibited_if:subtype.*,string',
             'subtype.*' => 'required|string',
         ];
     }

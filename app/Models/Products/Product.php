@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Str;
+use NumberFormatter;
 
 class Product extends Model
 {
@@ -53,14 +55,20 @@ class Product extends Model
         return $this->hasOne(Garment::class, 'product_id');
     }
 
+    public function getFormattedOriginalPrice()
+    {
+        $formatter = new NumberFormatter('en_PH', NumberFormatter::CURRENCY);
+        return $formatter->formatCurrency($this->original_price, 'PHP');
+    }
+
     // direct access to subtypes and types
     public function subtypes() : HasManyThrough
     {
         return $this->hasManyThrough(Subtype::class, ProductCategories::class, 'product_id', 'id', 'id', 'subtype_id');
     }
-    public function types() : HasManyThrough
+    public function types() : HasOneThrough
     {
-        return $this->hasManyThrough(Type::class, ProductCategories::class, 'product_id', 'id', 'id', 'type_id');
+        return $this->hasOneThrough(Type::class, ProductCategories::class, 'product_id', 'id', 'id', 'type_id');
     }
 
     protected function isValidUniqueId($value): bool

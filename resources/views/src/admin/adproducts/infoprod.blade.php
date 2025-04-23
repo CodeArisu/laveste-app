@@ -10,46 +10,39 @@
 <body>
 
     <div class="container">
-
-
-
         <div class="product-section">
-            <a href="{{ url('/admin/adproduct') }}" class="back-btn">← Back</a>
+            <a href="{{ url()->previous() }}" class="back-btn">← Back</a>
             <h3>Product Information</h3>
             <div class="product-content">
                 <img src="/assets/images/h1.png" alt="Gown Image" class="product-image">
                 <div class="product-details">
-                    <h2>Very pretty cute gown</h2>
+                    <h2>{{ $products->product_name }}</h2>
                     <br>
                     <p><strong>Type</strong>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong></p>
                     <p>Gown &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Evening Gown</p>
-                    <p><strong>Size</strong><br>Medium</p>
-                    <p><strong>Rental Price</strong><br>3,500.00</p>
+                    <p><strong>Original Price</strong><br>{{ $products->original_price }}</p>
                 </div>
             </div>
             <br><br>
             <div class="description">
                 <h4>Description</h4>
                 <p>
-                    This elegant gown features a chic one-shoulder design with cascading ruffles, adding a touch of
-                    sophistication and flair. Perfect for formal events, it combines style and grace, ensuring a
-                    standout look for any special occasion.
+                    {{ $products->description }}
                 </p>
             </div>
         </div>
-
 
         <div class="supplier-section">
             <br>
             <h3>Supplier Information</h3>
             <div class="supplier-details">
-                <p><strong>Supplier Name</strong><br><span class="indented">Jhonny Bravo</span></p>
-                <p><strong>Company Name</strong><br><span class="indented">Lokal Dabaw</span></p>
-                <p><strong>Address</strong><br><span class="indented">Davao City</span></p>
-                <p><strong>Contact</strong><br><span class="indented">09123456789</span></p>
-                <p><strong>Original Price</strong><br><span class="indented">2,000.00</span></p>
-                <p><strong>Date</strong><br><span class="indented">March 1, 2025</span></p>
+                <p><strong>Supplier Name</strong><span class="indented">{{ $products->supplier->supplier_name }}</span></p>
+                <p><strong>Company Name</strong><span class="indented">{{ $products->supplier->company_name }}</span></p>
+                <p><strong>Address</strong><span class="indented">{{ $products->supplier->address }}</span></p>
+                <p><strong>Contact</strong><span class="indented">{{ $products->supplier->contact }}</span></p>
+                <p><strong>Original Price</strong><span class="indented">{{ $products->original_price }}</span></p>
+                <p><strong>Date</strong><span class="indented">{{ $products->created_at }}</span></p>
             </div>
 
         </div>
@@ -57,7 +50,7 @@
 
         <div id="addGarmentPanel" class="side-panel">
             <br>
-            <a href="{{ url('/admin/adproduct_blades/infoprod') }}" class="back-btn">←</a>
+            <a href="{{ url()->previous() }}" class="back-btn">←</a>
             <br><br>
             <h2>Add to Garment</h2>
             <form class="garment-form">
@@ -129,9 +122,6 @@
             </form>
         </div>
 
-
-
-
         <!-- Delete Confirmation Modal -->
         <div id="deleteModal" class="modal-overlay">
             <div class="modal-content">
@@ -146,13 +136,15 @@
             </div>
         </div>
 
-
-
-
         <div class="buttons">
-            <button class="delete">Delete</button>
+            <form action="{{ route('dashboard.product.delete', [$products->id]) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type='submit' class="delete">Delete</button>
+            </form>
+
             <button class="update"
-                onclick="window.location.href='{{ url('/admin/adproduct_blades/editprod') }}'">Update</button>
+                onclick="window.location.href='{{ route('dashboard.product.edit', [$products->id]) }}'">Update</button>
             <button class="add">Add to Garment</button>
         </div>
     </div>
@@ -193,9 +185,6 @@ function updateSubTypes() {
     }
 }
 
-
-
-
    // Open modal when delete is clicked
    document.querySelector('.delete').addEventListener('click', () => {
         document.getElementById('deleteModal').style.display = 'flex';
@@ -213,8 +202,6 @@ function updateSubTypes() {
     });
 
     </script>
-
-
 
 </body>
 

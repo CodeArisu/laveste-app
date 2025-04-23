@@ -6,11 +6,10 @@
     <div class="product-page">
         <div class="header-section">
             <h2 class="section-title">Products</h2>
-            <a href="{{ url('/admin/adproduct_blades/productadd') }}" class="add-product-btn">
+            <a href="{{ route('dashboard.product.form') }}" class="add-product-btn">
                 <span>+</span> Add Product
-            </a>            
+            </a>
         </div>
-
         <table class="product-table">
             <thead>
                 <tr>
@@ -19,26 +18,18 @@
                     <th>Price</th>
                     <th>Type</th>
                     <th>Sub-type</th>
-                    <th>Size</th>
                 </tr>
             </thead>
             <tbody> <!-- Only one tbody here -->
-                <tr class="product-row" onclick="window.location='{{ url('/admin/adproduct_blades/infoprod') }}'">
-                    <td>0001</td>
-                    <td>Very nice gown</td>
-                    <td>3,600.00</td>
-                    <td>Gown</td>
-                    <td>Evening</td>
-                    <td>M</td>
-                </tr>
-                <tr class="product-row" onclick="window.location='{{ url('/admin/adproduct_blades/infoprod') }}'">
-                    <td>0002</td>
-                    <td>Stylish dress</td>
-                    <td>4,500.00</td>
-                    <td>Dress</td>
-                    <td>Casual</td>
-                    <td>L</td>
-                </tr>
+                @foreach ($products as $product)
+                    <tr class="product-row" onclick="window.location='{{ route('dashboard.product.show', $product->id) }}'">
+                        <td>{{ $product->id }}</td>
+                        <td>{{ Str::ucfirst($product->product_name) }}</td>
+                        <td>{{ $product->original_price }}</td>
+                        <td>{{ Str::upper($product->types->type_name) }}</td>
+                        <td>{{ Str::upper($product->subtypes[0]->subtype_name) }}</td>
+                    </tr>
+                @endforeach
             </tbody> <!-- Only one tbody here -->
         </table>
     </div>
