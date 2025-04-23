@@ -208,7 +208,7 @@
         </div>
 
         <div class="info-section">
-            <h3>User Information</h3>
+            <h3>Customer Information</h3>
             <p><span class="label1">Name</span> <span class="value1">John Doe</span></p>
             <p><span class="label1">Address</span> <span class="value1">Matina, Davao City</span></p>
             <p><span class="label1">Contact Information</span> <span class="value1">09640879654</span></p>

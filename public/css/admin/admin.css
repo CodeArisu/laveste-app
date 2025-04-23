@@ -112,8 +112,9 @@ body {
 
 .title {
     color: #993333;
-    font-size: 40px;
+    font-size: 50px;
     font-weight: 500;
+    font-family: 'Ovo';
 }
 
 .admin-info {
