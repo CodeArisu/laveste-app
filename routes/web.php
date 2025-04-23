@@ -4,10 +4,11 @@ use App\Http\Controllers\Api\CatalogController;
 use App\Http\Controllers\Api\GarmentController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Models\Products\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('src.cashier.home');
+    return redirect()->route('dashboard.home');
 });
 
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'loginIndex'])->name('form.login'); // login form page
@@ -29,6 +30,27 @@ Route::middleware(['auth', 'web'])->group(function () {
             return view('src.cashier.transaction');
         })->name('transaction');
     });
+
+    Route::name('dashboard.')->prefix('dashboard')->group( function () {
+        Route::get('/', function () {
+            $product = Product::all();
+            return view('src.admin.dashboard', ['productCount' => count($product)]);
+        })->name('home');
+    
+        Route::middleware(['role:admin'])->name('product.')->prefix('product')->group( function () {
+            Route::get('/', [\App\Http\Controllers\Api\ProductController::class, 'index'])->name('index');
+            Route::get('/create', [\App\Http\Controllers\Api\ProductController::class, 'create'])->name('form');
+    
+            Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');
+            Route::get('/{product}', [\App\Http\Controllers\Api\ProductController::class, 'show'])->name('show');
+    
+            Route::get('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'edit'])->name('edit');
+            Route::put('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'update'])->name('update');
+    
+            Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
+            // Route::resource('products', ProductController::class)->except(['create', 'edit', 'destroy', 'update']);
+        });
+    });
 });
 
 // Route::name('garment.')->prefix('garment')->group( function () {
@@ -41,40 +63,16 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 // Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
 
-Route::name('dashboard.')->prefix('dashboard')->group( function () {
 
-    Route::get('/', function () {
-        return view('src.admin.dashboard');
-    })->name('home');
-
-    Route::name('product.')->prefix('product')->group( function () {
-        Route::get('/', [\App\Http\Controllers\Api\ProductController::class, 'index'])->name('index');
-        Route::get('/create', [\App\Http\Controllers\Api\ProductController::class, 'create'])->name('form');
-
-        Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');
-        Route::get('/{product}', [\App\Http\Controllers\Api\ProductController::class, 'show'])->name('show');
-
-        Route::get('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'edit'])->name('edit');
-        Route::put('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'update'])->name('update');
-
-        Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
-        // Route::resource('products', ProductController::class)->except(['create', 'edit', 'destroy', 'update']);
-    });
-
-});
-
-// Route::get('/dashboard/garments', function () {
-//     return view('src.admin.garment');
-// });
-// Route::get('/dashboard/rented', function () {
-//     return view('src.admin.prodrented');
-// });
-// Route::get('/dashboard/transactions', function () {
-//     return view('src.admin.transactions');
-// });
-// Route::get('/dashboard/users', function () {
-//     return view('src.admin.users');
-// });
-// Route::get('/dashboard/product/edit', function () {
-//     return view('src.admin.adproducts.editprod');
-// });
+Route::get('/dashboard/garments', function () {
+    return view('src.admin.garment');
+})->name('garments');
+Route::get('/dashboard/rented', function () {
+    return view('src.admin.prodrented');
+})->name('rented');
+Route::get('/dashboard/transactions', function () {
+    return view('src.admin.transactions');
+})->name('transactions');
+Route::get('/dashboard/users', function () {
+    return view('src.admin.users');
+})->name('users');

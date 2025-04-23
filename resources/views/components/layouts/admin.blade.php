@@ -6,7 +6,7 @@
         <header class="header">
             <h1 class="title">La Veste Rentals</h1>
             <div class="admin-info">
-                <span>Admin Lara</span>
+                <span>Admin {{ Auth::user()->name }}</span>
                 <div class="avatar">
                     <img src="{{ asset('assets/images/catty.jpg') }}" alt="Admin Avatar">
                 </div>
@@ -28,21 +28,26 @@
                             <img src="{{ asset('assets/icons/v2.png') }}" alt="User Icon" class="icon">
                         </a>
                     </li>
-                    <li class="nav-item {{ request()->is('admin/garment') ? 'active' : '' }}"
-                        onclick="window.location.href='/admin/garment'">
-                        <img src="{{ asset('assets/icons/v3.png') }}" alt="Tag Icon" class="icon">
+                    <li class="nav-item {{ request()->is('/dashboard/garments') ? 'active' : '' }}">
+                        <a href="{{ route('garments') }}">
+                            <img src="{{ asset('assets/icons/v3.png') }}" alt="Tag Icon" class="icon">
+                        </a>
                     </li>
-                    <li class="nav-item {{ request()->is('admin/transactions') ? 'active' : '' }}"
-                        onclick="window.location.href='/admin/transactions'">
-                        <img src="{{ asset('assets/icons/v4.png') }}" alt="Handshake Icon" class="icon">
+                    <li class="nav-item {{ request()->is('/dashboard/transactions') ? 'active' : '' }}">
+                        <a href="{{ route('transactions') }}">
+                            <img src="{{ asset('assets/icons/v4.png') }}" alt="Handshake Icon" class="icon">
+                        </a>
                     </li>
-                    <li class="nav-item {{ request()->is('/admin/prodrented') ? 'active' : '' }}"
-                        onclick="window.location.href='/admin/prodrented'">
-                        <img src="{{ asset('assets/icons/v5.png') }}" alt="File Icon" class="icon">
+                    <li class="nav-item {{ request()->is('/dashboard/prodrented') ? 'active' : '' }}">
+                        <a href="{{ route('rented') }}">
+                            <img src="{{ asset('assets/icons/v5.png') }}" alt="File Icon" class="icon">
+                        </a>
+                        
                     </li>
-                    <li class="nav-item {{ request()->is('/admin/users') ? 'active' : '' }}"
-                        onclick="window.location.href='/admin/users'">
-                        <img src="{{ asset('assets/icons/v6.png') }}" alt="Users Icon" class="icon">
+                    <li class="nav-item {{ request()->is('/dashboard/users') ? 'active' : '' }}">
+                        <a href="{{ route('users') }}">
+                            <img src="{{ asset('assets/icons/v6.png') }}" alt="Users Icon" class="icon">
+                        </a>
                     </li>
                 </ul>
             </aside>
