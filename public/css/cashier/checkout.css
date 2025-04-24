@@ -1,0 +1,220 @@
+body {
+    margin: 0;
+    padding: 40px;
+    font-family: 'Georgia', serif;
+    background-color: #f3e7d3;
+    color: #7a3e3e;
+}
+
+h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+    font-weight: 400;
+}
+
+.section-title {
+    font-size: 20px;
+    border-bottom: 1px solid #7a3e3e;
+    padding-bottom: 5px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    display: block;
+    width: 100%;
+    font-weight: 200;
+}
+
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.calendar-container {
+    flex: 1 1 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.calendar {
+    background: white;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-align: center;
+    width: 50%;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+}
+
+.calendar-header button {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: #7a3e3e;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.calendar-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.calendar table {
+    margin-top: 10px;
+    width: 100%;
+    border-spacing: 8px;
+}
+
+.calendar td {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border-radius: 50%;
+    transition: 0.3s;
+}
+
+.calendar td:hover {
+    background-color: #e7c4a2;
+    cursor: pointer;
+}
+
+.date-inputs {
+    flex: 1 1 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 70px;
+}
+
+.date-inputs label {
+    margin: 10px 0 5px;
+    font-size: 18px;
+}
+
+.date-inputs input {
+    padding: 15px;
+    border: none;
+    border-radius: 20px;
+    background-color: white;
+    outline: none;
+    width: 60%;
+    height: 25px;
+    font-size: 16px;
+}
+
+/* Details Section */
+.details-section {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.details-group {
+    width: 48%;
+    font-size: 18px;
+}
+
+.details-group label {
+    display: block;
+    margin-top: 15px;
+    font-size: 18px;
+}
+
+/* Common input styling for form fields */
+.details-group input[type="text"],
+.details-group input[type="tel"],
+.details-group input[type="date"] {
+    width: 70%;
+    height: 50px;
+    padding: 10px;
+    background-color: #f3e7d3;
+    border: 1px solid #7a3e3e;
+    border-radius: 15px;
+    outline: none;
+    margin-top: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Paired input layout for Pickup/Return Dates */
+.date-pair {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.input-block input {
+    width: 100%;
+}
+
+/* Radio Group */
+.radio-group {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.radio-group label {
+    margin: 0 15px 0 5px;
+    font-size: 16px;
+}
+
+/* Button Styling - Updated for Bigger Size */
+.checkout-button {
+    margin-top: 30px;
+    text-align: right;
+}
+
+.checkout-button button {
+    background-color: #e7c4a2;
+    border: none;
+    padding: 18px 45px; /* Increased padding for a larger button */
+    border-radius: 30px; /* Slightly rounder for a better look */
+    font-size: 20px; /* Increased text size */
+    color: #7a3e3e;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+}
+
+.checkout-button button:hover {
+    opacity: 1;
+    transform: scale(1.02); /* Subtle zoom on hover */
+}
+
+.rental-header {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* spacing between arrow and title */
+    color: #7c2d12; /* optional styling */
+    margin-bottom: 20px; /* space below header */
+}
+
+.back {
+    font-size: 36px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+}
+
+.rental-header h1 {
+    font-size: 32px;
+    margin: 0;
+    font-weight: 400;
+}
+
+

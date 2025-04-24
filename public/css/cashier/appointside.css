@@ -1,0 +1,203 @@
+body {
+    background-color: transparent;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.side-panel {
+    width: 700px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 20px;
+    background-color: #F8F1E6;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.name {
+    font-family: "Ovo";
+    font-size: 40px;
+    font-weight: 400;
+}
+
+.side-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.image-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.image-container img {
+    width: 100%; /* Make the image take the full width of the container */
+    max-width: 650px; /* Set the maximum width */
+    height: 300px;
+    border-radius: 8px;
+}
+
+.rent-section, .fitdetails-section, .appointment-section {
+    margin-top: 20px; /* Ensure sections have some space from the top */
+}
+
+.rent-section h3, .fitdetails-section h3, .appointment-section h3 {
+    color: #000;
+    font-family: "Ovo";
+    font-size: 25px;
+    font-weight: 400;
+    border-bottom: 1px solid #983031;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+.rent-section p,
+.appointment-section p {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin: 5px 0;
+    font-size: 16px;
+    margin-bottom: 18px;
+    gap: 10px; /* Closer spacing between label and value */
+}
+
+.rent-section .label,
+.appointment-section .label {
+    font-weight: normal;
+    flex: 1;
+    text-align: left;
+}
+
+.rent-section .value,
+.appointment-section .value {
+    font-weight: normal;
+    flex: 1;
+    text-align: start;
+    font-weight: bolder;
+}
+
+.fitdetails-section {
+    margin-top: 20px;
+}
+
+.fitdetails-section h3 {
+    color: #000;
+    font-family: "Ovo";
+    font-size: 25px;
+    font-weight: 400;
+    border-bottom: 1px solid #983031;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+}
+
+/* Layout for side-by-side details */
+.det1, .det2 {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.fitdetails-section .det1,
+.fitdetails-section .det2 {
+    display: inline-block;
+    vertical-align: top;
+    width: 49%;
+}
+
+/* Shared styling for paragraph rows */
+.fitdetails-section p {
+    display: flex;
+    align-items: center;
+    margin: 5px 0;
+    font-size: 16px;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+/* Label styling */
+.fitdetails-section .label {
+    flex: 1;
+    text-align: left;
+    font-weight: normal;
+}
+
+/* Value styling */
+.fitdetails-section .value {
+    flex: 1;
+    text-align: left;
+    font-weight: bolder;
+}
+
+
+
+
+.btn-section {
+    margin-top: 30px;
+}
+
+.cancel-button,
+.completed-button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    width: 300px;
+    height: 40px;
+    margin-right: 10px;
+    margin-top: 100;
+    border: none; /* Removes border outline */
+    color: black; /* Default text color */
+    outline: none; /* Removes focus outline */
+    cursor: pointer;
+}
+
+.cancel-button {
+    background-color: #FF6B6B;
+}
+
+.cancel-button:hover {
+    background-color: #e55c5c;
+    color: white; /* Text turns white on hover */
+}
+
+.completed-button {
+    background-color: #95E79C;
+}
+
+.completed-button:hover {
+    background-color: #80c489;
+    color: white; /* Text turns white on hover */
+}
+
+.total-value {
+    font-size: 18px;
+    color: #983031;
+    font-weight: 700;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    margin: 15px;
+    display: flex;
+    align-items: center;
+    color: #333;
+    font-weight: bold;
+    text-decoration: none; /* ensures no underline by default */
+}
+
+.back-btn:hover {
+    color: white;
+    text-decoration: none; /* removes underline on hover */
+}
+
+

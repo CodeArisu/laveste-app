@@ -17,7 +17,7 @@
 
     </head>
 
-    <body class='src'>
+    <body>        
         {{-- main src component --}}
         @isset($slot)
             {{ $slot }}

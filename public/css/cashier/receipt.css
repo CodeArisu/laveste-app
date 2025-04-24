@@ -1,0 +1,173 @@
+body {
+    margin: 0;
+    font-family: 'Georgia', serif;
+    background-color: #f3e7cf;
+}
+
+.container {
+    text-align: center;
+    padding: 30px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    margin-bottom: 30px;
+    color: #7c2d12;
+}
+
+.left-group {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* controls spacing between back arrow and title */
+}
+
+
+
+.back {
+    font-size: 36px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit; /* keeps the arrow color consistent */
+}
+
+
+.title {
+    font-size: 35px;
+    font-weight: 500;
+}
+
+.checkout {
+    font-size: 30px;
+    font-weight: 300;
+}
+
+
+.receipt-card {
+    width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.receipt-header {
+    background-color: #842d2d;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.receipt-body {
+    padding: 30px;
+}
+
+.thanks {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #842d2d;
+}
+
+.item-section {
+    display: flex;
+    margin-bottom: 25px;
+}
+
+.item-image {
+    width: 120px;
+    height: auto;
+    margin-right: 20px;
+    object-fit: cover;
+}
+
+.item-details {
+    color: #842d2d;
+}
+
+.item-name {
+    font-weight: 500;
+}
+
+.item-size {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.time {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.billing-section {
+    margin-bottom: 25px;
+    color: #842d2d;
+}
+
+.billing-section p:not(.label) {
+    margin-left: 20px;
+}
+
+
+.label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.summary {
+    color: #842d2d;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* aligns the whole block to the right */
+}
+
+.summary p {
+    display: flex;
+    justify-content: space-between;
+    width: 250px; /* fixed width to align text and price neatly */
+    margin: 8px 0;
+}
+
+.summary .price {
+    font-weight: normal;
+}
+
+
+
+
+.price {
+    float: right;
+}
+
+.total {
+    margin-top: 20px;
+}
+
+.bold {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.print-btn {
+    margin-top: 30px;
+    background-color: #e2b9a2;
+    border: none;
+    color: white;
+    font-size: 18px;
+    padding: 12px 35px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.print-btn:hover {
+    background-color: #d19d82; /* slightly darker shade for hover */
+    transform: scale(1.03);     /* subtle zoom effect */
+}
+
