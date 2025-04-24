@@ -22,7 +22,7 @@ class AuthController extends ApiBaseController
 
     public function registerIndex()
     {
-        return view('src.register');
+        return view('src.admin.users.register');
     }
         
     public function loginUser(AuthRequest $request) 

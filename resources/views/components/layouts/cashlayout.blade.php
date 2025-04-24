@@ -10,6 +10,7 @@
     <nav class="navbar">
         <div class="navdiv">
             <div class="logo"><a href="#">La Veste Rentals</a></div>
+            
             @auth
                 <div class="cashier">
                     <h3>{{ Auth::user()->name }}</h3>
@@ -25,8 +26,6 @@
                 </div>
             @endauth
                    
-            
-               
         </div>
 
         <ul class="nav-links">
@@ -36,10 +35,6 @@
         </ul>
     </nav>
 
-
-   
-
-    
     <main id="cashier-container">
         {{ $slot }}
     </main>

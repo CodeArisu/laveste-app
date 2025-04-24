@@ -12,8 +12,6 @@
         <h2 class="transactions-title">Transactions</h2>
         <div id="home-container">
             <!-- Tabs= -->
-            
-            
             <div class="tabs-container">
                 <div class="tabs-wrapper">
                     <div class="tabs">
