@@ -8,12 +8,13 @@ use App\Models\Garments\Garment;
 use App\Models\{Catalog, Statuses\DisplayStatus};
 use Illuminate\Support\Facades\{DB, Log};
 
-class CatalogService
+class CatalogService extends BaseServicesClass
 {
     public function requestDisplayGarment(CatalogRequest $request, Garment $garment)
     {
         try {
             return DB::transaction(function () use ($request, $garment) {
+                $this->checkIfExists($garment, $request->safe()->garment_id, 'garment_id');
                 $display = $this->createDisplayGarment($request, $garment);
                 if (empty($display)) {
                     throw new \RuntimeException('No garment were added');
@@ -21,7 +22,7 @@ class CatalogService
                 return ['display' => $display, 'message' => 'Added to display successfully'];
             });
         } catch (\Exception $e) {
-            Log::error('Display creation failed: ' . $e->getMessage());
+            Log::error('Display product failed: ' . $e->getMessage());
             return ['display' => $display, 'message' => 'Failed to add to Display'];
         }
     }
@@ -29,9 +30,11 @@ class CatalogService
     private function createDisplayGarment(CatalogRequest $request, $garment)
     {
         $validated = $request->safe();
+
         if (!DisplayStatus::exists()) {
             $this->generateStatus();
         }
+        
         $display = $this->handleDisplayGarment([
             'user_id' => $request->user()->id,
             'garment_id' => $garment->id,
@@ -43,7 +46,6 @@ class CatalogService
 
     private function generateStatus(): void
     {
-        // get all existing conditions
         $existingConditions = DisplayStatus::value('status_name')->toArray();
         $allConditions = array_map(fn($condition) => $condition->label(), ProductStatus::cases());
 

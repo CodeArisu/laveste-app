@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\InternalException;
+use App\Http\Requests\CustomerDetailsRequest;
 use App\Models\Transactions\CustomerDetail;
 use App\Models\Transactions\CustomerRent;
 use Illuminate\Support\Facades\DB;
@@ -19,22 +20,18 @@ class CustomerDetailService
      * @return array customer detail data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    public function requestCustomerDetail($request)
+    public function requestCustomerDetail(CustomerDetailsRequest $request)
     {
         try {
             return DB::transaction(function () use ($request) {
-                $customerDetails = $this->createCustomerDetail($request);
-
+                $customerDetails = $this->createCustomerRent($request);
                 if (empty($customerDetails)) {
                     throw new \RuntimeException('No customer details were added');
                 }
-
                 return ['customer_details' => $customerDetails, 'message' => 'Customer details added successfully'];
             });
         } catch (\Exception $e) {
-            Log::error("Customer detail creation failed: " . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
-            return ['customer_details' => $customerDetails, 'message' => 'Failed to add customer details'];
+           
         }
     }
 
@@ -45,20 +42,23 @@ class CustomerDetailService
      * @return array customer rent data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    protected function createCustomerRent($request)
+    protected function createCustomerRent(CustomerDetailsRequest $request)
     {
         $validated = $request->safe();
 
-        $customerId = $this->createCustomerDetail($request);
-        $customerDetails = $this->handleCustomerRent($validated->only([
+        $customerDetails = $this->createCustomerDetail($validated);
+
+        $customerRent = $this->handleCustomerRent($validated->only([
             'pickup_date',
             'rented_date',
             'return_date',
         ]), [
-            'customer_details_id' => $customerId['customer_details']->id,
+            'customer_details_id' => $customerDetails['customer_details']->id,
         ]);
+
+        $customerRentDetails = $this->createRentDetail($validated);
         
-        return compact('customerDetails');
+        return compact('customerDetails', 'customerRent', 'customerRentDetails');
     }
 
     /**
@@ -68,10 +68,8 @@ class CustomerDetailService
      * @return array rent detail data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    protected function createRentDetail($request)
+    protected function createRentDetail($validated)
     {
-        $validated = $request->safe();
-
         $customerDetails = $this->handleRentDetail($validated->only([
             'venue',
             'event_date',
@@ -87,10 +85,8 @@ class CustomerDetailService
      * @param \Illuminate\Http\Request $request
      * @return array customer detail data
      */
-    protected function createCustomerDetail($request)
+    protected function createCustomerDetail($validated)
     {
-        $validated = $request->safe();
-
         // Handle the customer detail creation
         $customerDetails = $this->handleCustomerDetail($validated->only([
             'name',

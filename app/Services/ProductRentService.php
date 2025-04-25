@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use App\Enum\RentStatus;
-use App\Exceptions\InternalException;
 use App\Models\Transactions\ProductRent;
-use App\Models\Transactions\ProductRentedStatus;
+use App\Models\Statuses\ProductRentedStatus;
 use Illuminate\Support\Facades\{DB, Log};
 
 class ProductRentService
@@ -35,12 +34,7 @@ class ProductRentService
                 ];
             });
         } catch (\Exception $e) {
-            Log::error("Product rent failed: " . $e->getMessage());
-            throw new InternalException($e->getMessage(), $e->getCode(), $e);
-            return [
-                'product_rent' => $productRent, 
-                'message' => 'Failed to rent product'
-            ];
+           
         }
     }
 
