@@ -75,6 +75,15 @@ Route::get('/dashboard/rented', function () {
 Route::get('/dashboard/transactions', function () {
     return view('src.admin.transactions');
 })->name('transactions');
+
 Route::get('/dashboard/users', function () {
     return view('src.admin.users');
 })->name('users');
+
+Route::get('/cashier/catalog/checkout', function () {
+    return view('src.cashier.checkout');
+})->name('cashier.checkout');
+
+Route::get('/cashier/appointment/checkout', function () {
+    return view('src.cashier.checkout2');
+})->name('appointment.checkout');
