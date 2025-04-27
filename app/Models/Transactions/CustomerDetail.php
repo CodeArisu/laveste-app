@@ -12,5 +12,6 @@ class CustomerDetail extends Model
         'contact',
         'address',
         'email',
+        
     ];
 }
