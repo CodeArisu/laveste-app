@@ -10,7 +10,7 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {   
-    protected $listeners = [
+    protected $listen = [
         GarmentCreated::class => [
             CreateDisplayCatalog::class,
         ],

@@ -23,8 +23,13 @@ class CreateDisplayCatalog
      * Handle the event.
      */
     public function handle(GarmentCreated $event): void
-    {
-        $garmentData = $this->garmentService->getGarmentData($event->garment);
-        $this->catalogService->createDisplayGarment($garmentData);
+    {   
+        try {
+            $garmentData = $this->garmentService->getGarmentData($event->garment);
+            $this->catalogService->createDisplayGarment($garmentData, $event->user);
+        } catch (\Exception $e) {
+            // Handle the exception
+            \Log::error('Failed to create display catalog: ' . $e->getMessage());
+        }
     }
 }

@@ -24,7 +24,7 @@
                     <p><strong>Type</strong>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong></p>
                     <p>{{ $products->types->type_name }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $products->subtypes[0]->subtype_name }}</p>
-                    <p><strong>Original Price</strong><br>{{ $products->original_price }}</p>
+                    <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
                 </div>
             </div>
             <br><br>
@@ -46,8 +46,8 @@
                 </p>
                 <p><strong>Address</strong><span class="indented">{{ $products->supplier->address }}</span></p>
                 <p><strong>Contact</strong><span class="indented">{{ $products->supplier->contact }}</span></p>
-                <p><strong>Original Price</strong><span class="indented">{{ $products->original_price }}</span></p>
-                <p><strong>Date</strong><span class="indented">{{ $products->created_at }}</span></p>
+                <p><strong>Original Price</strong><span class="indented">{{ $products->getFormattedOriginalPrice() }}</span></p>
+                <p><strong>Date</strong><span class="indented">{{ $products->getFormattedDate() }}</span></p>
             </div>
 
         </div>
@@ -58,7 +58,7 @@
             <a href="{{ url()->previous() }}" class="back-btn">←</a>
             <br><br>
             <h2>Add to Garment</h2>
-            <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}">
+            <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}" enctype="multipart/form-data">
                 @csrf
                 {{-- gets product id as input --}}
                 <input hidden name='product_id' value='{{ $products->id }}'></input>
@@ -66,7 +66,7 @@
                     <div>
                         {{-- sets image upload --}}
                         <label>Upload Image</label>
-                        <input name='poster' type="file">
+                        <input name="poster" type="file">
                     </div>
                     <div>
                         {{-- add new condition to the garment data --}}

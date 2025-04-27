@@ -8,7 +8,8 @@ enum ProductStatus : int
     case RESERVED = 2;
     case UNAVAILABLE = 3;
     case ARCHIVED = 4;
-    
+    case PENDING = 5;
+
     public function label(): string
     {
         return match($this)
@@ -17,6 +18,7 @@ enum ProductStatus : int
             self::RESERVED => 'reserved',
             self::UNAVAILABLE => 'unavailable',
             self::ARCHIVED => 'archived',
+            self::PENDING => 'pending',
         };
     }
 }

@@ -25,13 +25,12 @@ Route::middleware(['auth', 'web'])->group(function () {
             return view('src.cashier.home');
         })->name('home');
 
-        Route::get('/catalog', function () {
-            return view('src.cashier.product');
-        })->name('catalog');
+        Route::get('/catalog', [CatalogController::class, 'index'])->name('index'); 
 
         Route::get('/transaction', function () {
             return view('src.cashier.transaction');
         })->name('transaction');
+        
     });
 
     Route::name('dashboard.')->prefix('dashboard')->group( function () {
@@ -69,7 +68,8 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 });
 
-Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
+// Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
+
 
 Route::get('/dashboard/rented', function () {
     return view('src.admin.prodrented');

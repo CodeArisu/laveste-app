@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Str;
-use NumberFormatter;
+use IntlDateFormatter;
 
 class Product extends Model
 {
@@ -57,8 +57,13 @@ class Product extends Model
 
     public function getFormattedOriginalPrice()
     {
-        $formatter = new NumberFormatter('en_PH', NumberFormatter::CURRENCY);
-        return $formatter->formatCurrency($this->original_price, 'PHP');
+        return '₱' . number_format($this->original_price, 2);
+    }
+
+    public function getFormattedDate()
+    {
+        $date = new \DateTime($this->created_at);
+        return $date->format('F j, Y'); // "February 5, 2024"
     }
 
     // direct access to subtypes and types

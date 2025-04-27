@@ -16,9 +16,11 @@ class GarmentCreated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $garment;
-    public function __construct(Garment $garment)
+    public $user;
+    public function __construct($garment, $user)
     {
         $this->garment = $garment;
+        $this->user = $user;
     }
 
     /**

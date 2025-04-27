@@ -27,7 +27,7 @@ return new class extends Migration
         });
 
         Schema::create('garments', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('product_id');
             $table->double('rent_price', 16, 2);
             $table->string('poster')->nullable();
