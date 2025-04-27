@@ -10,7 +10,7 @@
     <div class="product-page">
         <div class="header-section">
             <h2 class="section-title1">User Management</h2>
-            <a href="{{ url('/admin/user_blades/register') }}" class="add-product-btn">
+            <a href="{{ route('form.register') }}" class="add-product-btn">
                 <span>+</span> Add User
             </a>
         </div>
@@ -40,11 +40,9 @@
             </tbody>
         </table>
 
-        
+
         <div id="overlay" class="overlay" onclick="closePanel()"></div>
        
-
-
         <div id="overlay" class="overlay" onclick="closePanel()"></div>
 
         <div id="profilePanel" class="profile-panel">

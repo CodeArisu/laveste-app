@@ -20,7 +20,7 @@ return new class extends Migration
         Schema::create('catalogs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('garment_id');
+            $table->string('garment_id');
             $table->unsignedBigInteger('product_status_id');
 
             $table->foreign('user_id')

@@ -30,7 +30,7 @@
 
         <ul class="nav-links">
             <li><a href="{{ route('cashier.home') }}" id="home-link">Home</a></li>
-            <li><a href="{{ route('cashier.catalog') }}" id="products-link">Products</a></li>
+            <li><a href="{{ route('cashier.index') }}" id="products-link">Products</a></li>
             <li><a href="{{ route('cashier.transaction') }}" id="transactions-link">Transactions</a></li>
         </ul>
     </nav>

@@ -21,28 +21,40 @@
                 </tr>
             </thead>
             <tbody> <!-- Only one tbody here -->
-                <tr class="product-row">
-                    <td>0001</td>
-                    <td>Very nice gown</td>
-                    <td>3,600.00</td>
-                    <td>Gown</td>
-                    <td>Evening</td>
-                    <td><span class="status good">Good</span></td>
-                </tr>
-                <tr class="product-row" >
-                    <td>0002</td>
-                    <td>Stylish dress</td>
-                    <td>4,500.00</td>
+              @foreach ($garments as $garment)
+                <tr>
+                    <td>{{ $garment->id }}</td>
+                    <td>{{ $garment->product->product_name }}</td>
+                    <td>{{ $garment->rent_price }}</td>
+                    <td>{{ $garment->product->types->type_name }}</td>
+                    <td>
+                      {{-- loop through array of subtypes --}}
+                      @foreach($garment->product->subtypes as $subtypes)
+                        {{ $subtypes->subtype_name }}
+                      @endforeach
+                    </td>
+                    <td>
+                      {{-- for condition status design conditions --}}
+                      @if($garment->condition->condition_name == 'ok')
+                        <span class="status good">{{ $garment->condition->condition_name }}</span>
+                      @else
+                        <span class="status damaged">{{ $garment->condition->condition_name }}</span>
+                      @endif
+                    </td>
+
+                  {{-- <td>{{ $garments[0]->id  }}</td>
+                    <td>{{ $garments[0]->product->product_name }}</td>
+                    <td>{{ $garments[0]->rent_price }}</td>
                     <td>Dress</td>
                     <td>Casual</td>
-                    <td><span class="status damaged">Damaged</span></td>
+                    <td><span class="status good">{{ $garments[0]->condition->condition_name }}</span></td> --}}
                 </tr>
+                @endforeach
             </tbody> <!-- Only one tbody here -->
         </table>
 
-
         <div class="sidepanel">
-            <a href="{{ url('/admin/garment') }}" class="back-btn">←</a>
+            <a href="{{ url()->previous() }}" class="back-btn">←</a>
             <br><br>
             <h3 class="sidepanel-title">Product Information</h3>
             <div class="sidepanel-body">

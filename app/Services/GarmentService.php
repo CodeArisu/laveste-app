@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enum\ConditionStatus;
+use App\Events\GarmentCreated;
 use App\Exceptions\GarmentException;
 use App\Http\Requests\GarmentRequest;
 use App\Models\Garments\{Condition, Size, Garment};
@@ -10,7 +11,9 @@ use App\Models\Products\Product;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\{DB, Log};
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Storage;
 
 class GarmentService
 {   
@@ -30,11 +33,14 @@ class GarmentService
                     }
                 }
 
+                event(new GarmentCreated($garments, $request->user()));
+
                 return ['garment' => $garments, 'message' => 'Garment added successfully'];
             });
         } catch (\Exception $e) {
             report($e);
-            throw GarmentException::garmentUpdateFailed();
+            dd($e);
+            throw GarmentException::garmentCreateFailed();
         } catch (ModelNotFoundException $e) {
             report($e);
             throw GarmentException::garmentNotFound();
@@ -47,7 +53,8 @@ class GarmentService
             throw GarmentException::garmentValidationFailed();
         } catch (\RuntimeException $e) {
             // Your custom runtime exceptions
-            throw GarmentException::garmentUpdateFailed();
+            dd($e);
+            throw GarmentException::garmentCreateFailed();
         }
     }
 
@@ -103,7 +110,7 @@ class GarmentService
         }
     }
 
-    private function createGarment(GarmentRequest $request): array
+    private function createGarment(GarmentRequest $request): Garment
     {
         $validated = $request->safe();
         // creates new status first if not exists
@@ -120,22 +127,27 @@ class GarmentService
 
         $garmentCondition = $this->checkForConditionEntry($validated);
 
+        if(isset($validated['poster'])) {
+            $poster = $this->handlePosterImage($validated['poster']);
+            $validated['poster'] = $poster['poster_name'];
+            $posterPath = $poster['poster_path'];
+        }
+
         // creates new garment
         $garment = $this->handleGarment($validated->only([
             'product_id', 
             'additional_description', 
-            'poster', 
+            'poster',
             'rent_price',
         ]), [ // related data
             'size_id' => $size->id,
             'condition_id' => $garmentCondition
         ]);
-
-        // return as arrays
-        return compact('garment', 'size');
+        
+        return $garment;
     }
 
-    private function updateGarment(GarmentRequest $request, Garment $garment) : array
+    private function updateGarment(GarmentRequest $request, Garment $garment) : Garment
     {   
         $validated = $request->safe();
 
@@ -149,6 +161,12 @@ class GarmentService
 
         $garmentCondition = $this->checkForConditionEntry($validated);
 
+        if(isset($validated['poster'])) {
+            $poster = $this->handlePosterImage($validated['poster']);
+            $validated['poster'] = $poster['poster_name'];
+            $posterPath = $poster['poster_path'];
+        }
+
         $garment = $this->updateOrKeepGarment($garment, array_merge(
             $validated->only([
                 'additional_description', 
@@ -161,7 +179,42 @@ class GarmentService
             )
         );
 
-        return compact('size', 'garment');
+        return $garment;
+    }
+
+    private function handlePosterImage($poster)
+    {
+        // Validate the uploaded file
+        if (!$poster || !$poster->isValid()) {
+            throw new \Exception('Invalid file upload - file missing or corrupted');
+        }
+    
+        try {
+            // Generate a unique filename with original extension
+            $posterName = time().'_'.Str::random(10).'.'.$poster->getClientOriginalExtension();
+            
+            // Store file explicitly on the 'public' disk
+            $path = Storage::disk('public')->putFileAs(
+                'garments',
+                $poster,
+                $posterName
+            );
+    
+            // Verify the file was actually stored
+            if (!Storage::disk('public')->exists('garments/'.$posterName)) {
+                throw new \Exception('File storage verification failed');
+            }
+    
+            return [
+                'poster_name' => $posterName,
+                'poster_path' => Storage::disk('public')->url('garments/'.$posterName)
+            ];
+    
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Log::error('Image upload failed: '.$e->getMessage());
+            throw new \Exception('Failed to process image upload');
+        }
     }
 
     private function updateOrKeepGarment(?Garment $garment, array $garmentData) : Garment
@@ -202,7 +255,7 @@ class GarmentService
                 'product_id' => $product->id,
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
-                'poster' => $garmentData['poster'],
+                'poster' => $garmentData['poster'] ?? 'no poster',
                 'size_id' => $relations['size_id'],
                 'condition_id' => $relations['condition_id'],
             ]
@@ -283,7 +336,7 @@ class GarmentService
         }
     }
 
-    protected function validateUpdateResults(array $updatedData): void
+    protected function validateUpdateResults($updatedData): void
     {
         foreach ($updatedData as $field => $success) {
             if (!$success) {
@@ -297,5 +350,26 @@ class GarmentService
         return $validated->has('condition_id') && $validated->filled('condition_id') 
         ? $validated->only('condition_id')['condition_id'] 
         : ConditionStatus::OK->value;
+    }
+
+    public function getGarmentData(Garment $garment): array
+    {
+        return [
+            'id' => $garment->id,
+            'product_id' => $garment->product_id,
+            'additional_description' => $garment->additional_description,
+            'poster' => $garment->poster,
+            'rent_price' => $garment->rent_price,
+            'size' => $garment->size,
+            'condition' => $garment->condition,
+            'display_attributes' => $this->transformForDisplayGarment($garment),
+        ];
+    }
+
+    protected function transformForDisplayGarment(Garment $garment): array
+    {
+       return [
+            'formatted_price' => '₱' . number_format($garment->rent_price, 2),
+       ];
     }
 }

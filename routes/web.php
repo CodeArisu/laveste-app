@@ -25,13 +25,12 @@ Route::middleware(['auth', 'web'])->group(function () {
             return view('src.cashier.home');
         })->name('home');
 
-        Route::get('/catalog', function () {
-            return view('src.cashier.product');
-        })->name('catalog');
+        Route::get('/catalog', [CatalogController::class, 'index'])->name('index'); 
 
         Route::get('/transaction', function () {
             return view('src.cashier.transaction');
         })->name('transaction');
+        
     });
 
     Route::name('dashboard.')->prefix('dashboard')->group( function () {
@@ -53,37 +52,31 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
             // Route::resource('products', ProductController::class)->except(['create', 'edit', 'destroy', 'update']);
         });
+
+        Route::middleware(['role:admin'])->name('garment.')->prefix('garment')->group( function () {
+            // this routes to the product info through add to garment
+            Route::get('/', [\App\Http\Controllers\Api\GarmentController::class, 'index'])->name('index');
+            
+            Route::post('/{products}/create', [\App\Http\Controllers\Api\GarmentController::class, 'store'])->name('store');
+    
+            Route::put('/{garment}', [\App\Http\Controllers\Api\GarmentController::class, 'update'])->name('update');
+            Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
+        
+            // Route::resource('garments', GarmentController::class)->except(['create', 'edit', 'destroy', 'update']);
+        });
     });
+
 });
-
-// Route::name('garment.')->prefix('garment')->group( function () {
-//     Route::post('/create', [\App\Http\Controllers\Api\GarmentController::class, 'store'])->name('store');
-//     Route::put('/{garment}', [\App\Http\Controllers\Api\GarmentController::class, 'update'])->name('update');
-//     Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
-
-//     Route::resource('garments', GarmentController::class)->except(['create', 'edit', 'destroy', 'update']);
-// });
 
 // Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
 
-Route::get('/dashboard/garments', function () {
-    return view('src.admin.garment');
-})->name('garments');
+
 Route::get('/dashboard/rented', function () {
     return view('src.admin.prodrented');
 })->name('rented');
 Route::get('/dashboard/transactions', function () {
     return view('src.admin.transactions');
 })->name('transactions');
-
 Route::get('/dashboard/users', function () {
     return view('src.admin.users');
 })->name('users');
-
-Route::get('/cashier/catalog/checkout', function () {
-    return view('src.cashier.checkout');
-})->name('cashier.checkout');
-
-Route::get('/cashier/appointment/checkout', function () {
-    return view('src.cashier.checkout2');
-})->name('appointment.checkout');

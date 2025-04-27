@@ -116,7 +116,7 @@ class ProductService extends BaseServicesClass
     private function createProduct(ProductRequest $request): array
     {
         $validated = $request->safe();
-
+        
         // new supplier data
         $supplier = $this->handleSupplier($validated->only(['supplier_name', 'company_name', 'address', 'contact']));
 

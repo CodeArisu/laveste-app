@@ -8,50 +8,50 @@ use App\Models\Garments\Garment;
 use App\Models\{Catalog, Statuses\DisplayStatus};
 use Illuminate\Support\Facades\{DB, Log};
 
-class CatalogService
+class CatalogService extends BaseServicesClass
 {
-    public function requestDisplayGarment(CatalogRequest $request, Garment $garment)
-    {
-        try {
-            return DB::transaction(function () use ($request, $garment) {
-                $display = $this->createDisplayGarment($request, $garment);
-                if (empty($display)) {
-                    throw new \RuntimeException('No garment were added');
-                }
-                return ['display' => $display, 'message' => 'Added to display successfully'];
-            });
-        } catch (\Exception $e) {
-            Log::error('Display creation failed: ' . $e->getMessage());
-            return ['display' => $display, 'message' => 'Failed to add to Display'];
-        }
-    }
+    // public function requestDisplayGarment(CatalogRequest $request, Garment $garment)
+    // {
+    //     try {
+    //         return DB::transaction(function () use ($request, $garment) {
+    //             $this->checkIfExists($garment, $request->safe()->garment_id, 'garment_id');
+    //             $display = $this->createDisplayGarment($request, $garment);
+    //             if (empty($display)) {
+    //                 throw new \RuntimeException('No garment were added');
+    //             }
+    //             return ['display' => $display, 'message' => 'Added to display successfully'];
+    //         });
+    //     } catch (\Exception $e) {
+    //         dd($e);
+    //     }
+    // }
 
-    private function createDisplayGarment(CatalogRequest $request, $garment)
+    public function createDisplayGarment($garment, $user)
     {
-        $validated = $request->safe();
         if (!DisplayStatus::exists()) {
             $this->generateStatus();
         }
-        $display = $this->handleDisplayGarment([
-            'user_id' => $request->user()->id,
-            'garment_id' => $garment->id,
+        
+        $this->handleDisplayGarment([
+            'user_id' => $user->id,
+            'garment_id' => $garment['id'],
             'product_status_id' => ProductStatus::UNAVAILABLE->value,
         ]);
 
-        return compact('display');
+        
     }
 
     private function generateStatus(): void
     {
-        // get all existing conditions
-        $existingConditions = DisplayStatus::value('status_name')->toArray();
+        $existingConditions = array_map('strtolower', DisplayStatus::pluck('status_name')->toArray());
         $allConditions = array_map(fn($condition) => $condition->label(), ProductStatus::cases());
 
         // counts the difference between existing and all conditions
-        if (count(array_diff($allConditions, $existingConditions)) > 0) {
-            foreach (ProductStatus::cases() as $condition) {
+        if (count(array_diff($allConditions, $existingConditions))) {
+            foreach (ProductStatus::cases() as $status) {
                 DisplayStatus::firstOrCreate([
-                    'condition' => $condition->label(),
+                    'id' => $status->value,
+                    'status_name' => $status->label(),
                 ]);
             }
         }

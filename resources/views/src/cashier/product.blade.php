@@ -31,7 +31,20 @@
 
         <div class="product-grid">
 
-            <div class="product-card" onclick="openPanel('/assets/images/h1.png', 'Long Gown', '₱ 3,500', 'Small', 'This is a gorgeous long gown, perfect for formal events. Designed to make a statement, this dress features a flattering silhouette and exquisite detailing that highlights timeless elegance. Whether it’s for a wedding, gala night, or any special occasion, this piece ensures you’ll stand out with grace and sophistication.')">
+            @foreach ($items as $item)
+                <div class="product-card" onclick="openPanel('{{ $item->getImageUrl() }}', '{{ $item->garment->product->product_name }}', '{{ $item->getFormattedRentPrice() }}', '{{ $item->garment->size->measurement }}', '{{ $item->garment->additional_description }}')">
+                    <img src="{{ $item->getImageUrl() }}" alt="Product Image">
+                    <div class="product-info">
+                        <p class="product-name">{{ $item->garment->product->product_name }}</p>
+                        <p class="price">{{ $item->getFormattedRentPrice() }}</p>
+                    </div>
+                </div>
+                
+            @endforeach
+
+            
+
+            {{-- <div class="product-card" onclick="openPanel('/assets/images/h1.png', 'Long Gown', '₱ 3,500', 'Small', 'This is a gorgeous long gown, perfect for formal events. Designed to make a statement, this dress features a flattering silhouette and exquisite detailing that highlights timeless elegance. Whether it’s for a wedding, gala night, or any special occasion, this piece ensures you’ll stand out with grace and sophistication.')">
                 <img src="/assets/images/h1.png" alt="Product Image">
                 <div class="product-info">
                     <p class="product-name">Long Gown</p>
@@ -77,7 +90,7 @@
                     <p class="product-name">Cocktail</p>
                     <p class="price">₱ 3 500</p>
                 </div>
-            </div>
+            </div> --}}
             
 
 
