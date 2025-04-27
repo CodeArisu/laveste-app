@@ -29,7 +29,7 @@
                         </a>
                     </li>
                     <li class="nav-item {{ request()->is('/dashboard/garments') ? 'active' : '' }}">
-                        <a href="{{ route('garments') }}">
+                        <a href="{{ route('dashboard.garment.index') }}">
                             <img src="{{ asset('assets/icons/v3.png') }}" alt="Tag Icon" class="icon">
                         </a>
                     </li>

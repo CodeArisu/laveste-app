@@ -53,22 +53,24 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
             // Route::resource('products', ProductController::class)->except(['create', 'edit', 'destroy', 'update']);
         });
+
+        Route::middleware(['role:admin'])->name('garment.')->prefix('garment')->group( function () {
+            // this routes to the product info through add to garment
+            Route::get('/', [\App\Http\Controllers\Api\GarmentController::class, 'index'])->name('index');
+            
+            Route::post('/{products}/create', [\App\Http\Controllers\Api\GarmentController::class, 'store'])->name('store');
+    
+            Route::put('/{garment}', [\App\Http\Controllers\Api\GarmentController::class, 'update'])->name('update');
+            Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
+        
+            // Route::resource('garments', GarmentController::class)->except(['create', 'edit', 'destroy', 'update']);
+        });
     });
+
 });
 
-// Route::name('garment.')->prefix('garment')->group( function () {
-//     Route::post('/create', [\App\Http\Controllers\Api\GarmentController::class, 'store'])->name('store');
-//     Route::put('/{garment}', [\App\Http\Controllers\Api\GarmentController::class, 'update'])->name('update');
-//     Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
+Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
 
-//     Route::resource('garments', GarmentController::class)->except(['create', 'edit', 'destroy', 'update']);
-// });
-
-// Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
-
-Route::get('/dashboard/garments', function () {
-    return view('src.admin.garment');
-})->name('garments');
 Route::get('/dashboard/rented', function () {
     return view('src.admin.prodrented');
 })->name('rented');

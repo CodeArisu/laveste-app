@@ -28,7 +28,7 @@ class GarmentRequest extends FormRequest
             'product_id' => 'string|unique:garments,id',
             'additional_description' => 'required|string|max:255',
             'rent_price' => 'required|numeric',
-            'poster' => 'required|unique:garments,poster',
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:255|unique:garments,poster',
 
             'measurement' => 'required|string',
             'length' => 'required|numeric',

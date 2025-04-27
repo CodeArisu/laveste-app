@@ -30,7 +30,7 @@ return new class extends Migration
             $table->id();
             $table->string('product_id');
             $table->double('rent_price', 16, 2);
-            $table->string('poster');
+            $table->string('poster')->nullable();
             $table->longText('additional_description')->nullable();
             $table->unsignedBigInteger('condition_id')->default(ConditionStatus::OK->value);
             $table->unsignedBigInteger('size_id')->nullable();
