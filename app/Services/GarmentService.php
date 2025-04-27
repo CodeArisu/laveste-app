@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enum\ConditionStatus;
+use App\Events\GarmentCreated;
 use App\Exceptions\GarmentException;
 use App\Http\Requests\GarmentRequest;
 use App\Models\Garments\{Condition, Size, Garment};
@@ -29,6 +30,8 @@ class GarmentService
                         throw new \RuntimeException("Failed to create {$garment}");
                     }
                 }
+
+                event(new GarmentCreated($garments));
 
                 return ['garment' => $garments, 'message' => 'Garment added successfully'];
             });
@@ -297,5 +300,26 @@ class GarmentService
         return $validated->has('condition_id') && $validated->filled('condition_id') 
         ? $validated->only('condition_id')['condition_id'] 
         : ConditionStatus::OK->value;
+    }
+
+    public function getGarmentData(Garment $garment): array
+    {
+        return [
+            'id' => $garment->id,
+            'product_id' => $garment->product_id,
+            'additional_description' => $garment->additional_description,
+            'poster' => $garment->poster,
+            'rent_price' => $garment->rent_price,
+            'size' => $garment->size,
+            'condition' => $garment->condition,
+            'display_attributes' => $this->transformForDisplayGarment($garment),
+        ];
+    }
+
+    protected function transformForDisplayGarment(Garment $garment): array
+    {
+       return [
+            'formatted_price' => '₱' . number_format($garment->rent_price, 2),
+       ];
     }
 }

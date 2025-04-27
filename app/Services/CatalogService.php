@@ -27,10 +27,9 @@ class CatalogService extends BaseServicesClass
         }
     }
 
-    private function createDisplayGarment(CatalogRequest $request, $garment)
+    public function createDisplayGarment($garment)
     {
-        $validated = $request->safe();
-
+        // $validated = $request->safe();
         if (!DisplayStatus::exists()) {
             $this->generateStatus();
         }
