@@ -14,7 +14,7 @@
             @auth
                 <div class="cashier">
                     <h3>{{ Auth::user()->name }}</h3>
-                    <img src="/assets/images/cash.jpg" alt="CashierProfile">
+                    <img src="/assets/images/catty.jpg" alt="CashierProfile">
                 </div>
             @else
                 <div class="cashier">

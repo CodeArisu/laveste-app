@@ -32,8 +32,8 @@
         <div class="product-grid">
 
             @foreach ($items as $item)
-                <div class="product-card" onclick="openPanel('{{ $item->getImageUrl() }}', '{{ $item->garment->product->product_name }}', '{{ $item->getFormattedRentPrice() }}', '{{ $item->garment->size->measurement }}', '{{ $item->garment->additional_description }}')">
-                    <img src="{{ $item->getImageUrl() }}" alt="Product Image">
+                <div class="product-card" onclick="openPanel('/assets/images/h1.png', '{{ $item->garment->product->product_name }}', '{{ $item->getFormattedRentPrice() }}', '{{ $item->garment->size->measurement }}', '{{ $item->garment->additional_description }}')">
+                    <img src="{{ asset('/assets/images/h1.png') }}" alt="Product Image">
                     <div class="product-info">
                         <p class="product-name">{{ $item->garment->product->product_name }}</p>
                         <p class="price">{{ $item->getFormattedRentPrice() }}</p>

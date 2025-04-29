@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="buttons">
-                    <a href="{{ route('cashier.catalog') }}" class="book-rental">
+                    <a href="{{ route('cashier.index') }}" class="book-rental">
                         <img src="/assets/icons/hanger.png" alt="Book Rental Icon" class="icon"> Book Rental
                     </a>
 
