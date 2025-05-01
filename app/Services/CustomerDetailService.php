@@ -2,37 +2,25 @@
 
 namespace App\Services;
 
-use App\Exceptions\InternalException;
-use App\Http\Requests\CustomerDetailsRequest;
 use App\Models\Transactions\CustomerDetail;
 use App\Models\Transactions\CustomerRent;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class CustomerDetailService
 {
     public function __construct(){}
 
-    /**
-     * Request customer detail creation.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array customer detail data and message response
-     * @throws \Exception RuntimeException / InternalException
-     */
-    public function requestCustomerDetail(CustomerDetailsRequest $request)
-    {
-        try {
-            return DB::transaction(function () use ($request) {
-                $customerDetails = $this->createCustomerRent($request);
-                if (empty($customerDetails)) {
-                    throw new \RuntimeException('No customer details were added');
-                }
-                return ['customer_details' => $customerDetails, 'message' => 'Customer details added successfully'];
-            });
-        } catch (\Exception $e) {
-           
+    public function executeCustomerRent($request)
+    {   
+        $customerRent = $this->createCustomerRent($request);
+
+        // checks if customer rent was created
+        foreach ($customerRent as $rent) {
+            if (empty($rent)) {
+                throw new \RuntimeException('No customer were rented');
+            }
         }
+
+        return $customerRent;
     }
 
     /**
@@ -42,11 +30,13 @@ class CustomerDetailService
      * @return array customer rent data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    protected function createCustomerRent(CustomerDetailsRequest $request)
+    protected function createCustomerRent($request)
     {
         $validated = $request->safe();
-
+        
         $customerDetails = $this->createCustomerDetail($validated);
+
+        $customerRentDetails = $this->createRentDetail($validated);
 
         $customerRent = $this->handleCustomerRent($validated->only([
             'pickup_date',
@@ -55,10 +45,8 @@ class CustomerDetailService
         ]), [
             'customer_details_id' => $customerDetails['customer_details']->id,
         ]);
-
-        $customerRentDetails = $this->createRentDetail($validated);
         
-        return compact('customerDetails', 'customerRent', 'customerRentDetails');
+        return [$customerDetails, $customerRent, $customerRentDetails];
     }
 
     /**

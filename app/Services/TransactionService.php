@@ -59,14 +59,17 @@ class TransactionService
         }
 
         $validated = $request->safe();
-        $productId = $this->getProductRentId($request, $validated->get('customer_rented_id'));
+        
+        $customerRentedId = $validated->get('customer_rented_id');
+        
+        $productId = $this->getProductRentId($request, $customerRentedId);
 
         $transaction = $this->handleTransaction(
             $validated->only([
                 'total_amount',
                 'has_discount',
                 'discount_amount',
-                'vat',
+                'vat' ?? .12,
             ]),
             [   
                 'customer_rented_id' => $productId,
