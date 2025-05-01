@@ -72,14 +72,14 @@
                     </div>
 
                     <label for="description">Description</label>
-                    <textarea name="description" id="description" rows="4"></textarea>
+                    <textarea name="description" id="description" rows="4" value={{ old('description') }}></textarea>
                     {{-- description error message --}}
                     @error('description')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
                     <label for="original-price">Original Price</label>
-                    <input name="original_price" type="number" id="original-price">
+                    <input name="original_price" type="number" id="original-price" value={{ old('original_price') }}>
                     {{-- original price error message --}}
                     @error('original_price')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -90,28 +90,29 @@
                 <div class="form-section">
                     <h2>Supplier Information</h2>
                     <label for="supplier-name">Supplier Name</label>
-                    <input name="supplier_name" type="text" id="supplier-name">
+                    <input name="supplier_name" type="text" id="supplier-name" value={{ old('supplier_name') }}>
                     {{-- supplier name error message --}}
                     @error('supplier_name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
                     <label for="company-name">Company Name</label>
-                    <input name="company_name" type="text" id="company-name">
+                    <input name="company_name" type="text" id="company-name" value={{ old('company_name') }}>
                     {{-- company name error message --}}
                     @error('company_name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
                     <label for="address">Address</label>
-                    <input name="address" type="text" id="address">
+                    <input name="address" type="text" id="address" value={{ old('address') }}>
                     {{-- address name error message --}}
                     @error('address')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
                     <label for="contact">Contact</label>
-                    <input name="contact" type="text" id="contact">
+                    <input name="contact" type="text" id="contact" value={{ old('contact') }}>
+
                     {{-- contact error message --}}
                     @error('contact')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>

@@ -9,7 +9,7 @@
 <body>
 
     <div class="rental-header">
-        <a href="{{ url()->back() }}" class="back">&#8592;</a>
+        <a href="{{ url()->previous() }}" class="back">&#8592;</a>
         <h1>Rental Details</h1>
     </div>
     

@@ -124,16 +124,9 @@
                         
                         <br>
         
-<<<<<<< HEAD
                         <form action="{{ route('cashier.checkout') }}" method="GET">
                             <button type="submit" class="rent-button">Rent</button>
-=======
-                        <form action="" method="GET">
-                            <button type="submit" class="rent-button"><a href="{{ route('cashier.checkout')}}">rent</a></button>
-                            
->>>>>>> 855da31d578d8dc86bc93f3299446140817d34f1
                         </form>
-                        
                     </div>
                 </div>
             </div>
