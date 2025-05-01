@@ -70,6 +70,12 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 // Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
 
+Route::get('/cashier/catalog/checkout', function () {
+    return view('src.cashier.checkout');
+})->name('cashier.checkout');
+Route::get('/cashier/appointment/checkout', function () {
+    return view('src.cashier.checkout2');
+})->name('appointment.checkout');
 
 Route::get('/dashboard/rented', function () {
     return view('src.admin.prodrented');

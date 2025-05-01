@@ -1,8 +1,8 @@
 <x-layouts.cashlayout>
     @push('styles')
-    <link rel="stylesheet" href="/css/products/product.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/products/custom-filter.css">
+        <link rel="stylesheet" href="/css/products/product.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <link rel="stylesheet" href="/css/products/custom-filter.css">
     @endpush
 
     <div class="container">
@@ -39,10 +39,7 @@
                         <p class="price">{{ $item->getFormattedRentPrice() }}</p>
                     </div>
                 </div>
-                
             @endforeach
-
-            
 
             {{-- <div class="product-card" onclick="openPanel('/assets/images/h1.png', 'Long Gown', '₱ 3,500', 'Small', 'This is a gorgeous long gown, perfect for formal events. Designed to make a statement, this dress features a flattering silhouette and exquisite detailing that highlights timeless elegance. Whether it’s for a wedding, gala night, or any special occasion, this piece ensures you’ll stand out with grace and sophistication.')">
                 <img src="/assets/images/h1.png" alt="Product Image">
@@ -127,7 +124,7 @@
                         
                         <br>
         
-                        <form action="/cashier/checkout" method="GET">
+                        <form action="{{ route('cashier.checkout') }}" method="GET">
                             <button type="submit" class="rent-button">Rent</button>
                         </form>
                         
