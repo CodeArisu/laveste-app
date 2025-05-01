@@ -10,6 +10,11 @@ class ProductRentController extends ApiBaseController
 {
     public function __construct(protected ProductRentService $productRentService) {}
 
+    public function index()
+    {
+        
+    }
+
     public function store(Request $request) {
         $rentedProduct = $this->productRentService->requestProductRent($request);
         return $this->sendResponse($rentedProduct['message'], $rentedProduct['product_rent']);

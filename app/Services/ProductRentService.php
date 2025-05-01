@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\{DB, Log};
 
 class ProductRentService
 {   
-    public function __construct() {}
+    public function __construct(protected CustomerDetailService $customerDetailService) {}
 
     /**
      * Request a product rent or update the status of an existing product rent.
@@ -34,7 +34,7 @@ class ProductRentService
                 ];
             });
         } catch (\Exception $e) {
-           
+           // exception
         }
     }
 
@@ -44,19 +44,26 @@ class ProductRentService
      * @param \Illuminate\Http\Request $request
      * @return array product rent data
      */
-    private function createProductRent($request) : array
+    private function createProductRent($request) : ProductRent
     {   
         if (!ProductRentedStatus::exists()) {
             $this->generateProductRentStatus();
         }
 
+        $this->customerDetailService->executeCustomerRent($request);
+    
         $validated = $request->safe();
         $productRent = $this->handleProductRent(
-            $validated->only(['customer_rented_id', 'rent_details_id']),
-            ['rent_status' => RentStatus::RENTED->value]
+            $validated->only([
+                'customer_rented_id', 
+                'rent_details_id'
+            ]),
+            [
+                'rent_status' => RentStatus::RENTED->value
+            ]
         );
 
-        return compact('productRent');
+        return $productRent;
     }
 
     public function execProductRent($request)
