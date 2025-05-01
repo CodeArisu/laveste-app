@@ -492,5 +492,9 @@
                 slider.style.left = `${index * 140 + 5}px`; // 140 = button width, 5 = padding
             });
         });
+
+
+
+        
     </script>
 </x-layouts.cashlayout>

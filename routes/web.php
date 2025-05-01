@@ -78,6 +78,8 @@ Route::get('/cashier/appointment/checkout', function () {
 
 
 
+
+
 // Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
 
 

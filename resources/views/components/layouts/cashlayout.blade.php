@@ -1,31 +1,36 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cashier</title>
-    @stack('styles')    
+    @stack('styles')
     <link rel="stylesheet" href="/css/cashier/cashierhead.css">
 </head>
+
 <body>
     <nav class="navbar">
         <div class="navdiv">
             <div class="logo"><a href="#">La Veste Rentals</a></div>
-            
+
             @auth
-                <div class="cashier">
-                    <h3>{{ Auth::user()->name }}</h3>
-                    <img src="/assets/images/catty.jpg" alt="CashierProfile">
-                </div>
-            @else
-                <div class="cashier">
-                    <h3>Cashier</h3>
-                    <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
+            <div class="cashier">
+                <h3>{{ Auth::user()->name }}</h3>
+                <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
                 <div class="logout-menu" id="logoutMenu">
-                    <a href="/index" style="color: #973131; text-decoration: none; font-weight: 400;">Logout</a>
-                </div>                
+                    <a href="/login" style="color: #973131; text-decoration: none; font-weight: 400;">Logout</a>
                 </div>
+            </div>
+            @else
+            <div class="cashier">
+                <h3>Cashier</h3>
+                <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
+                <div class="logout-menu" id="logoutMenu">
+                    <a href="/login" style="color: #973131; text-decoration: none; font-weight: 400;">Logout</a>
+                </div>
+            </div>
             @endauth
-                   
+
         </div>
 
         <ul class="nav-links">
@@ -85,4 +90,5 @@
 
     </script>
 </body>
+
 </html>
