@@ -19,7 +19,7 @@
                 </div>
 
                 <div class="buttons">
-                    <a href="/cashier/products" class="book-rental">
+                    <a href="{{ route('cashier.catalog') }}" class="book-rental">
                         <img src="/assets/icons/hanger.png" alt="Book Rental Icon" class="icon"> Book Rental
                     </a>
 
@@ -178,7 +178,7 @@
 
                 <div class="button-row3">
                     <a href="" class="back-btn3" id="backBtn3">← Back</a>
-                    <a href="" class="next-btn3" id="nextBtn3">Next →</a>
+                    <a href="{{ route('appointment.checkout') }}" class="next-btn3" id="nextBtn3">Next →</a>
                 </div>
             </form>
         </div>

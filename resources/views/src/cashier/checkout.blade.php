@@ -91,7 +91,7 @@
     </div>
 
     <div class="checkout-button">
-        <button type="button" onclick="window.location.href='/cashier/checkout2'">Checkout</button>
+        <button type="button">Checkout</button>
     </div>
     
 
