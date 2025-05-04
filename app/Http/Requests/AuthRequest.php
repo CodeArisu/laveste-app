@@ -67,15 +67,26 @@ class AuthRequest extends FormRequest
         return true;
     }
 
-    public function failedValidation(Validator $validator)
+    public function messages()
     {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'Invalid data request',
-            'details' => $errors->messages(),
-        ], ResponseCode::INVALID->value);
-
-        throw new HttpResponseException($response);
+        return [
+            'email.required' => 'Email is required',
+            'email.email' => 'Email must be a valid email address',
+            'email.unique' => 'Email already exists',
+            'password.required' => 'Password is required',
+            'password.confirmed' => 'Password confirmation does not match',
+        ];
     }
+
+    // public function failedValidation(Validator $validator)
+    // {
+    //     $errors = $validator->errors();
+
+    //     $response = response()->json([
+    //         'message' => 'Invalid data request',
+    //         'details' => $errors->messages(),
+    //     ], ResponseCode::INVALID->value);
+
+    //     throw new HttpResponseException($response);
+    // }
 }
