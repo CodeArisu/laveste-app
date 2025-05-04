@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Enum\RentStatus;
-use App\Models\Transactions\ProductRent;
+use App\Http\Requests\CustomerDetailsRequest;
 use App\Models\Statuses\ProductRentedStatus;
+use App\Models\Transactions\ProductRent;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\{DB, Log};
 
 class ProductRentService
@@ -18,24 +20,12 @@ class ProductRentService
      * @return array product rent data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    public function requestProductRent($request) {
-        
-        try {
-            DB::transaction(function () use ($request) {
-                $productRent = $this->createProductRent($request);
+    public function requestProductRent(CustomerDetailsRequest $request) 
+    {
+        $validated = $request->validated();
+        Session::put('checkout.customer_data', $validated);
 
-                if (empty($productRent)) {
-                    throw new \RuntimeException('No product were rented');
-                }
-
-                return [
-                    'product_rent' => $productRent, 
-                    'message' => 'Rented successfully'
-                ];
-            });
-        } catch (\Exception $e) {
-           // exception
-        }
+        return ['url' => 'cashier.checkout'];
     }
 
     /**
@@ -44,7 +34,7 @@ class ProductRentService
      * @param \Illuminate\Http\Request $request
      * @return array product rent data
      */
-    private function createProductRent($request) : ProductRent
+    private function createProductRent(CustomerDetailsRequest $request) : ProductRent
     {   
         if (!ProductRentedStatus::exists()) {
             $this->generateProductRentStatus();
@@ -56,7 +46,7 @@ class ProductRentService
         $productRent = $this->handleProductRent(
             $validated->only([
                 'customer_rented_id', 
-                'rent_details_id'
+                'rent_details_id',
             ]),
             [
                 'rent_status' => RentStatus::RENTED->value

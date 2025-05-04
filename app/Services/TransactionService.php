@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Enum\PaymentMethods;
+use App\Http\Requests\TransactionRequest;
 use App\Models\Transactions\PaymentMethod;
 use App\Models\Transactions\ProductRent;
 use App\Models\Transactions\Transaction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class TransactionService
 {
@@ -20,30 +22,20 @@ class TransactionService
      * @return array transaction data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    public function requestTransaction($request)
+    public function requestTransaction(TransactionRequest $request)
     {   
-        try {
-            DB::transaction(function () use ($request) {
-                $transaction = $this->createTransaction($request);
+        $validated = $request->validated();
 
-                if (empty($transaction)) {
-                    throw new \RuntimeException('No transaction was created');
-                }
-
-                return [
-                    'transaction' => $transaction,
-                    'message' => 'Transaction created successfully',
-                ];
-            });
-        } catch (\Exception $e) {
-            Log::error("Transaction creation failed: " . $e->getMessage());
-            throw new \RuntimeException('Invalid request: ' . $e->getMessage());
-            return [
-                'transaction' => null,
-                'message' => 'Failed to create transaction',
-            ];
+        if (!Session::has('checkout.customer_data')) {
+            // return exception
+            throw new \RuntimeException('Session does not exist');
         }
 
+        Session::put('checkout.transaction_data', $validated);
+
+        return [
+            'url' => 'cashier.checkout',
+        ];
     }
     /**
      * Request transaction creation.
@@ -77,7 +69,7 @@ class TransactionService
             ]
         );
 
-        return compact('transaction');
+        return $transaction;
     }
 
     /**

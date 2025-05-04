@@ -16,13 +16,11 @@
                         <button class="tab active" data-tab="rentals">Rentals</button>
                         <button class="tab" data-tab="appointments">Appointment</button>
                     </div>
-                </div>
-
+                </div>  
                 <div class="buttons">
-                    <a href="{{ route('cashier.catalog') }}" class="book-rental">
+                    <a href="{{ route('cashier.index') }}" class="book-rental">
                         <img src="/assets/icons/hanger.png" alt="Book Rental Icon" class="icon"> Book Rental
                     </a>
-
                     <button class="sched-appointment" style="display: none;">
                         <img src="/assets/icons/appoint.png" alt="Schedule Appointment Icon" class="icon"> Schedule
                         Appointment

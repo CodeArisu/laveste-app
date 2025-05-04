@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class CustomerDetailsRequest extends FormRequest
+class TransactionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,19 +25,10 @@ class CustomerDetailsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'contact' => 'required|string',
-            'address' => 'required|string|max:255',
-            'email' => 'sometimes|string',
-
-            'venue' => 'sometimes|string',
-            'event_data' => 'sometimes|date',
-            'reason_for_renting' => 'sometimes|string',
-            'is_regular' => 'sometimes|boolean',
-
-            'pickup_date' => 'required|date',
-            'rented_date' => 'required|date',
-            'return_date' => 'required|date',
+            'payment_method_id' => 'required|string',
+            'payment' => 'required|numeric',
+            'has_discount' => 'nullable|boolean',
+            'vat' => 'numeric',
         ];
     }
 
