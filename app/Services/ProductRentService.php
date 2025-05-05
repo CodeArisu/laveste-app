@@ -24,8 +24,6 @@ class ProductRentService
     {
         $validated = $request->validated();
         Session::put('checkout.customer_data', $validated);
-
-        return ['url' => 'cashier.checkout'];
     }
 
     /**
@@ -57,7 +55,7 @@ class ProductRentService
     }
 
     public function execProductRent($request)
-    {
+    {   
         return $this->createProductRent($request);
     }
 

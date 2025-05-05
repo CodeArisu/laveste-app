@@ -33,11 +33,8 @@ class CustomerDetailService
     protected function createCustomerRent($request)
     {
         $validated = $request->safe();
-        
         $customerDetails = $this->createCustomerDetail($validated);
-
         $customerRentDetails = $this->createRentDetail($validated);
-
         $customerRent = $this->handleCustomerRent($validated->only([
             'pickup_date',
             'rented_date',
@@ -76,7 +73,8 @@ class CustomerDetailService
     protected function createCustomerDetail($validated)
     {
         // Handle the customer detail creation
-        $customerDetails = $this->handleCustomerDetail($validated->only([
+        $customerDetails = $this->handleCustomerDetail(
+        $validated->only([
             'name',
             'contact',
             'address',

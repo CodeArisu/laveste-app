@@ -21,7 +21,7 @@ class GarmentController extends ApiBaseController
     public function store(GarmentRequest $request)
     {   
         $createdGarment = $this->garmentService->requestCreateGarment($request);
-        // return $this->sendResponse($createdGarment['message'], $createdGarment['garment']);
+        
         return redirect()->route('dashboard.garment.index')->with('message', $createdGarment['message']);
     }
 

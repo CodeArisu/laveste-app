@@ -22,7 +22,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_rented_id');
             $table->double('total_amount', 12, 2);
-            $table->boolean('has_discount')->default(false);
+            $table->boolean('has_discount')->default('0');
             $table->double('discount_amount', 12, 2)->nullable();
             $table->double('vat', 12, 2);
             $table->unsignedBigInteger('payment_method_id');

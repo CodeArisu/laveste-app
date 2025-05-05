@@ -64,17 +64,21 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
 
 });
-// Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
 
 // pre checkout customers details API
-// Route::get('/cashier/catalog/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('cashier.details');
-// Route::post('/cashier/catalog/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'store'])->name('cashier.details.store');
-// // Route::get('/cashier/catalog/details/show', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'show'])->name('cashier.details.show');
+Route::get('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('cashier.details');
+Route::post('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'store'])->name('cashier.details.store');
+// Route::get('/cashier/catalog/details/show', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'show'])->name('cashier.details.show');
 
-// // transaction checkout API
-// Route::get('/cashier/catalog/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('cashier.checkout');
-// Route::post('/cashier/catalog/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'store'])->name('cashier.checkout.store');
-// Route::get('/cashier/catalog/checkout/show', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'show'])->name('cashier.checkout.show');
+// transaction checkout API
+Route::get('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('cashier.checkout');
+Route::post('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'store'])->name('cashier.checkout.store');
+
+Route::get('/cashier/catalog/{catalogs}/checkout/show', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'show'])->name('cashier.checkout.show');
+
+
+// Route::post('/cashier/catalog/transaction', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'store'])->name('cashier.transaction.show');
+// Route::get('/cashier/catalog/transaction/{transaction}', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'show'])->name('cashier.transaction.show');
 
 Route::get('/cashier/appointment/checkout', function () {
     return view('src.cashier.checkout3');

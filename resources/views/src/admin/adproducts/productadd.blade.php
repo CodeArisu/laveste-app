@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="{{ asset('css/admin/productadd.css') }}">
     @endpush
     <div class="container">
-        <a href="{{ url()->previous() }}" class="back-btn">← Back</a>
+        <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
         <h1>Add Product</h1>
 
         {{-- shows message after success API --}}
@@ -38,16 +38,15 @@
                                     @endforeach
                                 <option value="new_type">New Type</option>
                             </select>
-                            {{-- type error message --}}
-                            @error('type')
-                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
-
                             {{-- new input for new type --}}
                             <div id="newTypeContainer" style="display: none;">
                                 <input type="text" name="type" id="newTypeInput" placeholder="Enter new type name">
                                 <button type="button" class="cancel-btn" onclick="cancelNewType()">Cancel</button>
                             </div>
+                            {{-- type error message --}}
+                            @error('type')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div>
                             <label for="sub-type">Sub-type</label>
@@ -60,14 +59,14 @@
                                     @endforeach
                                 <option value="new_subtype">New subtype</option>
                             </select>
-                            {{-- subtype error message --}}
-                            @error('type')
-                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
+                            {{-- subtype error message --}}                  
                             <div id="newSubtypeContainer" style="display: none;">
                                 <input type="text" name="subtype" id="newSubtypeInput" placeholder="Enter new subtype name">
                                 <button type="button" class="cancel-btn" onclick="cancelNewSubtype()">Cancel</button>
                             </div>
+                            @error('subtype')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
 
@@ -128,7 +127,6 @@
 
         </form>
     </div>
-
     <script>
         function updateTypeField() {
             const typeSelect = document.getElementById('type');

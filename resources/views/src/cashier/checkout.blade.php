@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <form action="{{ route('cashier.details.store') }}" method='POST'>
+    <form action="{{ route('cashier.details.store', ['catalogs' => $catalog]) }}" method='POST'>
         @csrf
         <div class="rental-header">
             <a href="{{ url()->previous() }}" class="back">&#8592;</a>
@@ -17,7 +17,6 @@
         </div>
 
         <div class="section-title">Rented Date</div>
-
 
         <div class="form-container">
             <div class="calendar-container">
@@ -35,7 +34,7 @@
                 <label for="start">Start</label>
                 <input name='rented_date' type="text" id="start" placeholder="Select start date" readonly>
                 <label for="end">End</label>
-                <input name='end_date' type="text" id="end" placeholder="Select end date" readonly>
+                <input name='return_date' type="text" id="end" placeholder="Select end date" readonly>
             </div>
 
         </div>
@@ -70,10 +69,10 @@
                         <input name='pickup_date' type="date" id="pickup">
                     </div>
 
-                    <div class="input-block">
+                    {{-- <div class="input-block">
                         <label for="return">Return Date</label>
                         <input name='return_date' type="date" id="return">
-                    </div>
+                    </div> --}}
                 </div>
 
                 <div class="input-block">
