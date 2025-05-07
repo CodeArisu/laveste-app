@@ -14,18 +14,21 @@
             <div class="logo"><a href="#">La Veste Rentals</a></div>
 
             @auth
-                <div class="cashier">
-                    <h3>{{ Auth::user()->name }}</h3>
-                    <img src="/assets/images/cash.jpg" alt="CashierProfile">
+            <div class="cashier">
+                <h3>{{ Auth::user()->name }}</h3>
+                <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
+                <div class="logout-menu" id="logoutMenu">
+                    <a href="/login" style="color: #973131; text-decoration: none; font-weight: 400;">Logout</a>
                 </div>
+            </div>
             @else
-                <div class="cashier">
-                    <h3>Cashier</h3>
-                    <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
-                    <div class="logout-menu" id="logoutMenu">
-                        <a href="/index" style="color: #973131; text-decoration: none; font-weight: 400;">Logout</a>
-                    </div>
+            <div class="cashier">
+                <h3>Cashier</h3>
+                <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
+                <div class="logout-menu" id="logoutMenu">
+                    <a href="/login" style="color: #973131; text-decoration: none; font-weight: 400;">Logout</a>
                 </div>
+            </div>
             @endauth
 
         </div>
@@ -84,5 +87,4 @@
         });
     </script>
 </body>
-
 </html>
