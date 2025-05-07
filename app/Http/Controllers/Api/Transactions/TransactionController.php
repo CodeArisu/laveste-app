@@ -39,6 +39,7 @@ class TransactionController
     public function show(Catalog $catalogs)
     {   
         $customerData =  $this->transactionService->getCustomerData();
+
         $transactionData = $this->transactionService->getTransactionData();
     
         $formattedDates = $this->transactionService->getFormattedDates($customerData);
@@ -55,8 +56,8 @@ class TransactionController
     public function store(TransactionRequest $request, Catalog $catalogs)
     {
         $this->transactionService->requestTransaction($request);
+
         if(!Session::has('checkout.transaction_data')) {
-            // return exception
             dd('Session does not exist');
         }
 

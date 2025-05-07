@@ -8,7 +8,7 @@ class Transaction extends Model
 {
     protected $table = 'transactions';
     protected $fillable = [
-        'customer_rented_id',
+        'product_rented_id',
         'total_amount',
         'has_discount',
         'discount_amount',

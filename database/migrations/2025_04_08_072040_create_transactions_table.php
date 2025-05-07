@@ -20,16 +20,16 @@ return new class extends Migration
 
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('customer_rented_id');
+            $table->unsignedBigInteger('product_rented_id');
             $table->double('total_amount', 12, 2);
             $table->boolean('has_discount')->default('0');
             $table->double('discount_amount', 12, 2)->nullable();
             $table->double('vat', 12, 2);
             $table->unsignedBigInteger('payment_method_id');
 
-            $table->foreign('customer_rented_id')
+            $table->foreign('product_rented_id')
             ->references('id')
-            ->on('customer_rents')
+            ->on('product_rents')
             ->onDelete('cascade');
 
             $table->foreign('payment_method_id')

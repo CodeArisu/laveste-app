@@ -15,11 +15,13 @@
             <h1>La Veste Rentals</h1>
             <h2>Checkout</h2>
         </header>
-        <form action="{{ route('cashier.checkout.store', ['catalogs' => $catalog]) }}" method="POST">
+        <form action="{{ route('cashier.transaction.store', ['catalogs' => $catalog]) }}" method="POST">
             @csrf
             <div class="checkout-body">
                 <div class="shipping-section">
                     <h3>Shipping information</h3>
+                    <input name='catalog' value='{{ $catalog->id }}' hidden>
+
                     <label>Full name</label>
                     <input type="text" placeholder="Name" value="{{ $customerData['name'] ?? 'no name input' }}" name="name">
 
@@ -27,7 +29,7 @@
                     <input type="text" placeholder="Address" value='{{ $customerData['address'] ?? 'no address input' }}' name="address">
 
                     <label>Amount</label>
-                    <input name='payment' type="number" placeholder="100.00">
+                    <input name='payment' type="number" placeholder="100.00" >
 
                     <label>Payment Method</label>
                     <select name='payment_method_id' id="payment_method">
@@ -44,7 +46,7 @@
                 <div class="order-section">
                     <h3>Order</h3>
                     <div class="order-item">
-                        <img src="/assets/images/h1.png" alt="Ruffled One Shoulder Gown">
+                        <img src="{{ $catalog->getImageUrl() }}" alt="Ruffled One Shoulder Gown">
                         <div class="item-details">
                             <p class="item-name">{{ $catalog->garment->product->product_name }}</p>
                             <p class="item-size">{{ $catalog->garment->size->measurement }}</p>

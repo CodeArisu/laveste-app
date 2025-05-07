@@ -4,15 +4,16 @@ namespace App\Services;
 
 use App\Models\Transactions\CustomerDetail;
 use App\Models\Transactions\CustomerRent;
+use App\Models\Transactions\RentDetails;
+use Illuminate\Support\Facades\Log;
 
 class CustomerDetailService
 {
     public function __construct(){}
 
-    public function executeCustomerRent($request)
+    public function executeCustomerRent($customerData)
     {   
-        $customerRent = $this->createCustomerRent($request);
-
+        $customerRent = $this->createCustomerRent($customerData);
         // checks if customer rent was created
         foreach ($customerRent as $rent) {
             if (empty($rent)) {
@@ -30,20 +31,61 @@ class CustomerDetailService
      * @return array customer rent data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    protected function createCustomerRent($request)
+    protected function createCustomerRent($customerData)
     {
-        $validated = $request->safe();
-        $customerDetails = $this->createCustomerDetail($validated);
-        $customerRentDetails = $this->createRentDetail($validated);
-        $customerRent = $this->handleCustomerRent($validated->only([
-            'pickup_date',
-            'rented_date',
-            'return_date',
-        ]), [
-            'customer_details_id' => $customerDetails['customer_details']->id,
+        $sessionCustomerDetails = $this->filterCustomerDetail($customerData);
+
+        $sessionCustomerRentDetails = $this->filterCustomerRentDetails($customerData);
+
+        $sessionCustomerRent = $this->filterCustomerRent($customerData);
+
+        // customer details table
+        $customerDetails = $this->createCustomerDetail($sessionCustomerDetails);
+        Log::info("Successfully added!", [
+            'customer_details' => $customerDetails,
+        ]);
+        // rent details table
+        $customerRentDetails = $this->createRentDetail($sessionCustomerRentDetails);
+        Log::info("Successfully added!", [
+            'customer_rent_details' => $customerRentDetails,
+        ]);
+        // customer rent table
+        $customerRents = $this->handleCustomerRent($sessionCustomerRent, [
+            'customer_details_id' => $customerDetails['id']
+        ]);
+        Log::info("Successfully added!", [
+            'customer_rent' => $customerRents,
         ]);
         
-        return [$customerDetails, $customerRent, $customerRentDetails];
+        return ['customerDetails' => $customerDetails, 'customerRent' => $customerRents, 'customerRentDetails' => $customerRentDetails];
+    }
+
+    private function filterCustomerDetail($customerData)
+    {
+        return [
+            'name' => $customerData['name'],
+            'contact' => $customerData['contact'],
+            'address' => $customerData['address'],
+            'email' => $customerData['email'] ?? null,
+        ];
+    }
+
+    private function filterCustomerRentDetails($customerData)
+    {
+        return [
+            'venue' => $customerData['venue'],
+            'event_date' => $customerData['event_date'],
+            'reason_for_renting' => $customerData['reason_for_renting'],
+        ];
+    }
+
+    private function filterCustomerRent($customerData)
+    {
+        return [
+            'pickup_date' => $customerData['pickup_date'],
+            'rented_date' => $customerData['rented_date'],
+            'return_date' => $customerData['return_date'],
+        ];
     }
 
     /**
@@ -53,15 +95,9 @@ class CustomerDetailService
      * @return array rent detail data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    protected function createRentDetail($validated)
+    protected function createRentDetail($customerRentDetails)
     {
-        $customerDetails = $this->handleRentDetail($validated->only([
-            'venue',
-            'event_date',
-            'reason_for_renting',
-        ]));
-
-        return compact('customerDetails');
+        return $this->handleRentDetail($customerRentDetails);
     }
 
     /**
@@ -70,18 +106,10 @@ class CustomerDetailService
      * @param \Illuminate\Http\Request $request
      * @return array customer detail data
      */
-    protected function createCustomerDetail($validated)
+    protected function createCustomerDetail($customerDetails)
     {
         // Handle the customer detail creation
-        $customerDetails = $this->handleCustomerDetail(
-        $validated->only([
-            'name',
-            'contact',
-            'address',
-            'email',
-        ]));
-
-        return compact('customerDetails');
+        return $this->handleCustomerDetail($customerDetails);
     }
 
     /**
@@ -90,13 +118,13 @@ class CustomerDetailService
      * @param array $customerData
      * @return \App\Models\Transactions\CustomerDetail
      */
-   private function handleCustomerDetail(array $data)
-   {
+   private function handleCustomerDetail(array $data) : CustomerDetail
+   {    
         return CustomerDetail::create([
             'name' => $data['name'],
             'contact' => $data['contact'],
             'address' => $data['address'],
-            'email' => $data['email'],
+            'email' => $data['email'] ?? 'none',
         ]);
    }
 
@@ -107,9 +135,9 @@ class CustomerDetailService
      * @param int $relation id
      * @return \App\Models\Transactions\CustomerDetail
      */
-   private function handleCustomerRent(array $data, $relation) : CustomerDetail
+   private function handleCustomerRent(array $data, $relation) : CustomerRent
    {
-        return CustomerDetail::create([
+        return CustomerRent::create([
             'customer_details_id' => $relation['customer_details_id'],
             'pickup_date' => $data['pickup_date'],
             'rented_date' => $data['rented_date'],
@@ -123,9 +151,9 @@ class CustomerDetailService
      * @param array $data
      * @return \App\Models\Transactions\CustomerRent
      */
-   private function handleRentDetail(array $data) : CustomerRent
-   {
-        return CustomerRent::create([
+   private function handleRentDetail(array $data) : RentDetails
+   {    
+        return RentDetails::create([
             'venue' => $data['venue'],
             'event_date' => $data['event_date'],
             'reason_for_renting' => $data['reason_for_renting'],

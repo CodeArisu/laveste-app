@@ -331,7 +331,10 @@ class GarmentService
         // counts the difference between existing and all statuses
         if (count(array_diff($allStatuses, $existingStatuses))) {
             foreach (ConditionStatus::cases() as $status) {
-                Condition::updateOrCreate(['id' => $status->value, 'condition_name' => $status->label()]);
+                Condition::updateOrCreate([
+                    'id' => $status->value, 
+                    'condition_name' => $status->label()
+                ]);
             }
         }
     }

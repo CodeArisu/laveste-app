@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Api\Transactions;
 
-use App\Services\ProductRentService;
-use App\Services\TransactionService;
+use App\Models\Catalog;
+use App\Services\CompleteCheckoutService;
 use Illuminate\Http\Request;
 
 class CheckoutController
 {
     public function __construct(
-        protected TransactionService $transactionService, 
-        protected ProductRentService $productRentService
+        protected CompleteCheckoutService $completeCheckoutService, 
     ) {}
 
     public function store(Request $request)
     {
-        
+        $this->completeCheckoutService->completeCheckout($request);
     }
 }

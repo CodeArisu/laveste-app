@@ -40,8 +40,6 @@
             </tbody> <!-- Only one tbody here -->
         </table>
 
-
-
         <div class="side-panel1" id="rentalSidePanel" style="display: none;">
             <a class="back-btn1" href="/admin/prodrented" >&#8592; Back</a>
             <div class="side-content1">
@@ -87,7 +85,6 @@
                 <button class="archive">Archive</button>
                 <button class="display">Display Product</button> <!-- not "dsiplay" -->
             </div>
-
 
         </div>
     </div>

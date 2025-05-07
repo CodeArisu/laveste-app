@@ -39,10 +39,10 @@
                                 <option value="new_type">New Type</option>
                             </select>
                             {{-- new input for new type --}}
-                            <div id="newTypeContainer" style="display: none;">
+                            {{-- <div id="newTypeContainer" style="display: none;">
                                 <input type="text" name="type" id="newTypeInput" placeholder="Enter new type name">
                                 <button type="button" class="cancel-btn" onclick="cancelNewType()">Cancel</button>
-                            </div>
+                            </div> --}}
                             {{-- type error message --}}
                             @error('type')
                                 <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -60,10 +60,10 @@
                                 <option value="new_subtype">New subtype</option>
                             </select>
                             {{-- subtype error message --}}                  
-                            <div id="newSubtypeContainer" style="display: none;">
+                            {{-- <div id="newSubtypeContainer" style="display: none;">
                                 <input type="text" name="subtype" id="newSubtypeInput" placeholder="Enter new subtype name">
                                 <button type="button" class="cancel-btn" onclick="cancelNewSubtype()">Cancel</button>
-                            </div>
+                            </div> --}}
                             @error('subtype')
                                 <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror

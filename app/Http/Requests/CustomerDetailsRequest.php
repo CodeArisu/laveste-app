@@ -31,7 +31,7 @@ class CustomerDetailsRequest extends FormRequest
             'email' => 'sometimes|string',
 
             'venue' => 'sometimes|string',
-            'event_data' => 'sometimes|date',
+            'event_date' => 'sometimes|date',
             'reason_for_renting' => 'sometimes|string',
             'is_regular' => 'sometimes|boolean',
 

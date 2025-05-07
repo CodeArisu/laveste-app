@@ -26,37 +26,38 @@ class ProductRentService
         Session::put('checkout.customer_data', $validated);
     }
 
+    public function execProductRent($customerData, $catalogData)
+    {  
+        return $this->createProductRent($customerData, $catalogData);
+    }
+
     /**
      * Create a new product rent or update the status of an existing product rent.
      *
      * @param \Illuminate\Http\Request $request
      * @return array product rent data
      */
-    private function createProductRent(CustomerDetailsRequest $request) : ProductRent
+    private function createProductRent($request, $catalogData) : ProductRent
     {   
         if (!ProductRentedStatus::exists()) {
             $this->generateProductRentStatus();
         }
 
-        $this->customerDetailService->executeCustomerRent($request);
-    
-        $validated = $request->safe();
-        $productRent = $this->handleProductRent(
-            $validated->only([
-                'customer_rented_id', 
-                'rent_details_id',
-            ]),
+        $customerDetails = $this->customerDetailService->executeCustomerRent($request);
+
+        $rentStatus = $this->checkForProductRentedStatus(RentStatus::RENTED->value);
+
+        dd($rentStatus);
+
+        return $this->handleProductRent(
             [
-                'rent_status' => RentStatus::RENTED->value
+                'customer_rented_id' => $customerDetails['customerRent']['id'],
+                'rent_details_id' => $customerDetails['customerRentDetails']['id'],
+            ],[    
+                'catalog_product_id' => $catalogData->id,
+                'rent_status' => $rentStatus, // rented status not found
             ]
         );
-
-        return $productRent;
-    }
-
-    public function execProductRent($request)
-    {   
-        return $this->createProductRent($request);
     }
 
     /**
@@ -67,10 +68,11 @@ class ProductRentService
      * @return \App\Models\Transactions\ProductRent
      */
     private function handleProductRent(array $data, $relation) : ProductRent
-    {
+    {   
         return ProductRent::create([
             'customer_rented_id' => $data['customer_rented_id'],
-            'rent_details_id' => $data['rent_details_id'],
+            'rent_details_id' => $data['rent_details_id'],  
+            'catalog_product_id' => $relation['catalog_product_id'],
             'product_rented_status_id' => $relation['rent_status'],
         ]);
     }
@@ -81,14 +83,28 @@ class ProductRentService
      * @return void
      */
     private function generateProductRentStatus() : void
-    {
+    {   
         $existingStatuses = array_map('strtolower', ProductRentedStatus::pluck('status_name')->toArray());
         $allStatuses = array_map(fn($status) => strtolower($status->label()), RentStatus::cases());
 
         if (count(array_diff($allStatuses, $existingStatuses))) {
             foreach (RentStatus::cases() as $status) {
-                ProductRentedStatus::updateOrCreate(['id' => $status->value, 'condition_name' => $status->label()]);
+                ProductRentedStatus::updateOrCreate([
+                    'id' => $status->value, 
+                    'status_name' => $status->label()
+                ]);
             }
         }
+    }
+
+    private function checkForProductRentedStatus($status)
+    {
+        $status = ProductRentedStatus::where('id', $status)->exists();
+
+        if (!$status) {
+            throw new \RuntimeException('Product rented status not found');
+        }
+
+        return $status->id;
     }
 }
