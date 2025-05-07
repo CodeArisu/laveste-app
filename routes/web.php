@@ -76,6 +76,11 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 });
 
+// Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
+// pre checkout customers details API
+Route::get('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('cashier.details');
+Route::post('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'store'])->name('cashier.details.store');
+// Route::get('/cashier/catalog/details/show', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'show'])->name('cashier.details.show');
 
 Route::post('/cashier/catalog/transaction', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'store'])->name('cashier.transaction.store');
 Route::get('/cashier/catalog/transaction/{transaction}', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'show'])->name('cashier.receipt.show');

@@ -1,0 +1,212 @@
+.panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  background: #fff6df;
+  padding: 50px 40px;
+  border-radius: 8px 0 0 8px;
+  width: 600px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.title {
+  color: #932727;
+  font-size: 32px;
+  margin-bottom: 40px;
+}
+
+.section-title2 {
+  color: #932727;
+  font-size: 22px;
+  display: block;
+  margin-bottom: 16px;
+  border-bottom: 2px solid #932727;
+  padding-bottom: 6px;
+}
+
+/* Center radio buttons and space them */
+.incident-type {
+  display: flex;
+  justify-content: center; /* centers the group */
+  gap: 120px; /* space between options */
+  flex-wrap: wrap;
+  margin: 30px 0;
+  color: #932727;
+  font-size: 18px;
+}
+
+.incident-type label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.incident-type input[type="radio"] {
+  transform: scale(1.4);
+}
+
+label {
+  display: block;
+  margin: 16px 0 8px;
+  font-size: 16px;
+  color: #932727;
+}
+
+.input-box, .textarea-box {
+  width: 100%;
+  border: 1px solid #932727;
+  border-radius: 12px;
+  padding: 14px;
+  background: #fff6df;
+  font-family: inherit;
+  font-size: 16px;
+}
+
+.textarea-box {
+  height: 200px;
+  resize: none;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+/* Buttons with hover effects */
+.cancel, .file {
+  padding: 16px 50px;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.cancel {
+  background: #fff6df;
+  border: 1px solid #000;
+  color: #000;
+}
+
+.cancel:hover {
+  background: #000;
+  color: #fff6df;
+}
+
+.file {
+  background: #90ee90;
+  border: none;
+  color: #000;
+}
+
+.file:hover {
+  background: #5ec25e;
+  color: white;
+}
+
+
+
+
+
+
+
+/* fiter icon transactions  */
+.filter-container {
+  display: flex; /* ensures it behaves as a flex container */
+  justify-content: flex-end; /* aligns content to the end */
+  margin: 20px 0;
+  margin-top: 30px;
+}
+
+.filter-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #8b2c2c;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.filter-icon {
+  width: 28px;
+  height: 28px;
+}
+
+
+
+/* TRANSACTIONS SIDE PANEL BTN'S */
+.action-section {
+  display: flex;
+  margin-top: 4rem;
+  gap: 17rem; /* Keeps large space between */
+}
+
+.flag-button,
+.completed-button1 {
+  display: inline-block;
+  padding: 14px 32px; /* Made the button fatter */
+  border-radius: 30px; /* More rounded for bigger button */
+  font-size: 18px; /* Bigger text */
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  transition: background 0.3s ease;
+}
+
+/* Red pill for Flag */
+.flag-button {
+  background-color: #e74c3c;
+}
+
+.flag-button:hover {
+  background-color: #c0392b;
+}
+
+/* Green pill for Completed */
+.completed-button1 {
+  background-color: #2ecc71;
+}
+
+.completed-button1:hover {
+  background-color: #27ae60;
+}
+
+
+
+.filter-dropdown {
+  position: absolute;
+  background-color: #fff6df;
+  border: 1px solid #fff6df;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 200px;
+  display: none;
+  z-index: 10;
+  margin-top: 5px;
+}
+
+.filter-dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.filter-dropdown .filter-option {
+  padding: 10px;
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.filter-dropdown .filter-option:hover {
+  background-color: white;
+}
+
