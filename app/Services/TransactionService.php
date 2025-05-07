@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Enum\PaymentMethods;
+use App\Http\Requests\TransactionRequest;
 use App\Models\Transactions\PaymentMethod;
 use App\Models\Transactions\ProductRent;
 use App\Models\Transactions\Transaction;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class TransactionService
 {
@@ -20,31 +20,56 @@ class TransactionService
      * @return array transaction data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    public function requestTransaction($request)
+    public function requestTransaction(TransactionRequest $request)
     {   
-        try {
-            DB::transaction(function () use ($request) {
-                $transaction = $this->createTransaction($request);
+        $validated = $request->validated();
 
-                if (empty($transaction)) {
-                    throw new \RuntimeException('No transaction was created');
-                }
-
-                return [
-                    'transaction' => $transaction,
-                    'message' => 'Transaction created successfully',
-                ];
-            });
-        } catch (\Exception $e) {
-            Log::error("Transaction creation failed: " . $e->getMessage());
-            throw new \RuntimeException('Invalid request: ' . $e->getMessage());
-            return [
-                'transaction' => null,
-                'message' => 'Failed to create transaction',
-            ];
+        if (!Session::has('checkout.customer_data')) {
+            // return exception
+            throw new \RuntimeException('Session does not exist');
         }
 
+        Session::put('checkout.transaction_data', $validated);
     }
+
+    public function getTotalPrice($price)
+    {   
+        $total = ($price + ($price * .25));
+        return $total;
+    }
+
+    public function getCustomerData()
+    {   
+        $customerData = Session::get('checkout.customer_data');
+        return $customerData;
+    }
+
+    public function getTransactionData()
+    {   
+        $transactionData = Session::get('checkout.transaction_data');
+        return $transactionData;
+    }
+
+    private function convertDateFormat($date)
+    {
+        $date = new \DateTime($date);
+        return $date->format('F j, Y'); // "February 5, 2024"
+    }
+
+    public function getFormattedDates(array $data) : array
+    {   
+        $dataFields = ['pickup_date', 'return_date', 'rented_date'];
+        $formattedDates = [];
+
+        foreach($dataFields as $date) {
+            if (!empty($data[$date])) {
+                $formattedDates[$date] = $this->convertDateFormat($data[$date]);
+            }
+        }
+
+        return $formattedDates;
+    }
+
     /**
      * Request transaction creation.
      *
@@ -59,14 +84,17 @@ class TransactionService
         }
 
         $validated = $request->safe();
-        $productId = $this->getProductRentId($request, $validated->get('customer_rented_id'));
+        
+        $customerRentedId = $validated->get('customer_rented_id');
+        
+        $productId = $this->getProductRentId($request, $customerRentedId);
 
         $transaction = $this->handleTransaction(
             $validated->only([
                 'total_amount',
-                'has_discount',
-                'discount_amount',
-                'vat',
+                'has_discount' ?? 0,
+                'discount_amount' ?? 0,
+                'vat' ?? .12,
             ]),
             [   
                 'customer_rented_id' => $productId,
@@ -74,7 +102,12 @@ class TransactionService
             ]
         );
 
-        return compact('transaction');
+        return $transaction;
+    }
+
+    public function execTransaction($request)
+    {   
+        return $this->createTransaction($request);
     }
 
     /**

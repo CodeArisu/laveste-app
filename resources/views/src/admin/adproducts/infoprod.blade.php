@@ -8,10 +8,6 @@
 </head>
 
 <body>
-    @php
-        use App\Enum\Measurement;
-        use App\Enum\ConditionStatus;
-    @endphp
     <div class="container">
         <div class="product-section">
             <a href="{{ url()->previous() }}" class="back-btn">← Back</a>
@@ -23,7 +19,9 @@
                     <br>
                     <p><strong>Type</strong>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong></p>
-                    <p>{{ $products->types->type_name }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $products->subtypes[0]->subtype_name }}</p>
+                    <p>{{ $products->types->type_name }}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $products->subtypes[0]->subtype_name }}
+                    </p>
                     <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
                 </div>
             </div>
@@ -46,7 +44,8 @@
                 </p>
                 <p><strong>Address</strong><span class="indented">{{ $products->supplier->address }}</span></p>
                 <p><strong>Contact</strong><span class="indented">{{ $products->supplier->contact }}</span></p>
-                <p><strong>Original Price</strong><span class="indented">{{ $products->getFormattedOriginalPrice() }}</span></p>
+                <p><strong>Original Price</strong><span
+                        class="indented">{{ $products->getFormattedOriginalPrice() }}</span></p>
                 <p><strong>Date</strong><span class="indented">{{ $products->getFormattedDate() }}</span></p>
             </div>
 
@@ -58,7 +57,8 @@
             <a href="{{ url()->previous() }}" class="back-btn">←</a>
             <br><br>
             <h2>Add to Garment</h2>
-            <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}" enctype="multipart/form-data">
+            <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}"
+                enctype="multipart/form-data">
                 @csrf
                 {{-- gets product id as input --}}
                 <input hidden name='product_id' value='{{ $products->id }}'></input>
@@ -73,7 +73,7 @@
                         <label for="condition">Condition</label>
                         <select id="condition" name='condition_id' class="green-input">
                             <option value="">Select Condition</option>
-                            @foreach (ConditionStatus::cases() as $condition)
+                            @foreach ($conditions as $condition)
                                 <option value="{{ $condition->value }}">{{ ucfirst($condition->label()) }}</option>
                             @endforeach
                         </select>
@@ -99,7 +99,8 @@
                                 <option value="filipiniana">Filipiniana</option>
                             @else
                                 <option value="">Select Type</option>
-                                <option selected value="{{ $products->types->type_name }}">{{ ucfirst($products->types->type_name) }}</option>
+                                <option selected value="{{ $products->types->type_name }}">
+                                    {{ ucfirst($products->types->type_name) }}</option>
                             @endif
                         </select>
                     </div>
@@ -114,7 +115,8 @@
                                 <option value="filipiniana">Filipiniana</option>
                             @else
                                 <option value="">Select Type</option>
-                                <option selected value="{{ $products->subtypes[0]->subtype_name }}">{{ ucfirst($products->subtypes[0]->subtype_name) }}</option>
+                                <option selected value="{{ $products->subtypes[0]->subtype_name }}">
+                                    {{ ucfirst($products->subtypes[0]->subtype_name) }}</option>
                             @endif
                         </select>
                     </div>
@@ -129,12 +131,11 @@
                         <label for="size">Size</label>
                         <select id="size" name='measurement'>
                             <option value="">Select Size</option>
-                            <option value="{{ Measurement::XS->value }}">Extra Small</option>
-                            <option value="{{ Measurement::S->value }}">Small</option>
-                            <option value="{{ Measurement::M->value }}">Medium</option>
-                            <option value="{{ Measurement::L->value }}">Large</option>
-                            <option value="{{ Measurement::XL->value }}">Extra Large</option>
-                            <option value="{{ Measurement::XXL->value }}">XXL</option>
+                            @foreach ($measurements as $measurement)
+                                <option value="{{ $measurement->value }}">
+                                    {{ ucfirst($measurement->label()) }}
+                                </option>
+                            @endforeach>
                         </select>
                     </div>
                 </div>
@@ -142,11 +143,11 @@
                 <div class='form-row'>
                     <div>
                         <label>Width</label>
-                        <input type="number" name='width' >
+                        <input type="number" name='width'>
                     </div>
                     <div>
                         <label>Height</label>
-                        <input type="number" name='length' >
+                        <input type="number" name='length'>
                     </div>
                 </div>
 

@@ -1,9 +1,6 @@
 <?php
 
 use App\Http\Controllers\Api\CatalogController;
-use App\Http\Controllers\Api\GarmentController;
-use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Auth\AuthController;
 use App\Models\Products\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -67,21 +64,29 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
 
 });
+// Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
+// pre checkout customers details API
+Route::get('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('cashier.details');
+Route::post('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'store'])->name('cashier.details.store');
+// Route::get('/cashier/catalog/details/show', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'show'])->name('cashier.details.show');
 
-Route::get('/cashier/catalog/checkout', function () {
-    return view('src.cashier.checkout');
-})->name('cashier.checkout');
+// transaction checkout API
+Route::get('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('cashier.checkout');
+Route::post('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'store'])->name('cashier.checkout.store');
+
+Route::get('/cashier/catalog/{catalogs}/checkout/show', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'show'])->name('cashier.checkout.show');
+
+
+// Route::post('/cashier/catalog/transaction', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'store'])->name('cashier.transaction.show');
+// Route::get('/cashier/catalog/transaction/{transaction}', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'show'])->name('cashier.transaction.show');
 
 Route::get('/cashier/appointment/checkout', function () {
-    return view('src.cashier.checkout2');
+    return view('src.cashier.checkout3');
 })->name('appointment.checkout');
 
-
-
-
-
-// Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
-
+Route::get('/cashier/catalog/receipt', function () {
+    return view('src.cashier.receipt');
+})->name('cashier.receipt');
 
 Route::get('/dashboard/rented', function () {
     return view('src.admin.prodrented');

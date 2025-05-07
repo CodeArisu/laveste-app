@@ -66,29 +66,25 @@
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-    const image = document.getElementById('cashierImage');
-    const menu = document.getElementById('logoutMenu');
+            const image = document.getElementById('cashierImage');
+            const menu = document.getElementById('logoutMenu');
 
-    // Make sure it's hidden when page loads
-    menu.style.display = 'none';
-
-    image.addEventListener('click', function(event) {
-        event.stopPropagation(); // Prevent event bubbling
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    });
-
-    // Hide when clicking outside
-    document.addEventListener('click', function(event) {
-        if (!menu.contains(event.target) && !image.contains(event.target)) {
+            // Make sure it's hidden when page loads
             menu.style.display = 'none';
-        }
-    });
-});
 
+            image.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevent event bubbling
+                menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+            });
 
-
-
+            // Hide when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!menu.contains(event.target) && !image.contains(event.target)) {
+                    menu.style.display = 'none';
+                    P
+                }
+            });
+        });
     </script>
 </body>
-
 </html>

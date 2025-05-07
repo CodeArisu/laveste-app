@@ -40,14 +40,18 @@ class ProductSeeder extends Seeder
         //         ],
         //     ],
         //     'categories' => [
-        //         ['type' => 'Type',
-        //             'subtype' => [
+        //         [
+        //             'type' => 'Type',
+        //             'subtype' => 
+        //             [
         //                 'Sub Type 1',
         //                 'Sub Type 2',
         //             ],
         //         ],
-        //         ['type' => 'Type 2',
-        //             'subtype' => [
+        //         [
+        //             'type' => 'Type 2',
+        //             'subtype' => 
+        //             [
         //                 'Sub Type 3',
         //                 'Sub Type 4',
         //             ],

@@ -3,13 +3,15 @@
 namespace App\Services;
 
 use App\Enum\RentStatus;
-use App\Models\Transactions\ProductRent;
+use App\Http\Requests\CustomerDetailsRequest;
 use App\Models\Statuses\ProductRentedStatus;
+use App\Models\Transactions\ProductRent;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\{DB, Log};
 
 class ProductRentService
 {   
-    public function __construct() {}
+    public function __construct(protected CustomerDetailService $customerDetailService) {}
 
     /**
      * Request a product rent or update the status of an existing product rent.
@@ -18,24 +20,10 @@ class ProductRentService
      * @return array product rent data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    public function requestProductRent($request) {
-        
-        try {
-            DB::transaction(function () use ($request) {
-                $productRent = $this->createProductRent($request);
-
-                if (empty($productRent)) {
-                    throw new \RuntimeException('No product were rented');
-                }
-
-                return [
-                    'product_rent' => $productRent, 
-                    'message' => 'Rented successfully'
-                ];
-            });
-        } catch (\Exception $e) {
-           
-        }
+    public function requestProductRent(CustomerDetailsRequest $request) 
+    {
+        $validated = $request->validated();
+        Session::put('checkout.customer_data', $validated);
     }
 
     /**
@@ -44,23 +32,30 @@ class ProductRentService
      * @param \Illuminate\Http\Request $request
      * @return array product rent data
      */
-    private function createProductRent($request) : array
+    private function createProductRent(CustomerDetailsRequest $request) : ProductRent
     {   
         if (!ProductRentedStatus::exists()) {
             $this->generateProductRentStatus();
         }
 
+        $this->customerDetailService->executeCustomerRent($request);
+    
         $validated = $request->safe();
         $productRent = $this->handleProductRent(
-            $validated->only(['customer_rented_id', 'rent_details_id']),
-            ['rent_status' => RentStatus::RENTED->value]
+            $validated->only([
+                'customer_rented_id', 
+                'rent_details_id',
+            ]),
+            [
+                'rent_status' => RentStatus::RENTED->value
+            ]
         );
 
-        return compact('productRent');
+        return $productRent;
     }
 
     public function execProductRent($request)
-    {
+    {   
         return $this->createProductRent($request);
     }
 
