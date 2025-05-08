@@ -47,8 +47,6 @@ class ProductRentService
 
         $rentStatus = $this->checkForProductRentedStatus(RentStatus::RENTED->value);
 
-        dd($rentStatus);
-
         return $this->handleProductRent(
             [
                 'customer_rented_id' => $customerDetails['customerRent']['id'],
@@ -73,7 +71,7 @@ class ProductRentService
             'customer_rented_id' => $data['customer_rented_id'],
             'rent_details_id' => $data['rent_details_id'],  
             'catalog_product_id' => $relation['catalog_product_id'],
-            'product_rented_status_id' => $relation['rent_status'],
+            'product_rented_status_id' => $relation['rent_status'] ?? RentStatus::RENTED->value,
         ]);
     }
 
@@ -87,7 +85,8 @@ class ProductRentService
         $existingStatuses = array_map('strtolower', ProductRentedStatus::pluck('status_name')->toArray());
         $allStatuses = array_map(fn($status) => strtolower($status->label()), RentStatus::cases());
 
-        if (count(array_diff($allStatuses, $existingStatuses))) {
+        if (count(array_diff($allStatuses, $existingStatuses)) > 0) {
+            // ProductRentedStatus::truncate();
             foreach (RentStatus::cases() as $status) {
                 ProductRentedStatus::updateOrCreate([
                     'id' => $status->value, 
@@ -97,14 +96,12 @@ class ProductRentService
         }
     }
 
-    private function checkForProductRentedStatus($status)
-    {
-        $status = ProductRentedStatus::where('id', $status)->exists();
-
-        if (!$status) {
-            throw new \RuntimeException('Product rented status not found');
+    private function checkForProductRentedStatus($statusID)
+    {   
+        if (!ProductRentedStatus::where('id', $statusID)->exists()) {
+            throw new \RuntimeException("Product rented status with ID {$statusID} not found");
         }
 
-        return $status->id;
+        return ProductRentedStatus::find($statusID)->id ?? null;
     }
 }

@@ -78,22 +78,15 @@ class TransactionService
      */
     private function createTransaction($transactionData, $productRent)
     {   
-        if (!PaymentMethod::exists()) {
-            $this->generatePaymentMethods();
-        }
 
-        dd($transactionData);
+        dd($transactionData); 
         
-        $customerRentedId = $transactionData->get('customer_rented_id');
-        
-        $productId = $this->getProductRentId($transactionData, $customerRentedId);
+        $productId = $this->getProductRentId($transactionData, $productRent);
 
-        $transaction = $this->handleTransaction($transactionData,
-            [   
+        $transaction = $this->handleTransaction(
+            $transactionData, [   
                 'customer_rented_id' => $productId,
-                'payment_method_id' => $transactionData->get('payment_method_id') ?? 1,
-            ]
-        );
+        ]);
 
         return $transaction;
     }
@@ -113,12 +106,12 @@ class TransactionService
     private function handleTransaction(array $data, $relations)
     {
         return Transaction::create([
-            'product_rented_id' => $relations['product_rented_id'],
-            'total_amount' => $data['total_amount'],
+            'product_rented_id' => $relations['product_rented_id'] ?? null,
+            'total_amount' => $data['total_amount'] ?? 0,
             'has_discount' => $data['has_discount'] ?? '0',
             'discount_amount' => $data['discount_amount'] ?? 0,
             'vat' => $data['vat'] ?? .12,
-            'payment_method_id' => $relations['payment_method_id']
+            'payment_method_id' => $data['payment_method_id'] ?? PaymentMethods::CASH->value,
         ]);
     }
 

@@ -12,8 +12,6 @@ class ProductRentedStatus extends Model
     protected $fillable = [
         'status_name',
     ];
-    
-    public $timestamps = true;
 
     protected $casts = [
         'created_at' => 'datetime',

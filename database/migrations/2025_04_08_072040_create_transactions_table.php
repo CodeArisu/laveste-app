@@ -24,7 +24,7 @@ return new class extends Migration
             $table->double('total_amount', 12, 2);
             $table->boolean('has_discount')->default('0');
             $table->double('discount_amount', 12, 2)->nullable();
-            $table->double('vat', 12, 2);
+            $table->double('vat')->default(0.12);
             $table->unsignedBigInteger('payment_method_id');
 
             $table->foreign('product_rented_id')

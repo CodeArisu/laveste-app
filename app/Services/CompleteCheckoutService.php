@@ -29,7 +29,7 @@ class CompleteCheckoutService
                 $catalogData = Catalog::where('id', $request['catalogs'])->first();
                 
                 $productRent = $this->productRentService->execProductRent($customerData, $catalogData);
-
+                dd($request->session_data);
                 $transaction = $this->transactionService->execTransaction($transactionData, $productRent);
                 
                 return [
