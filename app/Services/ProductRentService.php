@@ -44,7 +44,6 @@ class ProductRentService
         }
 
         $customerDetails = $this->customerDetailService->executeCustomerRent($request);
-
         $rentStatus = $this->checkForProductRentedStatus(RentStatus::RENTED->value);
 
         return $this->handleProductRent(
@@ -53,7 +52,7 @@ class ProductRentService
                 'rent_details_id' => $customerDetails['customerRentDetails']['id'],
             ],[    
                 'catalog_product_id' => $catalogData->id,
-                'rent_status' => $rentStatus, // rented status not found
+                'rent_status' => $rentStatus,
             ]
         );
     }

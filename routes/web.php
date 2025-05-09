@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CashierController;
 use App\Http\Controllers\Api\CatalogController;
 use App\Models\Products\Product;
 use Illuminate\Support\Facades\Route;
@@ -23,11 +24,8 @@ Route::middleware(['auth', 'web'])->group(function () {
             return view('src.cashier.home');
         })->name('home');
 
-        Route::get('/catalog', [CatalogController::class, 'index'])->name('index'); 
-
-        Route::get('/transaction', function () {
-            return view('src.cashier.transaction');
-        })->name('transaction');
+        Route::get('/catalog', [App\http\Controllers\Api\CatalogController::class, 'index'])->name('index'); 
+        Route::get('/transaction', [App\Http\Controllers\Api\CashierController::class, 'index'])->name('transaction');
 
         // pre checkout customers details API
         Route::get('/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('details');
@@ -63,7 +61,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         });
 
         // dashboard garment routes
-        Route::middleware(['role:admin'])->name('garment.')->prefix('garment')->group( function () {
+        Route::middleware(['role:admin,manager'])->name('garment.')->prefix('garment')->group( function () {
             // this routes to the product info through add to garment
             Route::get('/', [\App\Http\Controllers\Api\GarmentController::class, 'index'])->name('index');
             
@@ -76,11 +74,13 @@ Route::middleware(['auth', 'web'])->group(function () {
 
 });
 
-// Route::post('/catalog/{$garment}', [App\Http\Controllers\Api\CatalogController::class, 'store'])->name('catalog.store');
 // pre checkout customers details API
 Route::get('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('cashier.details');
 Route::post('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'store'])->name('cashier.details.store');
 // Route::get('/cashier/catalog/details/show', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'show'])->name('cashier.details.show');
+
+Route::get('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('cashier.checkout');
+Route::post('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'store'])->name('cashier.checkout.store');
 
 Route::post('/cashier/catalog/transaction', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'store'])->name('cashier.transaction.store');
 Route::get('/cashier/catalog/transaction/{transaction}', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'show'])->name('cashier.receipt.show');

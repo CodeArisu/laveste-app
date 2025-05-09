@@ -25,7 +25,7 @@ class TransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_method_id' => 'required|string',
+            'payment_method' => 'required|string',
             'payment' => 'required|numeric',
             'has_discount' => 'nullable|boolean',
             'vat' => 'numeric',

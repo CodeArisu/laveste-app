@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\Transactions;
 
-use App\Http\Requests\TransactionRequest;
-use App\Services\TransactionService;
 use App\Enum\PaymentMethods;
+use App\Events\TransactionSession;
+use App\Http\Requests\TransactionRequest;
 use App\Models\Catalog;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
@@ -40,7 +41,7 @@ class TransactionController
     {   
         $customerData =  $this->transactionService->getCustomerData();
 
-        $transactionData = $this->transactionService->getTransactionData();
+        $transactionData = $this->transactionService->getTransactionSessionData();
     
         $formattedDates = $this->transactionService->getFormattedDates($customerData);
         
@@ -53,14 +54,9 @@ class TransactionController
         ]);
     }
 
-    public function store(TransactionRequest $request, Catalog $catalogs)
-    {
+    public function store(TransactionRequest $request)
+    {   
         $this->transactionService->requestTransaction($request);
-
-        if(!Session::has('checkout.transaction_data')) {
-            dd('Session does not exist');
-        }
-
-        return redirect()->route('cashier.checkout.show', ['catalogs' => $catalogs])->with('success', 'Transaction created successfully.');
+        return redirect()->route('cashier.receipt')->with('success', 'Transaction created successfully.');
     }
 }

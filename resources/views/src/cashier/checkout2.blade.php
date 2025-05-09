@@ -15,7 +15,7 @@
             <h1>La Veste Rentals</h1>
             <h2>Checkout</h2>
         </header>
-        <form action="{{ route('cashier.transaction.store', ['catalogs' => $catalog]) }}" method="POST">
+        <form action="{{ route('cashier.checkout.store', ['catalogs' => $catalog]) }}" method="POST">
             @csrf
             <div class="checkout-body">
                 <div class="shipping-section">
@@ -32,7 +32,7 @@
                     <input name='payment' type="number" placeholder="100.00" >
 
                     <label>Payment Method</label>
-                    <select name='payment_method_id' id="payment_method">
+                    <select name='payment_method' id="payment_method">
                         <option>Select payment method</option>
                         @foreach ($paymentMethods as $paymentMethod)
                             <option value='{{ $paymentMethod->value }}'>{{ $paymentMethod->label() }}</option>

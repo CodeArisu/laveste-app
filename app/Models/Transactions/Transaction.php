@@ -16,4 +16,14 @@ class Transaction extends Model
         'vat',
         'payment_method_id'
     ];
+
+    public function productRent()
+    {
+        $this->hasOne(ProductRent::class);
+    }
+
+    public function paymentMethod()
+    {
+        $this->belongsTo(PaymentMethod::class);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enum\PaymentMethods;
+use App\Events\TransactionSession;
 use App\Http\Requests\TransactionRequest;
 use App\Models\Transactions\PaymentMethod;
 use App\Models\Transactions\ProductRent;
@@ -22,18 +23,42 @@ class TransactionService
      */
     public function requestTransaction(TransactionRequest $request)
     {   
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        if (!Session::has('checkout.customer_data')) {
-            throw new \RuntimeException('Session does not exist');
+            if (!Session::has('checkout.customer_data')) {
+                throw new \RuntimeException('Session does not exist');
+            }
+    
+            Session::put('checkout.transaction_data', $validated);
+            $catalogId = $request->only(['catalog']);
+    
+            $this->setTransactionData($catalogId);
+        } catch (\Exception $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
+    }
+
+    public function setTransactionData($catalogId)
+    {   
+        $sessionName = 'checkout.transaction_data';
+
+        if(!Session::has($sessionName)) {
+            dd('Session does not exist');
         }
 
-        Session::put('checkout.transaction_data', $validated);
+        $transactionSession = Session::get($sessionName);
+
+        // first flag
+        // dd($transactionSession);
+        event(new TransactionSession($transactionSession, $catalogId));
+
+        \Log::info('Event Triggered');
     }
 
     public function getTotalPrice($price)
     {   
-        $total = ($price + ($price * .25));
+        $total = ($price + ($price * .12));
         return $total;
     }
 
@@ -43,10 +68,23 @@ class TransactionService
         return $customerData;
     }
 
-    public function getTransactionData()
+    public function getTransactionSessionData()
     {   
         $transactionData = Session::get('checkout.transaction_data');
         return $transactionData;
+    }
+
+    public function getCheckoutData(array $transactionData, $catalogId)
+    {   
+        return [
+            'payment' => $transactionData['payment'],
+            'total_amount' => $transactionData['total_amount'] ?? 0,
+            'has_discount' => $transactionData['has_discount'] ?? '0',
+            'discount_amount' => $transactionData['discount_amount'] ?? 0,
+            'vat' => $transactionData['vat'] ?? .12,
+            'payment_method' => $transactionData['payment_method'],
+            'catalog_id' => $catalogId,
+        ];
     }
 
     private function convertDateFormat($date)
@@ -78,14 +116,13 @@ class TransactionService
      */
     private function createTransaction($transactionData, $productRent)
     {   
+        // $productId = $this->getProductRentId($transactionData, $productRent);
+        if(empty($productRent)) {
+            throw new \RuntimeException('No product rent data');
+        }
 
-        dd($transactionData); 
-        
-        $productId = $this->getProductRentId($transactionData, $productRent);
-
-        $transaction = $this->handleTransaction(
-            $transactionData, [   
-                'customer_rented_id' => $productId,
+        $transaction = $this->handleTransaction($transactionData, [   
+            'product_rented_id' => $productRent->id,
         ]);
 
         return $transaction;
@@ -107,7 +144,7 @@ class TransactionService
     {
         return Transaction::create([
             'product_rented_id' => $relations['product_rented_id'] ?? null,
-            'total_amount' => $data['total_amount'] ?? 0,
+            'total_amount' => $data['payment'] ?? 0,
             'has_discount' => $data['has_discount'] ?? '0',
             'discount_amount' => $data['discount_amount'] ?? 0,
             'vat' => $data['vat'] ?? .12,
@@ -152,7 +189,7 @@ class TransactionService
 
         if (count(array_diff($allMethod, $existingMethods))) {
             foreach (PaymentMethods::cases() as $status) {
-                PaymentMethod::updateOrCreate(['method_name' => $status->label()]);
+                PaymentMethod::updateOrCreate(['id' => $status->value, 'method_name' => $status->label()]);
             }
         }
     }

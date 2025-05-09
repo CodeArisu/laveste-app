@@ -12,24 +12,21 @@ class CompleteCheckoutService
         protected TransactionService $transactionService
     ){}
 
-    public function completeCheckout($request)
+    public function completeCheckout($transactionData)
     {   
         try {
-            return DB::transaction(function () use ($request) {
-                $request->merge([
-                    'session_data' => [
-                        'customer_data' => $this->transactionService->getCustomerData(),
-                        'transaction_data' => $this->transactionService->getTransactionData(),
-                    ],
+            return DB::transaction(function () use ($transactionData) {
+                $transactionData = array_merge([
+                    'customer_data' => $this->transactionService->getCustomerData(), 
+                    'transaction_data' => $transactionData
                 ]);
 
-                $customerData = $request->session_data['customer_data'];
-                $transactionData = $request->session_data['transaction_data'];
+                $customerData = $transactionData['customer_data'];
+                $transactionData = $transactionData['transaction_data'];
 
-                $catalogData = Catalog::where('id', $request['catalogs'])->first();
+                $catalogData = Catalog::where('id', $transactionData['catalog_id'])->first();
                 
                 $productRent = $this->productRentService->execProductRent($customerData, $catalogData);
-                dd($request->session_data);
                 $transaction = $this->transactionService->execTransaction($transactionData, $productRent);
                 
                 return [
