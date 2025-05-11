@@ -13,11 +13,11 @@ enum PaymentMethods : int
     public function label(): string
     {
         return match($this) {
-            self::CASH => 'Cash',
-            self::GCASH => 'Gcash',
-            self::CREDIT_CARD => 'Credit Card',
-            self::DEBIT_CARD => 'Debit Card',
-            self::PAYPAL => 'Paypal',
+            self::CASH => 'cash',
+            self::GCASH => 'gcash',
+            self::CREDIT_CARD => 'credit Card',
+            self::DEBIT_CARD => 'debit Card',
+            self::PAYPAL => 'paypal',
         };
     }
 }

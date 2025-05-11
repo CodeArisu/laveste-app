@@ -43,14 +43,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>0001</td>
-                        <td>Very nice gown</td>
-                        <td>Juan Dela Cruz</td>
-                        <td>3,600.00</td>
-                        <td>March 20, 2025</td>
-                        <td><span class="status pending">Pending</span></td>
-                    </tr>
+                    @foreach ($productRents as $productRent)
+                        <tr>
+                            <td>{{ $productRent->id }}</td>
+                            <td>{{ $productRent->catalog->garment->product->product_name }}</td>
+                            <td>{{ $productRent->customerRent->customerDetail->name }}</td>
+                            <td>{{ $productRent->catalog->getFormattedRentPrice() }}</td>
+                            <td>{{ $productRent->customerRent->convertDateFormat() }}</td>
+                            <td>
+                                @if($productRent->productRentedStatus->status_name === 'rented')
+                                    <span class="status pending">Rented</span>
+                                @elseif ($productRent->productRentedStatus->status_name === 'returned')
+                                    <span class="status confirmed">Returned</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
 
@@ -76,9 +84,6 @@
                 </tbody>
             </table>
         </div>
-
-
-
 
         <div class="appointment-side-panel" id="appointmentPanel" style="display: none;">
             <button class="back-btn" id="backBtn">
@@ -115,10 +120,7 @@
             </button>
         </div>
 
-
     </div>
-
-
 
     <div class="side-panel-container3">
         <div class="appointment-container3">

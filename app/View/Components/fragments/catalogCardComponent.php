@@ -8,16 +8,15 @@ use Illuminate\View\Component;
 
 class catalogCardComponent extends Component
 {   
-    public $image;
-    public $title;
-
+    public $catalog;
     public $url;
 
-    public function __construct($image, $title, $url = null)
+    public $catalogId;
+
+    public function __construct($catalog, $url = null)
     {
+        $this->catalog = $catalog;
         $this->url = $url;
-        $this->image = $image;
-        $this->title = $title;
     }
 
     public function render(): View|Closure|string

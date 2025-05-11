@@ -41,13 +41,6 @@
                         <span class="status damaged">{{ $garment->condition->condition_name }}</span>
                       @endif
                     </td>
-
-                  {{-- <td>{{ $garments[0]->id  }}</td>
-                    <td>{{ $garments[0]->product->product_name }}</td>
-                    <td>{{ $garments[0]->rent_price }}</td>
-                    <td>Dress</td>
-                    <td>Casual</td>
-                    <td><span class="status good">{{ $garments[0]->condition->condition_name }}</span></td> --}}
                 </tr>
                 @endforeach
             </tbody> <!-- Only one tbody here -->

@@ -5,15 +5,17 @@ namespace App\Models\Transactions;
 use App\Models\Catalog;
 use App\Models\Statuses\ProductRentedStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class ProductRent extends Model
 {   
     protected $table = 'product_rents';
+    protected $id = 'id';
     
     protected $fillable = [
         'customer_rented_id',
         'rent_details_id',
-        'catalog_product_id',
+        'catalog_id',
         'product_rented_status_id',
     ];
 
@@ -24,12 +26,12 @@ class ProductRent extends Model
 
     public function rentDetail()
     {
-        return $this->belongsTo(RentDetails::class);
+        return $this->belongsTo(RentDetails::class, 'rent_details');
     }
 
     public function catalog()
-    {
-        return $this->belongsTo(Catalog::class);
+    {   
+        return $this->belongsTo(Catalog::class, 'catalog_id');
     }
     
     public function productRentedStatus()
@@ -37,5 +39,8 @@ class ProductRent extends Model
         return $this->belongsTo(ProductRentedStatus::class, 'product_rented_status_id');
     }
 
-
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class, 'id');
+    }
 }

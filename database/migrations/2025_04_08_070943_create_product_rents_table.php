@@ -52,7 +52,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_rented_id');
             $table->unsignedBigInteger('rent_details_id');
-            $table->unsignedBigInteger('catalog_product_id');
+            $table->unsignedBigInteger('catalog_id');
             $table->unsignedBigInteger('product_rented_status_id');
 
             $table->foreign('customer_rented_id')
@@ -65,7 +65,7 @@ return new class extends Migration
             ->on('rent_details')
             ->onDelete('cascade');
 
-            $table->foreign('catalog_product_id')
+            $table->foreign('catalog_id')
             ->references('id')
             ->on('catalogs')
             ->onDelete('cascade');

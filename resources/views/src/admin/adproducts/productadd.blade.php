@@ -2,12 +2,13 @@
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/admin/productadd.css') }}">
     @endpush
+    
     <div class="container">
         <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
         <h1>Add Product</h1>
 
         {{-- shows message after success API --}}
-        @if(session('success'))
+        @if (session('success'))
             <div class="alert alert-success fade show" role="alert">
                 {{ session('success') }}
             </div>
@@ -20,7 +21,7 @@
                 <div class="form-section">
                     <h2>Product Information</h2>
                     <label for="product-name">Product Name</label>
-                   
+
                     <input type="text" id="product-name" name='product_name' value='{{ old('product_name') }}'>
                     {{-- product name error message --}}
                     @error('product_name')
@@ -31,11 +32,11 @@
                             <label for="type">Type</label>
                             <select id="type" name="type" onchange="updateTypeField()">
                                 <option selected>Select Type</option>
-                                    @foreach ($types as $type)
-                                        <option value="{{ $type->type_name }}">
-                                            {{ Str::ucfirst($type->type_name) }}
-                                        </option>
-                                    @endforeach
+                                @foreach ($types as $type)
+                                    <option value="{{ $type->type_name }}">
+                                        {{ Str::ucfirst($type->type_name) }}
+                                    </option>
+                                @endforeach
                                 <option value="new_type">New Type</option>
                             </select>
                             {{-- new input for new type --}}
@@ -52,14 +53,14 @@
                             <label for="sub-type">Sub-type</label>
                             <select id="sub-type" name="subtype" onchange="updateSubtypeField()">
                                 <option selected>Select Sub-type</option>
-                                    @foreach ($subtypes as $subtype)
-                                        <option value="{{ $subtype->subtype_name }}">
-                                            {{ Str::ucfirst($subtype->subtype_name) }}
-                                        </option>
-                                    @endforeach
+                                @foreach ($subtypes as $subtype)
+                                    <option value="{{ $subtype->subtype_name }}">
+                                        {{ Str::ucfirst($subtype->subtype_name) }}
+                                    </option>
+                                @endforeach
                                 <option value="new_subtype">New subtype</option>
                             </select>
-                            {{-- subtype error message --}}                  
+                            {{-- subtype error message --}}
                             {{-- <div id="newSubtypeContainer" style="display: none;">
                                 <input type="text" name="subtype" id="newSubtypeInput" placeholder="Enter new subtype name">
                                 <button type="button" class="cancel-btn" onclick="cancelNewSubtype()">Cancel</button>
@@ -121,48 +122,16 @@
                 <!-- Buttons -->
                 <div class="button-group">
                     <button class="clear-btn">Clear all</button>
-                    <button class="add-btn">✔ Add product</button>
+                    <button class="add-btn" >✔ Add product</button>
                 </div>
             </div>
-
         </form>
     </div>
-    <script>
-        function updateTypeField() {
-            const typeSelect = document.getElementById('type');
-            const newTypeContainer = document.getElementById('newTypeContainer');
 
-            if (typeSelect.value === 'new_type') {
-                typeSelect.style.display = 'none';
-                newTypeContainer.style.display = 'block';
-                document.getElementById('newTypeInput').focus();
-            }
-        }
+    @push('scripts')
+        {{-- <script src={{ asset('scripts/toastHandler.js') }}></script> --}}
 
-        function updateSubtypeField() {
-            const subtypeSelect = document.getElementById('sub-type');
-            const newSubtypeContainer = document.getElementById('newSubtypeContainer');
-
-            if (subtypeSelect.value === 'new_subtype') {
-                subtypeSelect.style.display = 'none';
-                newSubtypeContainer.style.display = 'block';
-                document.getElementById('newSubtypeInput').focus();
-            }
-        }
-
-        // Optional: Add function to revert back to select if needed
-        function cancelNewType() {
-            const typeSelect = document.getElementById('type');
-            typeSelect.style.display = 'block';
-            typeSelect.value = 'Select Type'; // Reset to default option
-            document.getElementById('newTypeContainer').style.display = 'none';
-        }
-
-        function cancelNewSubtype() {
-            const subtypeSelect = document.getElementById('sub-type');
-            subtypeSelect.style.display = 'block';
-            subtypeSelect.value = 'Select Sub-type'; // Reset to default option
-            document.getElementById('newSubtypeContainer').style.display = 'none';
-        }
-    </script>
+        <script src={{ asset('scripts/addProductSelectTypesHandler.js') }}></script>
+    @endpush
+    
 </x-layouts.app>

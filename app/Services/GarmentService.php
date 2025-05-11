@@ -255,7 +255,7 @@ class GarmentService
                 'product_id' => $product->id,
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
-                'poster' => $garmentData['poster'] ?? 'no poster',
+                'poster' => $garmentData['poster'] ?? null,
                 'size_id' => $relations['size_id'],
                 'condition_id' => $relations['condition_id'],
             ]

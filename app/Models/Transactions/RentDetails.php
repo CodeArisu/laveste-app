@@ -13,4 +13,9 @@ class RentDetails extends Model
         'event_date',
         'reason_for_renting',
     ];
+
+    public function productRent()
+    {
+        return $this->hasOne(ProductRent::class, 'rent_details_id');
+    }
 }

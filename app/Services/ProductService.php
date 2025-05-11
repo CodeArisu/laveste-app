@@ -26,13 +26,6 @@ class ProductService extends BaseServicesClass
                 if (empty($products)) {
                     throw ProductException::productNotFound();
                 }
-                // Validate all products were created successfully
-                foreach ($products as $product) {
-                    if (!Product::exists()) {
-                        throw ProductException::productCreateFailed();
-                    }
-                }
-
                 return ['message' => 'Successfully created', 'data' => $products];
             });
         } catch (\Exception $e) {
@@ -67,6 +60,7 @@ class ProductService extends BaseServicesClass
             return DB::transaction(function () use ($request, $product) {
                 $updatedProducts = $this->updateProduct($request, $product);
                 $this->validateUpdateResults($updatedProducts);
+
                 return ['message' => 'Successfully updated', 'data' => $updatedProducts];
             });
         } catch (\Exception $e) {
@@ -85,6 +79,7 @@ class ProductService extends BaseServicesClass
         } catch (\RuntimeException $e) {
             // Your custom runtime exceptions
             throw ProductException::productUpdateFailed();
+            dd($e->getMessage());
         }
     }
 

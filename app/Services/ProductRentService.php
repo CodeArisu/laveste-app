@@ -51,7 +51,7 @@ class ProductRentService
                 'customer_rented_id' => $customerDetails['customerRent']['id'],
                 'rent_details_id' => $customerDetails['customerRentDetails']['id'],
             ],[    
-                'catalog_product_id' => $catalogData->id,
+                'catalog_id' => $catalogData->id,
                 'rent_status' => $rentStatus,
             ]
         );
@@ -69,7 +69,7 @@ class ProductRentService
         return ProductRent::create([
             'customer_rented_id' => $data['customer_rented_id'],
             'rent_details_id' => $data['rent_details_id'],  
-            'catalog_product_id' => $relation['catalog_product_id'],
+            'catalog_id' => $relation['catalog_id'],
             'product_rented_status_id' => $relation['rent_status'] ?? RentStatus::RENTED->value,
         ]);
     }

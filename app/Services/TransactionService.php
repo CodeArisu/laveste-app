@@ -44,20 +44,19 @@ class TransactionService
         $sessionName = 'checkout.transaction_data';
 
         if(!Session::has($sessionName)) {
-            dd('Session does not exist');
+            throw new \RuntimeException('Session does not exist');
         }
 
         $transactionSession = Session::get($sessionName);
 
-        // first flag
-        // dd($transactionSession);
+        // triggers transaction event
         event(new TransactionSession($transactionSession, $catalogId));
-
         \Log::info('Event Triggered');
     }
 
     public function getTotalPrice($price)
     {   
+        // calculates price + 12% vat
         $total = ($price + ($price * .12));
         return $total;
     }
@@ -76,9 +75,10 @@ class TransactionService
 
     public function getCheckoutData(array $transactionData, $catalogId)
     {   
+        $totalPayment = $this->getTotalPrice($transactionData['payment']);
         return [
             'payment' => $transactionData['payment'],
-            'total_amount' => $transactionData['total_amount'] ?? 0,
+            'total_amount' => $totalPayment,
             'has_discount' => $transactionData['has_discount'] ?? '0',
             'discount_amount' => $transactionData['discount_amount'] ?? 0,
             'vat' => $transactionData['vat'] ?? .12,
@@ -93,8 +93,8 @@ class TransactionService
         return $date->format('F j, Y'); // "February 5, 2024"
     }
 
-    public function getFormattedDates(array $data) : array
-    {   
+    private function convertDates(array $data) : array
+    {
         $dataFields = ['pickup_date', 'return_date', 'rented_date'];
         $formattedDates = [];
 
@@ -103,8 +103,12 @@ class TransactionService
                 $formattedDates[$date] = $this->convertDateFormat($data[$date]);
             }
         }
-
         return $formattedDates;
+    }
+
+    public function getFormattedDates(array $data) : array
+    {   
+        return $this->convertDates($data);
     }
 
     /**
@@ -144,7 +148,8 @@ class TransactionService
     {
         return Transaction::create([
             'product_rented_id' => $relations['product_rented_id'] ?? null,
-            'total_amount' => $data['payment'] ?? 0,
+            'payment' => $data['payment'] ?? 0,
+            'total_amount' => $data['total_amount'] ?? 0,
             'has_discount' => $data['has_discount'] ?? '0',
             'discount_amount' => $data['discount_amount'] ?? 0,
             'vat' => $data['vat'] ?? .12,

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-            $table->enum('method_name', array_column(PaymentMethods::cases(), 'value'))->default(PaymentMethods::CASH->value);
+            $table->string('method_name');
             $table->timestamps();
         });
 
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->boolean('has_discount')->default('0');
             $table->double('discount_amount', 12, 2)->nullable();
             $table->double('vat')->default(0.12);
-            $table->unsignedBigInteger('payment_method_id');
+            $table->unsignedBigInteger('payment_method_id')->default(1);
 
             $table->foreign('product_rented_id')
             ->references('id')

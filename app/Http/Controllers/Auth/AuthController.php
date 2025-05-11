@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\AuthRequest;
+use App\Models\Auth\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -42,5 +43,11 @@ class AuthController extends ApiBaseController
         return $this->authService->userResponse([
             "message" => $user['message']
         ]);
+    }
+
+    public function displayUsers()
+    {   
+        $user = User::all();
+        return view('src.admin.users', ['users' => $user]);
     }
 }

@@ -11,14 +11,10 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class CreateTransaction
 {
-    protected $transactionService;
-    protected $completeCheckoutService;
-
-    public function __construct(TransactionService $transactionService, CompleteCheckoutService $completeCheckoutService)
-    {
-        $this->transactionService = $transactionService;
-        $this->completeCheckoutService = $completeCheckoutService;
-    }
+    public function __construct(
+        protected TransactionService $transactionService, 
+        protected CompleteCheckoutService $completeCheckoutService
+    ){}
     
     /**
      * Handle the event.
@@ -26,11 +22,7 @@ class CreateTransaction
     public function handle(TransactionSession $event): void
     {
         try {
-            // 2nd flag
-            // dd($event->transactionData);
             $checkoutData = $this->transactionService->getCheckoutData($event->transactionData, $event->catalogId);
-            // 3rd flag
-            //  dd($checkoutData);
             $this->completeCheckoutService->completeCheckout($checkoutData);
         } catch (\Exception $e) {
             // Handle the exception

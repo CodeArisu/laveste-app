@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('sizes', function (Blueprint $table) {
             $table->id();
             $table->enum('measurement', array_column(Measurement::cases(), 'value'))->default(Measurement::M->value);
-            $table->integer('length');
-            $table->integer('width');
+            $table->integer('length')->nullable();
+            $table->integer('width')->nullable();
             $table->timestamps();
         });
         

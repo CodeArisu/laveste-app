@@ -56,15 +56,16 @@ class ProductController extends ApiBaseController
         );
     }
 
-    public function edit()
-    {   
-        return view('src.admin.adproducts.editprod', ['products' => $this->productCollection]);
+    public function edit(Product $product)
+    {    
+        $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
+        return view('src.admin.adproducts.editprod', ['products' => $product, 'types' => $this->types, 'subtypes' => $this->subtypes]);
     }
 
-    public function update(ProductRequest $request, Product $product) : JsonResponse
+    public function update(ProductRequest $request, Product $product)
     {   
         $updatedProduct = $this->productService->requestUpdateProduct($request, $product);
-        return $this->sendResponse($updatedProduct['data'], $updatedProduct['message']);
+        return redirect()->route('dashboard.product.show', ['product' => $product])->with('success', $updatedProduct['message']);
     }
 
     public function destroy(Product $product)

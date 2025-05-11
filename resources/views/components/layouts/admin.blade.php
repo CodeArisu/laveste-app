@@ -45,7 +45,7 @@
                         
                     </li>
                     <li class="nav-item {{ request()->is('/dashboard/users') ? 'active' : '' }}">
-                        <a href="{{ route('users') }}">
+                        <a href="{{ route('dashboard.users') }}">
                             <img src="{{ asset('assets/icons/v6.png') }}" alt="Users Icon" class="icon">
                         </a>
                     </li>

@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     protected $table = 'transactions';
+    protected $id = 'id';
     
     protected $fillable = [
         'product_rented_id',
+        'payment',
         'total_amount',
         'has_discount',
         'discount_amount',
@@ -19,11 +21,16 @@ class Transaction extends Model
 
     public function productRent()
     {
-        $this->hasOne(ProductRent::class);
+        return $this->belongsTo(ProductRent::class, 'product_rented_id');
     }
 
     public function paymentMethod()
     {
-        $this->belongsTo(PaymentMethod::class);
+        return $this->belongsTo(PaymentMethod::class);
+    }
+
+    public function getProductName()
+    {   
+        return $this->productRent->catalog->garment->product->product_name;
     }
 }

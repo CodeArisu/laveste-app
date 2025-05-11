@@ -15,10 +15,8 @@ class CustomerDetail extends Model
         'email',
     ];
 
-    public function customerRent()
+    public function customerRents()
     {
-        return $this->hasOne(CustomerRent::class, 'customer_details_id');
+        return $this->hasMany(CustomerRent::class, 'customer_details_id');
     }
-
-    
 }

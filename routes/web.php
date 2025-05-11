@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\CashierController;
-use App\Http\Controllers\Api\CatalogController;
 use App\Models\Products\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -20,17 +18,16 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // cashier routes
     Route::middleware(['role:admin,manager,accountant'])->name('cashier.')->prefix('cashier')->group( function () {
-        Route::get('/home', function () {
-            return view('src.cashier.home');
-        })->name('home');
+
+        Route::get('/home', [App\Http\Controllers\Api\CashierController::class, 'rentalsIndex'])->name('home');
+
+        Route::get('/transaction', [App\Http\Controllers\Api\CashierController::class, 'transactionIndex'])->name('transaction');
 
         Route::get('/catalog', [App\http\Controllers\Api\CatalogController::class, 'index'])->name('index'); 
-        Route::get('/transaction', [App\Http\Controllers\Api\CashierController::class, 'index'])->name('transaction');
-
+        
         // pre checkout customers details API
         Route::get('/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('details');
         Route::post('/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'store'])->name('details.store');
-        // Route::get('/cashier/catalog/details/show', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'show'])->name('cashier.details.show');
 
         // transaction checkout API
         Route::get('/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('checkout');
@@ -45,6 +42,8 @@ Route::middleware(['auth', 'web'])->group(function () {
             $product = Product::all();
             return view('src.admin.dashboard', ['productCount' => count($product)]);
         })->name('home');
+
+        Route::get('/dashboard/users', [App\Http\Controllers\Auth\AuthController::class, 'displayUsers'])->name('users')->middleware(['role:admin']);
         
         // dashboard products routes
         Route::middleware(['role:admin'])->name('product.')->prefix('product')->group( function () {
@@ -71,7 +70,6 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
         });
     });
-
 });
 
 // pre checkout customers details API
@@ -99,6 +97,3 @@ Route::get('/dashboard/rented', function () {
 Route::get('/dashboard/transactions', function () {
     return view('src.admin.transactions');
 })->name('transactions');
-Route::get('/dashboard/users', function () {
-    return view('src.admin.users');
-})->name('users');
