@@ -12,43 +12,48 @@
 
 .dashboard-cards {
     display: flex;
-    gap: 100px; /* Increased the gap between cards */
-    flex-wrap: wrap;
+    gap: 70px;
+    min-width: 500px; 
 }
+
+
 
 .card {
     display: flex;
-    align-items: center;
-    background-color: #f9f0dc;
+    align-items: center; /* Vertically align items in the center */
+    justify-content: flex-start; /* Align items to the left */
+    background-color: #f4ebd4 !important;
     padding: 20px 30px;
-    border-radius: 20px;
+    border-radius: 25px;
     box-shadow: 2px 4px 6px rgba(0,0,0,0.1);
-    min-width: 350px; /* Reduced from 400px */
-    flex-grow: 1;
-    max-width: 400px; /* Reduced from 500px */
+    min-width: 350px;  /* Adjusted min-width */
+    max-width: 500px;  /* Adjusted max-width */
+    flex-grow: 1;  /* Allow the cards to grow and occupy available space */
+}
+
+.card-left {
+    display: flex;
+    align-items: center;  /* Ensure the icon and label are horizontally aligned */
+    margin-right: 20px;  /* Space between icon/label and value */
 }
 
 .card-icon {
-    width: 50px;
-    height: 50px;
-    margin-right: 20px;
-}
-
-.card-info {
-    display: flex;
-    flex-direction: column;
-    font-family: 'Poppins', sans-serif;
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
 }
 
 .card-label {
     font-size: 20px;
     font-weight: 600;
     color: #111;
-    margin: 0;
+    font-family: 'Poppins', sans-serif;
 }
 
 .card-value {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
-    margin-top: 5px;
+    color: #111;
+    font-family: 'Poppins', sans-serif;
+    margin-left: 20px;  /* Optional: to add spacing between label and value */
 }

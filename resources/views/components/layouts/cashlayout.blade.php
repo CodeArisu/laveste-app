@@ -34,10 +34,11 @@
         </div>
 
         <ul class="nav-links">
-            <li><a href="{{ route('cashier.home') }}" id="home-link">Home</a></li>
-            <li><a href="{{ route('cashier.index') }}" id="products-link">Products</a></li>
-            <li><a href="{{ route('cashier.transaction') }}" id="transactions-link">Transactions</a></li>
+            <li><a href="{{ route('cashier.home') }}" class="{{ request()->routeIs('cashier.home') ? 'active' : '' }}">Home</a></li>
+            <li><a href="{{ route('cashier.index') }}" class="{{ request()->routeIs('cashier.index') ? 'active' : '' }}">Products</a></li>
+            <li><a href="{{ route('cashier.transaction') }}" class="{{ request()->routeIs('cashier.transaction') ? 'active' : '' }}">Transactions</a></li>
         </ul>
+        
     </nav>
 
     <main id="cashier-container">
@@ -45,25 +46,7 @@
     </main>
 
     <script>
-        const currentUrl = window.location.pathname;
-        const links = document.querySelectorAll('.nav-links li a');
-
-        links.forEach(link => link.classList.remove('active'));
-
-        if (currentUrl.includes('home')) {
-            document.getElementById('home-link').classList.add('active');
-        } else if (currentUrl.includes('products')) {
-            document.getElementById('products-link').classList.add('active');
-        } else if (currentUrl.includes('transactions')) {
-            document.getElementById('transactions-link').classList.add('active');
-        }
-
-        links.forEach(link => {
-            link.addEventListener('click', function() {
-                links.forEach(link => link.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+        
 
         document.addEventListener('DOMContentLoaded', function() {
     const image = document.getElementById('cashierImage');

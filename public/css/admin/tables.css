@@ -42,12 +42,9 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-
-
 .product-table {
     width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 15px;  /* Adds vertical gap between rows */
+    border-collapse: collapse; /* Ensures no gaps between rows */
     text-align: left;
 }
 
@@ -70,16 +67,16 @@
 }
 
 .product-table tr {
-    border-bottom: 1px solid #c48181;
     cursor: pointer;  /* Changes cursor to indicate it's clickable */
+    border-bottom: 1px solid #9b3c3c;  /* Adds a thicker red border */
+}
+
+.product-table tr:last-child {
+    border-bottom: none;  /* Remove border for the last row */
 }
 
 .product-table td:hover {
     background-color: #f7ecd3; /* Light gray background when hovered */
-}
-
-.product-table tr:last-child {
-    border-bottom: none;
 }
 
 .status {
@@ -98,4 +95,3 @@
     background: #a3d9a5;
     color: #2a7d2e;
 }
-

@@ -76,13 +76,16 @@
 
                     <label for="contact">Contact</label>
                     <input name="contact" type="text" value='{{ $products[0]->supplier->contact }}' id="contact">
+
+
+                    <div class="button-group">
+                    <button class="clear-btn">Clear all</button>
+                    <button class="add-btn">Add product</button>
+                </div>
                 </div>
 
                 <!-- Buttons -->
-                <div class="button-group">
-                    <button class="clear-btn">Clear all</button>
-                    <button class="add-btn">✔ Add product</button>
-                </div>
+                
             </div>
 
         </form>

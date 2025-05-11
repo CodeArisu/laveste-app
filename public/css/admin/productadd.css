@@ -1,6 +1,6 @@
 body {
     font-family: 'Ovo';
-    background-color: #fdf1d9;
+    background-color: #f9efd4 !important;
     margin: 0;
     padding: 60px;
     color: #8b2e2e;
@@ -27,7 +27,7 @@ h2 {
     font-weight: 400;
 }
 
-.form-sections form{
+.form-sections {
     display: flex;
     justify-content: space-between;
     gap: 60px;
@@ -52,7 +52,7 @@ textarea {
     padding: 16px 20px;
     border-radius: 14px;
     border: 1px solid #8b2e2e;
-    background-color: #e9c4b9;
+    background-color:#ffffff !important;
     font-size: 16px;
     color: #5a1e1e;
     box-sizing: border-box;
@@ -74,18 +74,18 @@ textarea {
 }
 
 .button-group {
-    display: block;
-    justify-content: flex-end;
+    display: flex;
+    justify-content: space-between;
     gap: 30px;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .clear-btn,
 .add-btn {
-    padding: 16px 32px;
+    padding: 12px 26px;
     font-size: 18px;
     border: none;
-    border-radius: 40px;
+    border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -131,7 +131,7 @@ select {
     padding: 16px 20px;
     border-radius: 14px;
     border: 1px solid #8b2e2e;
-    background-color: #e9c4b9;
+    background-color: #ffffff;
     font-size: 16px;
     color: #5a1e1e;
     box-sizing: border-box;
@@ -143,3 +143,24 @@ select:focus {
     border-color: #8b2e2e;
     background-color: #f1e1d0; /* Optional: light color on focus */
 }
+
+
+.row input[type="text"] {
+    margin-top: 30px;
+}
+
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #8b2e2e;
+    background-color:#ffffff !important;
+    font-size: 16px;
+    color: #5a1e1e;
+    box-sizing: border-box;
+    margin-bottom: 20px;  /* Optional: adds space before next label */
+    outline: none;
+}
+
+

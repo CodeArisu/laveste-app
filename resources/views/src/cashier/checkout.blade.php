@@ -63,12 +63,12 @@
             <div class="date-pair">
                 <div class="input-block">
                     <label for="pickup">Pick - up Date</label>
-                    <input type="date" id="pickup">
+                    <input type="date" id="pickup" readonly>
                 </div>
         
                 <div class="input-block">
                     <label for="return">Return Date</label>
-                    <input type="date" id="return">
+                    <input type="date" id="return" readonly>
                 </div>
             </div>
         
@@ -84,7 +84,7 @@
         
             <div class="input-block">
                 <label for="event-date">Event Date</label>
-                <input type="date" id="event-date">
+                <input type="date" id="event-date" readonly>
             </div>
         </div>
         
@@ -94,14 +94,18 @@
         <button type="button">Checkout</button>
     </div>
     
-
-<script>
-    const monthLabel = document.getElementById('monthLabel');
+    <script>
+       const monthLabel = document.getElementById('monthLabel');
 const calendarTable = document.getElementById('calendarTable');
 const prevBtn = document.getElementById('prevMonth');
 const nextBtn = document.getElementById('nextMonth');
 const startInput = document.getElementById('start');
 const endInput = document.getElementById('end');
+
+// New inputs
+const pickupInput = document.getElementById('pickup');
+const eventDateInput = document.getElementById('event-date');
+const returnInput = document.getElementById('return');
 
 let currentDate = new Date();
 let selectedStart = null;
@@ -116,6 +120,7 @@ function formatDate(date) {
 
 function renderCalendar(date) {
     calendarTable.innerHTML = '';
+
     const year = date.getFullYear();
     const month = date.getMonth();
     const firstDay = new Date(year, month, 1).getDay();
@@ -123,6 +128,7 @@ function renderCalendar(date) {
 
     monthLabel.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
 
+    // Weekday headers
     const daysRow = document.createElement('tr');
     ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(d => {
         const th = document.createElement('td');
@@ -131,59 +137,74 @@ function renderCalendar(date) {
     });
     calendarTable.appendChild(daysRow);
 
+    // Fill initial empty cells
     let row = document.createElement('tr');
     for (let i = 0; i < firstDay; i++) {
         row.appendChild(document.createElement('td'));
     }
 
+    // Fill day cells
     for (let day = 1; day <= lastDate; day++) {
         const td = document.createElement('td');
         td.textContent = day;
+
         const fullDate = new Date(year, month, day);
         td.dataset.date = formatDate(fullDate);
-        td.addEventListener('click', () => selectDate(fullDate, td));
+        td.addEventListener('click', () => selectDate(fullDate));
 
+        // Highlight selected range
         if (selectedStart && selectedEnd) {
-            const s = new Date(selectedStart);
-            const e = new Date(selectedEnd);
-            if (fullDate >= s && fullDate <= e) {
+            if (fullDate >= selectedStart && fullDate <= selectedEnd) {
                 td.style.backgroundColor = '#e7c4a2';
             }
-        } else if (selectedStart && fullDate.getTime() === selectedStart.getTime()) {
-            td.style.backgroundColor = '#e7c4a2';
         }
 
         row.appendChild(td);
+
         if (row.children.length === 7) {
             calendarTable.appendChild(row);
             row = document.createElement('tr');
         }
     }
 
+    // Append final row if needed
     if (row.children.length > 0) {
         calendarTable.appendChild(row);
     }
 }
 
-function selectDate(date, cell) {
-    if (!selectedStart || (selectedStart && selectedEnd)) {
-        selectedStart = date;
-        selectedEnd = null;
-        startInput.value = formatDate(date);
-        endInput.value = '';
-    } else if (date >= selectedStart) {
-        selectedEnd = date;
-        endInput.value = formatDate(date);
-    } else {
-        selectedStart = date;
-        startInput.value = formatDate(date);
-        selectedEnd = null;
-        endInput.value = '';
+function selectDate(date) {
+    selectedStart = date;
+
+    // Calculate end date (+2 days)
+    selectedEnd = new Date(date);
+    selectedEnd.setDate(selectedEnd.getDate() + 2);
+
+    // Cap end date at the end of the month
+    const lastDateOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    if (selectedEnd > lastDateOfMonth) {
+        selectedEnd = lastDateOfMonth;
     }
+
+    // Fill rental period inputs
+    startInput.value = formatDate(selectedStart);
+    endInput.value = formatDate(selectedEnd);
+
+    // Auto-fill pick-up, event, and return dates
+    const pickUpDate = new Date(selectedStart);
+    const eventDate = new Date(selectedStart);
+    eventDate.setDate(eventDate.getDate() + 1);
+    const returnDate = new Date(selectedStart);
+    returnDate.setDate(returnDate.getDate() + 2);
+
+    pickupInput.value = formatDate(pickUpDate);
+    eventDateInput.value = formatDate(eventDate);
+    returnInput.value = formatDate(returnDate);
 
     renderCalendar(currentDate);
 }
 
+// Navigation buttons
 prevBtn.addEventListener('click', () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
     renderCalendar(currentDate);
@@ -194,9 +215,11 @@ nextBtn.addEventListener('click', () => {
     renderCalendar(currentDate);
 });
 
+// Initial render
 renderCalendar(currentDate);
 
-</script>
+        </script>
+        
 
 </body>
 </html>

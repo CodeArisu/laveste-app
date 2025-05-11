@@ -212,11 +212,14 @@
     cursor: pointer;
     transition: background 0.3s ease;
     width: 200px;
+    text-align: center;
+    text-decoration: none;
 }
 
 .rent-button:hover {
     background: #a73b3b;
 }
+
 
 .close-btn {
     background: none;
