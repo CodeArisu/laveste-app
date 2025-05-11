@@ -41,8 +41,9 @@
     box-shadow: 0 0 0 2px #a73b3b inset;
 }
 
-
-
+.color-default {
+    color: #a73b3b !important; 
+}
 
 .search-container {
     display: flex;

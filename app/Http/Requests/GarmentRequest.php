@@ -31,8 +31,8 @@ class GarmentRequest extends FormRequest
             'poster' => 'nullable|mimes:png,jpg,jpeg,webp|max:2048|unique:garments,poster',
 
             'measurement' => 'required|string',
-            'length' => 'required|numeric',
-            'width' => 'required|numeric',
+            'length' => 'nullable|numeric',
+            'width' => 'nullable|numeric',
 
             'condition_id' => 'nullable|integer'
         ];

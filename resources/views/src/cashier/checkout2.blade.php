@@ -1,14 +1,8 @@
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<x-layouts.app>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/cashier/checkout2.css') }}?v={{ time() }}">
+    @endpush
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - La Veste Rentals</title>
-    <link rel="stylesheet" href="{{ asset('css/cashier/checkout2.css') }}?v={{ time() }}">
-
-</head>
-
-<body>
     <div class="checkout-container">
         <header class="checkout-header">
             <a href="{{ url()->previous() }}" class="back-arrow">&larr;</a>
@@ -35,7 +29,7 @@
                     <select name='payment_method' id="payment_method">
                         <option>Select payment method</option>
                         @foreach ($paymentMethods as $paymentMethod)
-                            <option value='{{ $paymentMethod->value }}'>{{ $paymentMethod->label() }}</option>
+                            <option value='{{ $paymentMethod->value }}'>{{ ucfirst($paymentMethod->label()) }}</option>
                         @endforeach
                     </select>
 
@@ -66,11 +60,10 @@
                         <p>VAT <span>25%</span></p>
                         <p class="total">Total <span>₱ {{ $totalPrice }}</span></p>
                     </div>
-                    <button type="submit" class="place-order">Place Order</button>
+                    <button type="button" class="place-order" data-bs-toggle="modal" data-bs-target="#confirmationModal">Place Order</button>
                 </div>
             </div>
+            <x-fragments.confirmation-modal/>
         </form>
     </div>
-</body>
-
-</html>
+</x-layouts.app>
