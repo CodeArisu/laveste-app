@@ -59,6 +59,7 @@ body {
     padding: 0;
     margin: 0;
     gap: 30px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .nav-links li a {
@@ -77,4 +78,9 @@ body {
 .nav-links li a.active {
     font-weight: bold;
     color: #923333;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px; /* thinner line — adjust as needed */
+    text-underline-offset: 10px; /* more gap between text and underline */
 }
+
+

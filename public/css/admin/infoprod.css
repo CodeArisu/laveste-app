@@ -6,7 +6,12 @@ body {
     font-size: 18px; /* base font size bumped up */
 }
 
-.info-container {
+.product-details .price-value {
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+
+.container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -92,16 +97,17 @@ h3 {
 }
 
 button {
+    width: 250px;       /* fixed width */
+    height: 55px;       /* fixed height */
     border: none;
-    padding: 14px 35px;
+    padding: 0;         /* reset padding since height is fixed */
     border-radius: 25px;
     font-size: 18px;
     font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s; /* smooth transition */
-    width: 250px; /* fixed width */
-    min-width: 200px; /* ensures button is not smaller than 200px */
+    transition: background-color 0.3s, transform 0.2s;
 }
+
 
 
 button:hover {
@@ -175,7 +181,7 @@ button:hover {
     height: 100%;
     background-color: #fdf3d8;
     box-shadow: -4px 0 10px rgba(0,0,0,0.1);
-    padding: 40px 30px;
+    padding: 15px 25px;
     font-family: 'Ovo';
     color: #823b36;
     overflow-y: auto;
@@ -200,6 +206,7 @@ button:hover {
 .form-row {
     display: flex;
     gap: 30px; /* Increased from 20px to 30px */
+    margin-top: 5px;
 }
 
 
@@ -243,6 +250,8 @@ button:hover {
     cursor: pointer;
     transition: background-color 0.3s ease;
     align-self: flex-end;
+    width: 200px;
+    height: 50px;
 }
 
 .green-button:hover {
@@ -349,6 +358,44 @@ select:focus {
     transform: scale(1.05);
 }
 
+
+.product-price .original-label {
+    display: inline-block;
+    margin-top: 40px;
+}
+
+.product-price .original-value {
+    display: inline-block;
+    margin-top: 15px;
+}
+
+
+.supplier-details {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 20px;
+    color: #823b36;
+    font-size: 23px;
+}
+
+.supplier-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 80px;
+    border-bottom: 1px dashed #c9a69f;
+    padding-bottom: 8px;
+}
+
+.supplier-row .label {
+    width: 200px;
+    font-weight: 600;
+}
+
+.supplier-row .value {
+    flex: 1;
+}
 
 
 

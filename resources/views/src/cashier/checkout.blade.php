@@ -77,127 +77,165 @@
                 
 
                 <div class="input-block">
+                    <label for="pickup">Pick - up Date</label>
+                    <input type="date" id="pickup" readonly>
                     <label for="venue">Venue</label>
                     <input name='venue' type="text" id="venue">
                 </div>
 
                 <div class="input-block">
-                    <label for="reason">Reason for Renting</label>
-                    <input name='reason_for_renting' type="text" id="reason">
-                </div>
-
-                <div class="input-block">
-                    <label for="event-date">Event Date</label>
-                    <input name='event_date' type="date" id="event-date">
+                    <label for="return">Return Date</label>
+                    <input type="date" id="return" readonly>
                 </div>
             </div>
+        
+            <div class="input-block">
+                <label for="venue">Venue</label>
+                <input type="text" id="venue">
+            </div>
+        
+            <div class="input-block">
+                <label for="reason">Reason for Renting</label>
+                <input type="text" id="reason">
+            </div>
+        
+            <div class="input-block">
+                <label for="event-date">Event Date</label>
+                <input type="date" id="event-date" readonly>
+            </div>
         </div>
+        
+    </div>
 
-        <div class="checkout-button">
-            <button type="submit" class="place-order">Checkout</a>
-        </div>
-    </form>
+    <div class="checkout-button">
+        <button type="button">Checkout</button>
+    </div>
+    
     <script>
-        const monthLabel = document.getElementById('monthLabel');
-        const calendarTable = document.getElementById('calendarTable');
-        const prevBtn = document.getElementById('prevMonth');
-        const nextBtn = document.getElementById('nextMonth');
-        const startInput = document.getElementById('start');
-        const endInput = document.getElementById('end');
+       const monthLabel = document.getElementById('monthLabel');
+const calendarTable = document.getElementById('calendarTable');
+const prevBtn = document.getElementById('prevMonth');
+const nextBtn = document.getElementById('nextMonth');
+const startInput = document.getElementById('start');
+const endInput = document.getElementById('end');
 
-        let currentDate = new Date();
-        let selectedStart = null;
-        let selectedEnd = null;
+// New inputs
+const pickupInput = document.getElementById('pickup');
+const eventDateInput = document.getElementById('event-date');
+const returnInput = document.getElementById('return');
 
-        function formatDate(date) {
-            const year = date.getFullYear();
-            const month = ('0' + (date.getMonth() + 1)).slice(-2);
-            const day = ('0' + date.getDate()).slice(-2);
-            return `${year}-${month}-${day}`;
-        }
+let currentDate = new Date();
+let selectedStart = null;
+let selectedEnd = null;
 
-        function renderCalendar(date) {
-            calendarTable.innerHTML = '';
-            const year = date.getFullYear();
-            const month = date.getMonth();
-            const firstDay = new Date(year, month, 1).getDay();
-            const lastDate = new Date(year, month + 1, 0).getDate();
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
+}
 
-            monthLabel.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+function renderCalendar(date) {
+    calendarTable.innerHTML = '';
 
-            const daysRow = document.createElement('tr');
-            ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(d => {
-                const th = document.createElement('td');
-                th.textContent = d;
-                daysRow.appendChild(th);
-            });
-            calendarTable.appendChild(daysRow);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
 
-            let row = document.createElement('tr');
-            for (let i = 0; i < firstDay; i++) {
-                row.appendChild(document.createElement('td'));
-            }
+    monthLabel.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
 
-            for (let day = 1; day <= lastDate; day++) {
-                const td = document.createElement('td');
-                td.textContent = day;
-                const fullDate = new Date(year, month, day);
-                td.dataset.date = formatDate(fullDate);
-                td.addEventListener('click', () => selectDate(fullDate, td));
+    // Weekday headers
+    const daysRow = document.createElement('tr');
+    ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].forEach(d => {
+        const th = document.createElement('td');
+        th.textContent = d;
+        daysRow.appendChild(th);
+    });
+    calendarTable.appendChild(daysRow);
 
-                if (selectedStart && selectedEnd) {
-                    const s = new Date(selectedStart);
-                    const e = new Date(selectedEnd);
-                    if (fullDate >= s && fullDate <= e) {
-                        td.style.backgroundColor = '#e7c4a2';
-                    }
-                } else if (selectedStart && fullDate.getTime() === selectedStart.getTime()) {
-                    td.style.backgroundColor = '#e7c4a2';
-                }
+    // Fill initial empty cells
+    let row = document.createElement('tr');
+    for (let i = 0; i < firstDay; i++) {
+        row.appendChild(document.createElement('td'));
+    }
 
-                row.appendChild(td);
-                if (row.children.length === 7) {
-                    calendarTable.appendChild(row);
-                    row = document.createElement('tr');
-                }
-            }
+    // Fill day cells
+    for (let day = 1; day <= lastDate; day++) {
+        const td = document.createElement('td');
+        td.textContent = day;
 
-            if (row.children.length > 0) {
-                calendarTable.appendChild(row);
+        const fullDate = new Date(year, month, day);
+        td.dataset.date = formatDate(fullDate);
+        td.addEventListener('click', () => selectDate(fullDate));
+
+        // Highlight selected range
+        if (selectedStart && selectedEnd) {
+            if (fullDate >= selectedStart && fullDate <= selectedEnd) {
+                td.style.backgroundColor = '#e7c4a2';
             }
         }
 
-        function selectDate(date, cell) {
-            if (!selectedStart || (selectedStart && selectedEnd)) {
-                selectedStart = date;
-                selectedEnd = null;
-                startInput.value = formatDate(date);
-                endInput.value = '';
-            } else if (date >= selectedStart) {
-                selectedEnd = date;
-                endInput.value = formatDate(date);
-            } else {
-                selectedStart = date;
-                startInput.value = formatDate(date);
-                selectedEnd = null;
-                endInput.value = '';
-            }
+        row.appendChild(td);
 
-            renderCalendar(currentDate);
+        if (row.children.length === 7) {
+            calendarTable.appendChild(row);
+            row = document.createElement('tr');
         }
+    }
 
-        prevBtn.addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            renderCalendar(currentDate);
-        });
+    // Append final row if needed
+    if (row.children.length > 0) {
+        calendarTable.appendChild(row);
+    }
+}
 
-        nextBtn.addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            renderCalendar(currentDate);
-        });
+function selectDate(date) {
+    selectedStart = date;
 
-        renderCalendar(currentDate);
-    </script>
+    // Calculate end date (+2 days)
+    selectedEnd = new Date(date);
+    selectedEnd.setDate(selectedEnd.getDate() + 2);
+
+    // Cap end date at the end of the month
+    const lastDateOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    if (selectedEnd > lastDateOfMonth) {
+        selectedEnd = lastDateOfMonth;
+    }
+
+    // Fill rental period inputs
+    startInput.value = formatDate(selectedStart);
+    endInput.value = formatDate(selectedEnd);
+
+    // Auto-fill pick-up, event, and return dates
+    const pickUpDate = new Date(selectedStart);
+    const eventDate = new Date(selectedStart);
+    eventDate.setDate(eventDate.getDate() + 1);
+    const returnDate = new Date(selectedStart);
+    returnDate.setDate(returnDate.getDate() + 2);
+
+    pickupInput.value = formatDate(pickUpDate);
+    eventDateInput.value = formatDate(eventDate);
+    returnInput.value = formatDate(returnDate);
+
+    renderCalendar(currentDate);
+}
+
+// Navigation buttons
+prevBtn.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar(currentDate);
+});
+
+nextBtn.addEventListener('click', () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar(currentDate);
+});
+
+// Initial render
+renderCalendar(currentDate);
+
+        </script>
 
 </body>
 

@@ -69,9 +69,11 @@ body {
 
 .rent-section .label,
 .appointment-section .label {
-    font-weight: normal;
+    font-weight: 400;
     flex: 1;
     text-align: left;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15;
 }
 
 .rent-section .value,
@@ -79,7 +81,9 @@ body {
     font-weight: normal;
     flex: 1;
     text-align: start;
-    font-weight: bolder;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15;
 }
 
 .fitdetails-section {
@@ -124,38 +128,43 @@ body {
 .fitdetails-section .label {
     flex: 1;
     text-align: left;
-    font-weight: normal;
+    font-weight: 400;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Value styling */
 .fitdetails-section .value {
     flex: 1;
     text-align: left;
-    font-weight: bolder;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
 }
-
 
 
 
 .btn-section {
-    margin-top: 30px;
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 20px;
+    justify-content: space-between;
 }
 
+/* Existing button styles remain the same */
 .cancel-button,
 .completed-button {
     padding: 10px 20px;
     border-radius: 20px;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 500;
     text-align: center;
-    width: 300px;
-    height: 40px;
-    margin-right: 10px;
-    margin-top: 100;
-    border: none; /* Removes border outline */
-    color: black; /* Default text color */
-    outline: none; /* Removes focus outline */
+    width: 150px;
+    height: 20px;
+    border: none;
+    color: black;
+    outline: none;
     cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+   
 }
 
 .cancel-button {
@@ -164,7 +173,7 @@ body {
 
 .cancel-button:hover {
     background-color: #e55c5c;
-    color: white; /* Text turns white on hover */
+    color: white;
 }
 
 .completed-button {
@@ -173,8 +182,9 @@ body {
 
 .completed-button:hover {
     background-color: #80c489;
-    color: white; /* Text turns white on hover */
+    color: white;
 }
+
 
 .total-value {
     font-size: 18px;

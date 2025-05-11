@@ -68,10 +68,13 @@ body {
 .label1 {
     font-weight: 400;
     flex: 1; /* Allow label to take up available space on the left */
+    
+    font-family: 'Poppins', sans-serif;
 }
 
 .value1 {
     text-align: right; /* Align the value to the right */
+    font-family: 'Poppins', sans-serif;
 }
 
 
@@ -137,12 +140,14 @@ body {
     font-weight: normal;
     flex: 1;
     text-align: left;
+    font-family: 'Poppins', sans-serif;
 }
 
 .billing-section .value1 {
     font-weight: normal;
     flex: 1;
     text-align: start;
+    font-family: 'Poppins', sans-serif;
 }
 
 
@@ -152,19 +157,21 @@ body {
     align-items: center;
     margin-top: 20px;
     font-size: larger;
+    font-family: 'Poppins', sans-serif;
 }
 
 .collect-button {
     padding: 10px 20px;
     background-color: #95E79C;
-    border: 1px solid #983031; /* Thinner border */
-    color: #983031;
-    font-weight: bold;
+    border: 1px solid #242424; /* Thinner border */
+    color: #191919;
+    font-weight: 400;
     text-align: center;
     border-radius: 20px; /* More rounded */
     text-decoration: none;
     width: 150px;
     height: 20px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .collect-button:hover {
@@ -174,7 +181,8 @@ body {
 .total-value {
     font-size: 18px;
     color: #983031;
-    font-weight: 700; /* Bold total */
+    font-weight: 600; /* Bold total */
+    font-family: 'Poppins', sans-serif;
 }
 
 .back-btn {

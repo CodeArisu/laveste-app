@@ -53,6 +53,7 @@ label {
   margin: 16px 0 8px;
   font-size: 16px;
   color: #932727;
+  font-family: 'Poppins', sans-serif;
 }
 
 .input-box, .textarea-box {
@@ -145,7 +146,8 @@ label {
 .action-section {
   display: flex;
   margin-top: 4rem;
-  gap: 17rem; /* Keeps large space between */
+  justify-content: space-between;
+
 }
 
 .flag-button,

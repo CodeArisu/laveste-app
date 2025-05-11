@@ -1,3 +1,4 @@
+
 <x-layouts.app>
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/admin/infoprod.css') }}">
@@ -7,8 +8,10 @@
         <div class="product-section">
             <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
             <h3>Product Information</h3>
+
             <div class="product-content">
                 <img src="/assets/images/h1.png" alt="Gown Image" class="product-image">
+
                 <div class="product-details">
                     <h2>{{ $products->product_name }}</h2>
                     <br>
@@ -20,6 +23,7 @@
                     <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
                 </div>
             </div>
+
             <br><br>
             <div class="description">
                 <h4>Description</h4>
@@ -32,32 +36,44 @@
         <div class="supplier-section">
             <br>
             <h3>Supplier Information</h3>
+            <br>
             <div class="supplier-details">
-                <p><strong>Supplier Name</strong><span class="indented">{{ $products->supplier->supplier_name }}</span>
-                </p>
-                <p><strong>Company Name</strong><span class="indented">{{ $products->supplier->company_name }}</span>
-                </p>
-                <p><strong>Address</strong><span class="indented">{{ $products->supplier->address }}</span></p>
-                <p><strong>Contact</strong><span class="indented">{{ $products->supplier->contact }}</span></p>
-                <p><strong>Original Price</strong><span
-                        class="indented">{{ $products->getFormattedOriginalPrice() }}</span></p>
-                <p><strong>Date</strong><span class="indented">{{ $products->getFormattedDate() }}</span></p>
+                <div class="supplier-row">
+                    <span class="label">Supplier Name</span>
+                    <span class="value">{{ $products->supplier->supplier_name }}</span>
+                </div>
+                <div class="supplier-row">
+                    <span class="label">Company Name</span>
+                    <span class="value">{{ $products->supplier->company_name }}</span>
+                </div>
+                <div class="supplier-row">
+                    <span class="label">Address</span>
+                    <span class="value">{{ $products->supplier->address }}</span>
+                </div>
+                <div class="supplier-row">
+                    <span class="label">Contact</span>
+                    <span class="value">{{ $products->supplier->contact }}</span>
+                </div>
+                <div class="supplier-row">
+                    <span class="label">Original Price</span>
+                    <span class="value">{{ $products->getFormattedOriginalPrice() }}</span>
+                </div>
+                <div class="supplier-row">
+                    <span class="label">Date</span>
+                    <span class="value">{{ $products->getFormattedDate() }}</span>
+                </div>
             </div>
-
         </div>
-
 
         <div id="addGarmentPanel" class="side-panel">
             <br>
             <a href="{{ route('dashboard.product.index') }}" class="back-btn">←</a>
             <h2>Add to Garment</h2>
-
             @if(session('success'))
                 <div class="alert alert-success fade show" role="alert">
                     {{ session('success') }}
                 </div>
             @endif
-
             <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}"
                 enctype="multipart/form-data">
                 @csrf
@@ -92,11 +108,11 @@
                         <label for="type">Type</label>
                         <select id="type">
                             @if (empty($products->types->type_name))
-                                <option value="">Select Type</option>
-                                <option value="gown">Gown</option>
-                                <option value="tuxedo">Tuxedo</option>
-                                <option value="barong">Barong</option>
-                                <option value="filipiniana">Filipiniana</option>
+                            <option value="">Select Type</option>
+                            <option value="gown">Gown</option>
+                            <option value="tuxedo">Tuxedo</option>
+                            <option value="barong">Barong</option>
+                            <option value="filipiniana">Filipiniana</option>
                             @else
                                 <option value="">Select Type</option>
                                 <option selected value="{{ $products->types->type_name }}">
@@ -108,11 +124,11 @@
                         <label for="sub-type">Sub-type</label>
                         <select id="sub-type">
                             @if (empty($products->subtypes[0]->subtype_name))
-                                <option value="">Select Type</option>
-                                <option value="gown">Gown</option>
-                                <option value="tuxedo">Tuxedo</option>
-                                <option value="barong">Barong</option>
-                                <option value="filipiniana">Filipiniana</option>
+                            <option value="">Select Type</option>
+                            <option value="gown">Gown</option>
+                            <option value="tuxedo">Tuxedo</option>
+                            <option value="barong">Barong</option>
+                            <option value="filipiniana">Filipiniana</option>
                             @else
                                 <option value="">Select Type</option>
                                 <option selected value="{{ $products->subtypes[0]->subtype_name }}">

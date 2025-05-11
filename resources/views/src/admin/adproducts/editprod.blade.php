@@ -104,17 +104,21 @@
                     @enderror
 
                     <label for="contact">Contact</label>
+
                     <input name="contact" type="text" value='{{ $products->supplier->contact }}' id="contact">
                     @error('contact')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <!-- Buttons -->
-                <div class="button-group">
+                    <div class="button-group">
                     <button class="clear-btn">Clear all</button>
                     <button class="add-btn">✔ Update product</button>
                 </div>
+                </div>
+
+                <!-- Buttons -->
+                
             </div>
         </form>
     </div>
