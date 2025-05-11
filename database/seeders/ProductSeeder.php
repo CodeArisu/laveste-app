@@ -18,7 +18,7 @@ class ProductSeeder extends Seeder
         //         'product_name' => 'Sample Product',
         //         'product_description' => 'This is a sample product description.',
         //         'product_price' => 19.99,
-        //     ],
+        //         ],
         //         [
         //         'product_name' => 'Sample Product 2',
         //         'product_description' => 'This is a sample product description 2.',
@@ -40,13 +40,15 @@ class ProductSeeder extends Seeder
         //         ],
         //     ],
         //     'categories' => [
-        //         ['type' => 'Type',
+        //         [
+        //             'type' => 'Type',
         //             'subtype' => [
         //                 'Sub Type 1',
         //                 'Sub Type 2',
         //             ],
         //         ],
-        //         ['type' => 'Type 2',
+        //         [
+        //             'type' => 'Type 2',
         //             'subtype' => [
         //                 'Sub Type 3',
         //                 'Sub Type 4',

@@ -10,4 +10,17 @@ enum Measurement : string
     case L = 'large';
     case XL = 'extra_large';
     case XXL = 'double_extra_large';
+
+    public function label(): string
+    {
+        return match($this)
+        {
+            self::XS => 'Extra Small',
+            self::S => 'Small',
+            self::M => 'Medium',
+            self::L => 'Large',
+            self::XL => 'Extra Large',
+            self::XXL => 'XXL',
+        };
+    }
 }

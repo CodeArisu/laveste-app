@@ -40,15 +40,27 @@ class ProductRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
+    public function messages()
     {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'Invalid data request',
-            'details' => $errors->messages(),
-        ], ResponseCode::INVALID->value);
-
-        throw new HttpResponseException($response);
+        return [
+            'product_name.required' => 'The product name is required',
+            'product_name.max' => 'Product name cannot exceed 255 characters',
+            'original_price.required' => 'The original price is required',
+            'original_price.numeric' => 'The original price must be a number',
+            'description.max' => 'Description cannot exceed 255 characters',
+            'supplier_name.required' => 'The supplier name is required',
+            'supplier_name.max' => 'Supplier name cannot exceed 65 characters',
+            'company_name.max' => 'Company name cannot exceed 65 characters',
+            'address.max' => 'Address cannot exceed 255 characters',
+            'contact.required' => 'The contact number is required',
+            'contact.digits' => 'The contact number must be 11 digits',
+            'type.required' => 'The type is required',
+            'type.string' => 'The type must be a string',
+            'subtype.required' => 'The subtype is required',
+            'subtype.prohibited_if' => 'The subtype is required',
+            'subtype.string' => 'The subtype must be a string',
+            'subtype.*.required' => 'The subtype is required',
+            'subtype.*.string' => 'The subtype must be a string',
+        ];
     }
 }

@@ -10,6 +10,8 @@ use App\Models\Products\Product;
 use App\Models\Products\Subtype;
 use App\Models\Products\Type;
 use App\Services\ProductService;
+use App\Enum\Measurement;
+use App\Enum\ConditionStatus;
 use Illuminate\Http\JsonResponse;   
 
 class ProductController extends ApiBaseController
@@ -39,24 +41,31 @@ class ProductController extends ApiBaseController
     public function store(ProductRequest $request)
     {   
         $createdProduct = $this->productService->requestCreateProduct($request);
-        return redirect()->route('dashboard.product.form')->with('message', $createdProduct['message']);
+        return redirect()->route('dashboard.product.form')->with('success', $createdProduct['message']);
     }
 
     public function show(Product $product)
     {   
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view('src.admin.adproducts.infoprod', ['products' => $product]);
+        return view('src.admin.adproducts.infoprod', 
+            [
+                'products' => $product, 
+                'conditions' => ConditionStatus::cases(), 
+                'measurements' => Measurement::cases(),
+            ]
+        );
     }
 
-    public function edit()
-    {   
-        return view('src.admin.adproducts.editprod', ['products' => $this->productCollection]);
+    public function edit(Product $product)
+    {    
+        $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
+        return view('src.admin.adproducts.editprod', ['products' => $product, 'types' => $this->types, 'subtypes' => $this->subtypes]);
     }
 
-    public function update(ProductRequest $request, Product $product) : JsonResponse
+    public function update(ProductRequest $request, Product $product)
     {   
         $updatedProduct = $this->productService->requestUpdateProduct($request, $product);
-        return $this->sendResponse($updatedProduct['data'], $updatedProduct['message']);
+        return redirect()->route('dashboard.product.show', ['product' => $product])->with('success', $updatedProduct['message']);
     }
 
     public function destroy(Product $product)

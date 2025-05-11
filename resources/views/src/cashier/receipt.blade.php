@@ -12,7 +12,7 @@
     <div class="container">
         <div class="header">
             <div class="left-group">
-                <a href="/cashier/checkout2" class="back">&#8592;</a>
+                <a href="{{ route('cashier.home') }}" class="back">&#8592;</a>
                 <div class="title">La Veste Rentals</div>
             </div>
 

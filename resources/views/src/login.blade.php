@@ -11,15 +11,17 @@
                     @csrf
                     <label for="email"></label> 
                     <input type="email" id="email" name="email" placeholder="Email" required><br>
-                  
+                    @error('email')
+                      <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                     <div class="password-container">
                         <label for="password"></label>
                         <input type="password" id="password" name="password" placeholder="Password" required>
                         <i class="fa-solid fa-eye toggle-password" id="togglePassword"></i>
                     </div>
-                    
-                    
-                
+                     @error('password')
+                      <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                     @enderror
                     <input type="submit" value='login' />
                 </form>
             </div>
@@ -27,9 +29,7 @@
                 <img src="/assets/images/img1.png" alt="login image">
             </div>
         </div>
-
-
-
+        
         <script>
           document.addEventListener("DOMContentLoaded", function() {
     const togglePassword = document.getElementById("togglePassword");
@@ -45,5 +45,4 @@
 });
 
         </script>
-        
-    </x-layouts.app>
+ </x-layouts.app>

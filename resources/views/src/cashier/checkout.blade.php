@@ -1,71 +1,88 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
     <link rel="stylesheet" href="{{ asset('css/cashier/checkout.css') }}?v={{ time() }}">
 </head>
+
 <body>
+    <form action="{{ route('cashier.details.store', ['catalogs' => $catalogs]) }}" method='POST'>
+        @csrf
+        <div class="rental-header">
+            <a href="{{ url()->previous() }}" class="back">&#8592;</a>
+            <h1>Rental Details</h1>
+        </div>
 
-    <div class="rental-header">
-        <a href="/cashier/products" class="back">&#8592;</a>
-        <h1>Rental Details</h1>
-    </div>
-    
-    <div class="section-title">Rented Date</div>
+        <div class="section-title">Rented Date</div>
 
-    <div class="form-container">
-        <div class="calendar-container">
-            <div class="calendar">
-                <div class="calendar-header">
-                    <button id="prevMonth">&lt;</button>
-                    <h3 id="monthLabel">Month</h3>
-                    <button id="nextMonth">&gt;</button>
+        <div class="form-container">
+            <div class="calendar-container">
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button id="prevMonth">&lt;</button>
+                        <h3 id="monthLabel">Month</h3>
+                        <button id="nextMonth">&gt;</button>
+                    </div>
+                    <table id="calendarTable"></table>
                 </div>
-                <table id="calendarTable"></table>
             </div>
-        </div>
 
-        <div class="date-inputs">
-            <label for="start">Start</label>
-            <input type="text" id="start" placeholder="Select start date" readonly>
-            <label for="end">End</label>
-            <input type="text" id="end" placeholder="Select end date" readonly>
-        </div>
-        
-    </div>
-
-    <div class="details-section">
-        <div class="details-group">
-            <div class="section-title">Customer Details</div>
-            <label for="customer-name">Customer Name</label>
-            <input type="text" id="customer-name">
-
-            <label for="address">Address</label>
-            <input type="text" id="address">
-
-            <label for="contact">Contact Number</label>
-            <input type="tel" id="contact">
-
-            <label>Regular Customer</label>
-            <div class="radio-group">
-                <input type="radio" id="yes" name="regular" value="yes">
-                <label for="yes">Yes</label>
-                <input type="radio" id="no" name="regular" value="no">
-                <label for="no">No</label>
+            <div class="date-inputs">
+                <label for="start">Start</label>
+                <input name='rented_date' type="text" id="start" placeholder="Select start date" readonly>
+                <label for="end">End</label>
+                <input name='return_date' type="text" id="end" placeholder="Select end date" readonly>
             </div>
+
         </div>
 
-        <div class="details-group">
-            <div class="section-title">Rental Details</div>
-            
-            <div class="date-pair">
+        <div class="details-section">
+            <div class="details-group">
+                <div class="section-title">Customer Details</div>
+                <label for="customer-name">Customer Name</label>
+                <input name='name' type="text" id="customer-name">
+
+                <label for="address">Address</label>
+                <input name='address' type="text" id="address">
+
+                <label for="contact">Contact Number</label>
+                <input name='contact' type="tel" id="contact">
+
+                <label>Regular Customer</label>
+                <div class="radio-group">
+                    <input name='is_regular' type="radio" id="yes" name="regular" value="1">
+                    <label for="yes">Yes</label>
+                    <input name='is_regular' type="radio" id="no" name="regular" value="0">
+                    <label for="no">No</label>
+                </div>
+            </div>
+
+            <div class="details-group">
+                <div class="section-title">Rental Details</div>
+
+                <div class="date-pair">
+                    <div class="input-block">
+                        <label for="pickup">Pick - up Date</label>
+                        <input name='pickup_date' type="date" id="pickup">
+                    </div>
+
+                    {{-- <div class="input-block">
+                        <label for="return">Return Date</label>
+                        <input name='return_date' type="date" id="return">
+                    </div> --}}
+                </div>
+                
+
                 <div class="input-block">
                     <label for="pickup">Pick - up Date</label>
                     <input type="date" id="pickup" readonly>
+                    <label for="venue">Venue</label>
+                    <input name='venue' type="text" id="venue">
                 </div>
-        
+
                 <div class="input-block">
                     <label for="return">Return Date</label>
                     <input type="date" id="return" readonly>
@@ -219,7 +236,7 @@ nextBtn.addEventListener('click', () => {
 renderCalendar(currentDate);
 
         </script>
-        
 
 </body>
+
 </html>

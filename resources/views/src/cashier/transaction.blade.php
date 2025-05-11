@@ -60,14 +60,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="rental-row">
+                    {{-- <tr class="rental-row">
                         <td>0001</td>
                         <td>Very nice gown</td>
                         <td>Juan Dela Cruz</td>
                         <td>3,600.00</td>
                         <td>March 20, 2025</td>
                         <td><span class="transaction_rentstatus">Overdue</span></td>
-                    </tr>
+                    </tr> --}}
+
+                    @foreach ($transactions as $transaction)
+                        <tr class='rental-row'>
+                            <td>{{ $transaction->id }}</td>
+                            <td>{{ $transaction->getProductName(); }}</td>
+                            <td>{{ $transaction->productRent->customerRent->customerDetail->name }}</td>
+                        </tr>
+                    @endforeach
+                   
                 </tbody>
             </table>
 

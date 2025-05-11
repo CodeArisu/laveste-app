@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Enum\PaymentMethods;
+use App\Events\TransactionSession;
+use App\Http\Requests\TransactionRequest;
 use App\Models\Transactions\PaymentMethod;
 use App\Models\Transactions\ProductRent;
 use App\Models\Transactions\Transaction;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 
 class TransactionService
 {
@@ -20,31 +21,96 @@ class TransactionService
      * @return array transaction data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    public function requestTransaction($request)
+    public function requestTransaction(TransactionRequest $request)
     {   
         try {
-            DB::transaction(function () use ($request) {
-                $transaction = $this->createTransaction($request);
+            $validated = $request->validated();
 
-                if (empty($transaction)) {
-                    throw new \RuntimeException('No transaction was created');
-                }
-
-                return [
-                    'transaction' => $transaction,
-                    'message' => 'Transaction created successfully',
-                ];
-            });
+            if (!Session::has('checkout.customer_data')) {
+                throw new \RuntimeException('Session does not exist');
+            }
+    
+            Session::put('checkout.transaction_data', $validated);
+            $catalogId = $request->only(['catalog']);
+    
+            $this->setTransactionData($catalogId);
         } catch (\Exception $e) {
-            Log::error("Transaction creation failed: " . $e->getMessage());
-            throw new \RuntimeException('Invalid request: ' . $e->getMessage());
-            return [
-                'transaction' => null,
-                'message' => 'Failed to create transaction',
-            ];
+            throw new \RuntimeException($e->getMessage());
+        }
+    }
+
+    public function setTransactionData($catalogId)
+    {   
+        $sessionName = 'checkout.transaction_data';
+
+        if(!Session::has($sessionName)) {
+            throw new \RuntimeException('Session does not exist');
         }
 
+        $transactionSession = Session::get($sessionName);
+
+        // triggers transaction event
+        event(new TransactionSession($transactionSession, $catalogId));
+        \Log::info('Event Triggered');
     }
+
+    public function getTotalPrice($price)
+    {   
+        // calculates price + 12% vat
+        $total = ($price + ($price * .12));
+        return $total;
+    }
+
+    public function getCustomerData()
+    {   
+        $customerData = Session::get('checkout.customer_data');
+        return $customerData;
+    }
+
+    public function getTransactionSessionData()
+    {   
+        $transactionData = Session::get('checkout.transaction_data');
+        return $transactionData;
+    }
+
+    public function getCheckoutData(array $transactionData, $catalogId)
+    {   
+        $totalPayment = $this->getTotalPrice($transactionData['payment']);
+        return [
+            'payment' => $transactionData['payment'],
+            'total_amount' => $totalPayment,
+            'has_discount' => $transactionData['has_discount'] ?? '0',
+            'discount_amount' => $transactionData['discount_amount'] ?? 0,
+            'vat' => $transactionData['vat'] ?? .12,
+            'payment_method' => $transactionData['payment_method'],
+            'catalog_id' => $catalogId,
+        ];
+    }
+
+    private function convertDateFormat($date)
+    {
+        $date = new \DateTime($date);
+        return $date->format('F j, Y'); // "February 5, 2024"
+    }
+
+    private function convertDates(array $data) : array
+    {
+        $dataFields = ['pickup_date', 'return_date', 'rented_date'];
+        $formattedDates = [];
+
+        foreach($dataFields as $date) {
+            if (!empty($data[$date])) {
+                $formattedDates[$date] = $this->convertDateFormat($data[$date]);
+            }
+        }
+        return $formattedDates;
+    }
+
+    public function getFormattedDates(array $data) : array
+    {   
+        return $this->convertDates($data);
+    }
+
     /**
      * Request transaction creation.
      *
@@ -52,29 +118,23 @@ class TransactionService
      * @return array transaction data and message response
      * @throws \Exception RuntimeException / InternalException
      */
-    private function createTransaction($request)
+    private function createTransaction($transactionData, $productRent)
     {   
-        if (!PaymentMethod::exists()) {
-            $this->generatePaymentMethods();
+        // $productId = $this->getProductRentId($transactionData, $productRent);
+        if(empty($productRent)) {
+            throw new \RuntimeException('No product rent data');
         }
 
-        $validated = $request->safe();
-        $productId = $this->getProductRentId($request, $validated->get('customer_rented_id'));
+        $transaction = $this->handleTransaction($transactionData, [   
+            'product_rented_id' => $productRent->id,
+        ]);
 
-        $transaction = $this->handleTransaction(
-            $validated->only([
-                'total_amount',
-                'has_discount',
-                'discount_amount',
-                'vat',
-            ]),
-            [   
-                'customer_rented_id' => $productId,
-                'payment_method_id' => $validated->get('payment_method_id') ?? 1,
-            ]
-        );
+        return $transaction;
+    }
 
-        return compact('transaction');
+    public function execTransaction($transactionData, $productRent)
+    {   
+        return $this->createTransaction($transactionData, $productRent);
     }
 
     /**
@@ -87,12 +147,13 @@ class TransactionService
     private function handleTransaction(array $data, $relations)
     {
         return Transaction::create([
-            'customer_rented_id' => $relations['customer_rented_id'],
-            'total_amount' => $data['total_amount'],
-            'has_discount' => $data['has_discount'],
-            'discount_amount' => $data['discount_amount'],
-            'vat' => $data['vat'],
-            'payment_method_id' => $relations['payment_method_id']
+            'product_rented_id' => $relations['product_rented_id'] ?? null,
+            'payment' => $data['payment'] ?? 0,
+            'total_amount' => $data['total_amount'] ?? 0,
+            'has_discount' => $data['has_discount'] ?? '0',
+            'discount_amount' => $data['discount_amount'] ?? 0,
+            'vat' => $data['vat'] ?? .12,
+            'payment_method_id' => $data['payment_method_id'] ?? PaymentMethods::CASH->value,
         ]);
     }
 
@@ -133,8 +194,18 @@ class TransactionService
 
         if (count(array_diff($allMethod, $existingMethods))) {
             foreach (PaymentMethods::cases() as $status) {
-                PaymentMethod::updateOrCreate(['method_name' => $status->label()]);
+                PaymentMethod::updateOrCreate(['id' => $status->value, 'method_name' => $status->label()]);
             }
         }
+    }
+
+    private function checkForPaymentMethod($paymentMethod)
+    {
+        $paymentMethod = PaymentMethod::where('method_name', $paymentMethod)->first();
+        if (empty($paymentMethod)) {
+            throw new \RuntimeException('Payment method not found');
+        }
+
+        return $paymentMethod;
     }
 }

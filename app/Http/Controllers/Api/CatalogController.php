@@ -12,15 +12,9 @@ class CatalogController extends ApiBaseController
 
     public function index()
     {
-        $items = Catalog::all();
-        return view('src.cashier.product', ['items' => $items]);
+        $catalog = Catalog::all();
+        return view('src.cashier.product', ['catalogs' => $catalog]);
     }
-
-    // public function store(CatalogRequest $request, Garment $garment) 
-    // {
-    //     $display = $this->displayService->requestDisplayGarment($request, $garment);
-    //     return $this->sendResponse($display['message'], $display['display']);
-    // }
 
     public function update()
     {

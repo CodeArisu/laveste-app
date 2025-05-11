@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\ResponseCode;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CustomerDetailsRequest extends FormRequest
 {
@@ -27,13 +30,26 @@ class CustomerDetailsRequest extends FormRequest
             'address' => 'required|string|max:255',
             'email' => 'sometimes|string',
 
-            'venue' => 'nullable|string',
-            'event_data' => 'nullable|date',
-            'reason_for_renting' => 'nullable|string',
+            'venue' => 'sometimes|string',
+            'event_date' => 'sometimes|date',
+            'reason_for_renting' => 'sometimes|string',
+            'is_regular' => 'sometimes|boolean',
 
             'pickup_date' => 'required|date',
             'rented_date' => 'required|date',
             'return_date' => 'required|date',
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+
+        $response = response()->json([
+            'message' => 'Invalid data request',
+            'details' => $errors->messages(),
+        ], ResponseCode::INVALID->value);
+
+        throw new HttpResponseException($response);
     }
 }

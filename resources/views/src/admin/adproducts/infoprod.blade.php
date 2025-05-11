@@ -1,20 +1,12 @@
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Information</title>
-    <link rel="stylesheet" href="{{ asset('css/admin/infoprod.css') }}">
-</head>
+<x-layouts.app>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/admin/infoprod.css') }}">
+    @endpush
 
-<body>
-    @php
-    use App\Enum\Measurement;
-    use App\Enum\ConditionStatus;
-    @endphp
-    <div class="container">
+    <div class="info-container">
         <div class="product-section">
-            <a href="{{ url()->previous() }}" class="back-btn">← Back</a>
+            <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
             <h3>Product Information</h3>
 
             <div class="product-content">
@@ -26,16 +18,9 @@
                     <p><strong>Type</strong>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong></p>
                     <p>{{ $products->types->type_name }}
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
-                        $products->subtypes[0]->subtype_name }}</p>
-
-                    <p class="product-price">
-                        <strong class="original-label">Original Price</strong><br>
-                        <span class="original-value">
-                            {{ $products->getFormattedOriginalPrice() }}
-                        </span>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $products->subtypes[0]->subtype_name }}
                     </p>
-
+                    <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
                 </div>
             </div>
 
@@ -51,10 +36,7 @@
         <div class="supplier-section">
             <br>
             <h3>Supplier Information</h3>
-
-
             <br>
-
             <div class="supplier-details">
                 <div class="supplier-row">
                     <span class="label">Supplier Name</span>
@@ -81,16 +63,17 @@
                     <span class="value">{{ $products->getFormattedDate() }}</span>
                 </div>
             </div>
-
-
         </div>
-
 
         <div id="addGarmentPanel" class="side-panel">
             <br>
-            <a href="{{ url()->previous() }}" class="back-btn">←</a>
-            <br><br>
+            <a href="{{ route('dashboard.product.index') }}" class="back-btn">←</a>
             <h2>Add to Garment</h2>
+            @if(session('success'))
+                <div class="alert alert-success fade show" role="alert">
+                    {{ session('success') }}
+                </div>
+            @endif
             <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}"
                 enctype="multipart/form-data">
                 @csrf
@@ -106,9 +89,8 @@
                         {{-- add new condition to the garment data --}}
                         <label for="condition">Condition</label>
                         <select id="condition" name='condition_id' class="green-input">
-                            <option value="">Select Condition</option>
-                            @foreach (ConditionStatus::cases() as $condition)
-                            <option value="{{ $condition->value }}">{{ ucfirst($condition->label()) }}</option>
+                            @foreach ($conditions as $condition)
+                                <option value="{{ $condition->value }}">{{ ucfirst($condition->label()) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -132,9 +114,9 @@
                             <option value="barong">Barong</option>
                             <option value="filipiniana">Filipiniana</option>
                             @else
-                            <option value="">Select Type</option>
-                            <option selected value="{{ $products->types->type_name }}">{{
-                                ucfirst($products->types->type_name) }}</option>
+                                <option value="">Select Type</option>
+                                <option selected value="{{ $products->types->type_name }}">
+                                    {{ ucfirst($products->types->type_name) }}</option>
                             @endif
                         </select>
                     </div>
@@ -148,9 +130,9 @@
                             <option value="barong">Barong</option>
                             <option value="filipiniana">Filipiniana</option>
                             @else
-                            <option value="">Select Type</option>
-                            <option selected value="{{ $products->subtypes[0]->subtype_name }}">{{
-                                ucfirst($products->subtypes[0]->subtype_name) }}</option>
+                                <option value="">Select Type</option>
+                                <option selected value="{{ $products->subtypes[0]->subtype_name }}">
+                                    {{ ucfirst($products->subtypes[0]->subtype_name) }}</option>
                             @endif
                         </select>
                     </div>
@@ -165,12 +147,11 @@
                         <label for="size">Size</label>
                         <select id="size" name='measurement'>
                             <option value="">Select Size</option>
-                            <option value="{{ Measurement::XS->value }}">Extra Small</option>
-                            <option value="{{ Measurement::S->value }}">Small</option>
-                            <option value="{{ Measurement::M->value }}">Medium</option>
-                            <option value="{{ Measurement::L->value }}">Large</option>
-                            <option value="{{ Measurement::XL->value }}">Extra Large</option>
-                            <option value="{{ Measurement::XXL->value }}">XXL</option>
+                            @foreach ($measurements as $measurement)
+                                <option value="{{ $measurement->value }}">
+                                    {{ ucfirst($measurement->label()) }}
+                                </option>
+                            @endforeach>
                         </select>
                     </div>
                 </div>
@@ -223,42 +204,6 @@
             document.getElementById('addGarmentPanel').style.display = 'block';
         });
 
-
-        // const subTypes = {
-        //     gown: ['Evening Gown', 'Cocktail Gown', 'Ball Gown', 'Wedding Gown', 'Bridesmaid Gown', 'Prom Gown'],
-        //     tuxedo: ['Black Tuxedo', 'White Tuxedo', 'Velvet Tuxedo', 'Slim Fit Tuxedo', 'Classic Tuxedo',
-        //         'Modern Tuxedo'
-        //     ],
-        //     barong: ['Barong Tagalog (traditional)', 'Modern Barong', 'Embroidered Barong', 'Formal Barong',
-        //         'Casual Barong'
-        //     ],
-        //     filipiniana: ['Balintawak', 'Terno', 'Mestiza Dress', 'Maria Clara Gown', "Baro't Saya",
-        //         'Modern Filipiniana'
-        //     ]
-        // };
-
-        // function updateSubTypes() {
-        //     const typeSelect = document.getElementById('type');
-        //     const subTypeSelect = document.getElementById('sub-type');
-        //     const selectedType = typeSelect.value;
-
-        //     // Enable the sub-type dropdown if a valid type is selected
-        //     subTypeSelect.disabled = !selectedType;
-
-        //     // Clear existing options in the sub-type dropdown
-        //     subTypeSelect.innerHTML = '<option value="">Select Sub-type</option>';
-
-        //     // If a valid type is selected, populate the sub-type dropdown
-        //     if (selectedType && subTypes[selectedType]) {
-        //         subTypes[selectedType].forEach(subType => {
-        //             const option = document.createElement('option');
-        //             option.value = subType.toLowerCase().replace(/\s+/g, '-'); // Make value suitable for HTML
-        //             option.textContent = subType;
-        //             subTypeSelect.appendChild(option);
-        //         });
-        //     }
-        // }
-
         // Open modal when delete is clicked
         document.querySelector('.delete').addEventListener('click', () => {
             document.getElementById('deleteModal').style.display = 'flex';
@@ -275,7 +220,4 @@
             document.getElementById('deleteModal').style.display = 'none';
         });
     </script>
-
-</body>
-
-</html>
+</x-layouts.app>

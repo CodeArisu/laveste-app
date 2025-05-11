@@ -10,22 +10,6 @@ use Illuminate\Support\Facades\{DB, Log};
 
 class CatalogService extends BaseServicesClass
 {
-    // public function requestDisplayGarment(CatalogRequest $request, Garment $garment)
-    // {
-    //     try {
-    //         return DB::transaction(function () use ($request, $garment) {
-    //             $this->checkIfExists($garment, $request->safe()->garment_id, 'garment_id');
-    //             $display = $this->createDisplayGarment($request, $garment);
-    //             if (empty($display)) {
-    //                 throw new \RuntimeException('No garment were added');
-    //             }
-    //             return ['display' => $display, 'message' => 'Added to display successfully'];
-    //         });
-    //     } catch (\Exception $e) {
-    //         dd($e);
-    //     }
-    // }
-
     public function createDisplayGarment($garment, $user)
     {
         if (!DisplayStatus::exists()) {
@@ -35,10 +19,8 @@ class CatalogService extends BaseServicesClass
         $this->handleDisplayGarment([
             'user_id' => $user->id,
             'garment_id' => $garment['id'],
-            'product_status_id' => ProductStatus::UNAVAILABLE->value,
+            'product_status_id' => ProductStatus::AVAILABLE->value,
         ]);
-
-        
     }
 
     private function generateStatus(): void
