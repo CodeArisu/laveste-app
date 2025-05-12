@@ -103,13 +103,16 @@
                     @error('contact')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
-                </div>
 
-                <!-- Buttons -->
+
+                       <!-- Buttons -->
                 <div class="button-group">
                     <button class="clear-btn">Clear all</button>
-                    <button class="add-btn" >✔ Add product</button>
+                    <button class="add-btn" >Add product</button>
                 </div>
+                </div>
+
+             
 
               
             </div>

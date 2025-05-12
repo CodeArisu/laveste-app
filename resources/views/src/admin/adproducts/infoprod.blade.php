@@ -1,78 +1,88 @@
-
 <x-layouts.app>
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/admin/infoprod.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/infoprod.css') }}">
     @endpush
 
     <div class="info-container">
-        <div class="product-section">
-            <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
-            <h3>Product Information</h3>
+         <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
+        <div class="info-sections">
+           
+            <div class="product-section">
+                
+                <br>
+                <h3>Product Information</h3>
 
-            <div class="product-content">
-                <img src="/assets/images/h1.png" alt="Gown Image" class="product-image">
+                <div class="product-content">
+                    <img src="/assets/images/h1.png" alt="Gown Image" class="product-image">
 
-                <div class="product-details">
-                    <h2>{{ $products->product_name }}</h2>
-                    <br>
-                    <p><strong>Type</strong>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong></p>
-                    <p>{{ $products->types->type_name }}
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $products->subtypes[0]->subtype_name }}
+                    <div class="product-details">
+                        <h2>{{ $products->product_name }}</h2>
+                        <br>
+                        <p><strong>Type</strong>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong>
+                        </p>
+                        <p>{{ $products->types->type_name }}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{
+                            $products->subtypes[0]->subtype_name }}
+                        </p>
+                        <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
+                    </div>
+                </div>
+
+                <br><br>
+                <div class="description">
+                    <h4>Description</h4>
+                    <p>
+                        {{ $products->description }}
                     </p>
-                    <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
                 </div>
             </div>
 
-            <br><br>
-            <div class="description">
-                <h4>Description</h4>
-                <p>
-                    {{ $products->description }}
-                </p>
-            </div>
-        </div>
+           
 
-        <div class="supplier-section">
-            <br>
-            <h3>Supplier Information</h3>
-            <br>
-            <div class="supplier-details">
-                <div class="supplier-row">
-                    <span class="label">Supplier Name</span>
-                    <span class="value">{{ $products->supplier->supplier_name }}</span>
-                </div>
-                <div class="supplier-row">
-                    <span class="label">Company Name</span>
-                    <span class="value">{{ $products->supplier->company_name }}</span>
-                </div>
-                <div class="supplier-row">
-                    <span class="label">Address</span>
-                    <span class="value">{{ $products->supplier->address }}</span>
-                </div>
-                <div class="supplier-row">
-                    <span class="label">Contact</span>
-                    <span class="value">{{ $products->supplier->contact }}</span>
-                </div>
-                <div class="supplier-row">
-                    <span class="label">Original Price</span>
-                    <span class="value">{{ $products->getFormattedOriginalPrice() }}</span>
-                </div>
-                <div class="supplier-row">
-                    <span class="label">Date</span>
-                    <span class="value">{{ $products->getFormattedDate() }}</span>
+            <div class="supplier-section">
+                <br>
+                <h3>Supplier Information</h3>
+                <br>
+                <div class="supplier-details">
+                    <div class="supplier-row">
+                        <span class="label">Supplier Name</span>
+                        <span class="value">{{ $products->supplier->supplier_name }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Company Name</span>
+                        <span class="value">{{ $products->supplier->company_name }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Address</span>
+                        <span class="value">{{ $products->supplier->address }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Contact</span>
+                        <span class="value">{{ $products->supplier->contact }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Original Price</span>
+                        <span class="value">{{ $products->getFormattedOriginalPrice() }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Date</span>
+                        <span class="value">{{ $products->getFormattedDate() }}</span>
+                    </div>
                 </div>
             </div>
+
         </div>
 
         <div id="addGarmentPanel" class="side-panel">
             <br>
-            <a href="{{ route('dashboard.product.index') }}" class="back-btn">←</a>
+            <a href="{{ route('dashboard.product.index') }}" class="back-btn2">←</a>
+            <br><br>
             <h2>Add to Garment</h2>
             @if(session('success'))
-                <div class="alert alert-success fade show" role="alert">
-                    {{ session('success') }}
-                </div>
+            <div class="alert alert-success fade show" role="alert">
+                {{ session('success') }}
+            </div>
             @endif
             <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}"
                 enctype="multipart/form-data">
@@ -90,7 +100,7 @@
                         <label for="condition">Condition</label>
                         <select id="condition" name='condition_id' class="green-input">
                             @foreach ($conditions as $condition)
-                                <option value="{{ $condition->value }}">{{ ucfirst($condition->label()) }}</option>
+                            <option value="{{ $condition->value }}">{{ ucfirst($condition->label()) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -114,9 +124,9 @@
                             <option value="barong">Barong</option>
                             <option value="filipiniana">Filipiniana</option>
                             @else
-                                <option value="">Select Type</option>
-                                <option selected value="{{ $products->types->type_name }}">
-                                    {{ ucfirst($products->types->type_name) }}</option>
+                            <option value="">Select Type</option>
+                            <option selected value="{{ $products->types->type_name }}">
+                                {{ ucfirst($products->types->type_name) }}</option>
                             @endif
                         </select>
                     </div>
@@ -130,9 +140,9 @@
                             <option value="barong">Barong</option>
                             <option value="filipiniana">Filipiniana</option>
                             @else
-                                <option value="">Select Type</option>
-                                <option selected value="{{ $products->subtypes[0]->subtype_name }}">
-                                    {{ ucfirst($products->subtypes[0]->subtype_name) }}</option>
+                            <option value="">Select Type</option>
+                            <option selected value="{{ $products->subtypes[0]->subtype_name }}">
+                                {{ ucfirst($products->subtypes[0]->subtype_name) }}</option>
                             @endif
                         </select>
                     </div>
@@ -148,9 +158,9 @@
                         <select id="size" name='measurement'>
                             <option value="">Select Size</option>
                             @foreach ($measurements as $measurement)
-                                <option value="{{ $measurement->value }}">
-                                    {{ ucfirst($measurement->label()) }}
-                                </option>
+                            <option value="{{ $measurement->value }}">
+                                {{ ucfirst($measurement->label()) }}
+                            </option>
                             @endforeach>
                         </select>
                     </div>
@@ -185,6 +195,8 @@
             </div>
         </div>
 
+
+
         <div class="buttons">
             <form action="{{ route('dashboard.product.delete', [$products->id]) }}" method="POST">
                 @csrf
@@ -196,6 +208,10 @@
                 onclick="window.location.href='{{ route('dashboard.product.edit', [$products->id]) }}'">Update</button>
             <button class="add">Add to Garment</button>
         </div>
+
+
+
+
     </div>
 
 
