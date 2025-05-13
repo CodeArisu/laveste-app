@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Events\CatalogStatus;
 use App\Models\Catalog;
+use App\Models\Statuses\ProductRentedStatus;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 
 class CompleteCheckoutService
 {
@@ -15,7 +18,7 @@ class CompleteCheckoutService
     public function completeCheckout($transactionData)
     {   
         try {
-            return DB::transaction(function () use ($transactionData) {
+            $result = DB::transaction(function () use ($transactionData) {
                 $transactionData = array_merge([
                     'customer_data' => $this->transactionService->getCustomerData(), 
                     'transaction_data' => $transactionData
@@ -28,12 +31,19 @@ class CompleteCheckoutService
                 
                 $productRent = $this->productRentService->execProductRent($customerData, $catalogData);
                 $transaction = $this->transactionService->execTransaction($transactionData, $productRent);
-                
+
+                $this->handleStatusChange($productRent, $catalogData);
+
                 return [
                     'product_rent' => $productRent,
                     'transaction' => $transaction,
                 ];
             });
+
+            // removes previous session data
+            session()->forgot('checkout.customer_data', 'checkout.transaction_data');
+
+            return $result;
         } catch (\Exception $e) {
             // Log::error($e->getMessage());
             throw new \RuntimeException($e->getMessage());
@@ -42,6 +52,15 @@ class CompleteCheckoutService
                 'message' => $e->getMessage(),
             ], 500);
         }
-       
+    }
+
+    private function handleStatusChange($productRent, $catalogData)
+    {
+        // event to change or update global status
+        if (!$productRent['product_rented_status_id']) throw new RuntimeException('status does not exists.');
+
+        $rentStatus = ProductRentedStatus::where('id', $productRent['product_rented_status_id'])->first();
+
+        event(new CatalogStatus($rentStatus, $catalogData->id));
     }
 }

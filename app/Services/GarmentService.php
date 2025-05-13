@@ -305,8 +305,8 @@ class GarmentService
     {
         return Size::firstOrCreate([
                 'measurement' => $sizeData['measurement'],
-                'length' => $sizeData['length'],
-                'width' => $sizeData['width'],
+                'length' => $sizeData['length'] ?? 0,
+                'width' => $sizeData['width'] ?? 0,
             ]
         );
     }

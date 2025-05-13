@@ -4,20 +4,14 @@
     @endpush
 
     <div class="info-container">
-         <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
+        <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
         <div class="info-sections">
-           
             <div class="product-section">
-                
                 <br>
                 <h3>Product Information</h3>
-
                 <div class="product-content">
-                    <img src="/assets/images/h1.png" alt="Gown Image" class="product-image">
-
                     <div class="product-details">
                         <h2>{{ $products->product_name }}</h2>
-                        <br>
                         <p><strong>Type</strong>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong>
                         </p>
@@ -28,7 +22,6 @@
                         <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
                     </div>
                 </div>
-
                 <br><br>
                 <div class="description">
                     <h4>Description</h4>
@@ -37,9 +30,6 @@
                     </p>
                 </div>
             </div>
-
-           
-
             <div class="supplier-section">
                 <br>
                 <h3>Supplier Information</h3>
@@ -71,7 +61,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <div id="addGarmentPanel" class="side-panel">
@@ -92,7 +81,7 @@
                 <div class="form-row">
                     <div>
                         {{-- sets image upload --}}
-                        <label>Upload Image</label>
+                        <label>Product Image<span class='importance'>*</span></label>
                         <input name="poster" type="file">
                     </div>
                     <div>
@@ -108,14 +97,14 @@
 
                 <div class="tight-group">
                     <label>Product Name</label>
-                    <input type="text" value="{{ $products->product_name }}">
+                    <input type="text" value="{{ $products->product_name }}" readonly>
                     <label>Description</label>
                     <textarea name='additional_description' rows="4">{{ $products->description }}</textarea>
                 </div>
 
                 <div class="form-row">
                     <div>
-                        <label for="type">Type</label>
+                        <label for="type">Type<span class='importance'>*</span></label>
                         <select id="type">
                             @if (empty($products->types->type_name))
                             <option value="">Select Type</option>
@@ -131,7 +120,7 @@
                         </select>
                     </div>
                     <div>
-                        <label for="sub-type">Sub-type</label>
+                        <label for="sub-type">Sub-type<span class='importance'>*</span></label>
                         <select id="sub-type">
                             @if (empty($products->subtypes[0]->subtype_name))
                             <option value="">Select Type</option>
@@ -148,13 +137,13 @@
                     </div>
                 </div>
 
-                <div class="form-row">
+                <div class="form-row">  
                     <div>
-                        <label>Rental Price</label>
-                        <input type="number" name='rent_price'>
+                        <label>Rental Price<span class='importance'>*</span></label>
+                        <input type="number" name='rent_price' value={{ $products->original_price }}>
                     </div>
                     <div>
-                        <label for="size">Size</label>
+                        <label for="size">Size<span class='importance'>*</span></label>
                         <select id="size" name='measurement'>
                             <option value="">Select Size</option>
                             @foreach ($measurements as $measurement)
@@ -168,11 +157,11 @@
 
                 <div class='form-row'>
                     <div>
-                        <label>Width</label>
+                        <label>Width (optional)</label>
                         <input type="number" name='width'>
                     </div>
                     <div>
-                        <label>Height</label>
+                        <label>Height (optional)</label>
                         <input type="number" name='length'>
                     </div>
                 </div>

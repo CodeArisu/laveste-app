@@ -48,4 +48,19 @@ class CatalogService extends BaseServicesClass
             'product_status_id' => $relations['product_status_id'],
         ]);
     }
+
+    public function updateCatalogItemStatus($newStatus)
+    {
+        $this->handleStatusUpdate($newStatus);
+        
+        return ['message' => 'Status updated'];
+    }
+
+    private function handleStatusUpdate(array $status)
+    {
+        Catalog::where('id', $status['catalog_id'])->update([
+            'product_status_id' => $status['product_status'],
+            'updated_at' => $status['updated_at'],
+        ]);
+    }
 }

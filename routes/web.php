@@ -21,9 +21,10 @@ Route::middleware(['auth', 'web'])->group(function () {
 
         Route::get('/home', [App\Http\Controllers\Api\CashierController::class, 'rentalsIndex'])->name('home');
 
-        Route::get('/transaction', [App\Http\Controllers\Api\CashierController::class, 'transactionIndex'])->name('transaction');
+        // updates product rented status
+        Route::put('/home/{ProductRent}', [App\Http\Controllers\Api\CashierController::class, 'productRentUpdate'])->name('rent-update');
 
-        Route::get('/catalog', [App\http\Controllers\Api\CatalogController::class, 'index'])->name('index'); 
+        Route::get('/catalog', [App\http\Controllers\Api\CatalogController::class, 'index'])->name('index');
         
         // pre checkout customers details API
         Route::get('/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('details');
@@ -33,17 +34,18 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('checkout');
         Route::post('/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'store'])->name('checkout.store');
 
-        Route::get('/catalog/{catalogs}/checkout/show', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'show'])->name('checkout.show');
+        Route::get('/checkout/receipt/{transaction}', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'show'])->name('checkout.receipt');
     });
 
     // dashboard routes
     Route::name('dashboard.')->prefix('dashboard')->group( function () {
+        
         Route::get('/', function () {
             $product = Product::all();
             return view('src.admin.dashboard', ['productCount' => count($product)]);
         })->name('home');
 
-        Route::get('/dashboard/users', [App\Http\Controllers\Auth\AuthController::class, 'displayUsers'])->name('users')->middleware(['role:admin']);
+        Route::get('/users', [App\Http\Controllers\Auth\AuthController::class, 'displayUsers'])->name('users')->middleware(['role:admin']);
         
         // dashboard products routes
         Route::middleware(['role:admin'])->name('product.')->prefix('product')->group( function () {
@@ -72,14 +74,6 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
 });
 
-// pre checkout customers details API
-Route::get('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('cashier.details');
-Route::post('/cashier/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'store'])->name('cashier.details.store');
-// Route::get('/cashier/catalog/details/show', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'show'])->name('cashier.details.show');
-
-Route::get('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('cashier.checkout');
-Route::post('/cashier/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'store'])->name('cashier.checkout.store');
-
 Route::post('/cashier/catalog/transaction', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'store'])->name('cashier.transaction.store');
 Route::get('/cashier/catalog/transaction/{transaction}', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'show'])->name('cashier.receipt.show');
 
@@ -87,13 +81,10 @@ Route::get('/cashier/appointment/checkout', function () {
     return view('src.cashier.checkout3');
 })->name('appointment.checkout');
 
-Route::get('/cashier/catalog/receipt', function () {
-    return view('src.cashier.receipt');
-})->name('cashier.receipt');
-
 Route::get('/dashboard/rented', function () {
     return view('src.admin.prodrented');
 })->name('rented');
+
 Route::get('/dashboard/transactions', function () {
     return view('src.admin.transactions');
 })->name('transactions');

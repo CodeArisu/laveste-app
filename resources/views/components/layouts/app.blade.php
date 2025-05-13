@@ -12,7 +12,7 @@
             rel="stylesheet">
 
         @stack('styles')
-
+        <link rel='stylesheet' href="{{ asset('css/global.css') }}">
         @vite(['resources/js/app.js', 'resources/scss/app.scss'])
     </head>
 

@@ -6,6 +6,7 @@ use App\Enum\PaymentMethods;
 use App\Events\TransactionSession;
 use App\Http\Requests\TransactionRequest;
 use App\Models\Catalog;
+use App\Models\Transactions\Transaction;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -37,26 +38,26 @@ class TransactionController
         ]);
     }
 
-    public function show(Catalog $catalogs)
+    public function show(Transaction $transaction)
     {   
-        $customerData =  $this->transactionService->getCustomerData();
+        $originalPrice = $transaction->productRent->catalog->garment->rent_price;
 
-        $transactionData = $this->transactionService->getTransactionSessionData();
-    
+        $customerData = $this->transactionService->getFilteredDatesData($transaction->productRent->customerRent);
         $formattedDates = $this->transactionService->getFormattedDates($customerData);
         
-        return response()->json([
-            'catalog' => $catalogs,
-            'customer_data' => $customerData,
-            'date_format' => $formattedDates,
-            'transaction_data' => $transactionData,
-            'process_step' => self::PROCESS_STEP,
+        $totalPrice = $this->transactionService->getTotalPrice($originalPrice);
+
+        return view('src.cashier.receipt', [
+            'transactions' => $transaction,
+            'formattedDates' => $formattedDates,
+            'originalPrice' => $originalPrice,
+            'totalPrice' => $totalPrice,
         ]);
     }
 
     public function store(TransactionRequest $request)
     {   
-        $this->transactionService->requestTransaction($request);
-        return redirect()->route('cashier.receipt')->with('success', 'Transaction created successfully.');
+        $transaction = $this->transactionService->requestTransaction($request);
+        return redirect()->route($transaction['url'])->with('success', $transaction['message']);
     }
 }

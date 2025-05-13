@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Enum\PaymentMethods;
+use App\Enum\ProductStatus;
+use App\Enum\RentStatus;
 use App\Events\TransactionSession;
 use App\Http\Requests\TransactionRequest;
+use App\Models\Statuses\ProductRentedStatus;
 use App\Models\Transactions\PaymentMethod;
 use App\Models\Transactions\ProductRent;
 use App\Models\Transactions\Transaction;
@@ -34,6 +37,11 @@ class TransactionService
             $catalogId = $request->only(['catalog']);
     
             $this->setTransactionData($catalogId);
+
+            return [
+                'message' => 'Transaction Created Successfully.',
+                'url' => 'cashier.checkout.receipt',
+            ];
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
         }
@@ -121,7 +129,11 @@ class TransactionService
     private function createTransaction($transactionData, $productRent)
     {   
         // $productId = $this->getProductRentId($transactionData, $productRent);
-        if(empty($productRent)) {
+        if (!PaymentMethod::exists()) {
+            $this->generatePaymentMethods();
+        }
+
+        if(!$productRent) {
             throw new \RuntimeException('No product rent data');
         }
 
@@ -134,7 +146,7 @@ class TransactionService
 
     public function execTransaction($transactionData, $productRent)
     {   
-        return $this->createTransaction($transactionData, $productRent);
+        $this->createTransaction($transactionData, $productRent);
     }
 
     /**
@@ -207,5 +219,40 @@ class TransactionService
         }
 
         return $paymentMethod;
+    }
+
+    private function validateStatus($rentStatus)
+    {   
+        $rentStatus = ProductRentedStatus::where('id', $rentStatus->id)->first();
+
+        if ($rentStatus['status_name'] !== RentStatus::RENTED->label()) {
+            return null;
+        }
+
+        return ProductStatus::UNAVAILABLE->value;
+    }
+
+    public function getUpdatedStatus($rentStatus, $catalogId)
+    {   
+        $newStatus = $this->validateStatus($rentStatus);
+
+        if (!$newStatus) {
+            throw new \RuntimeException('Status not recognized');
+        }
+        
+        return [
+            'catalog_id' => $catalogId,
+            'product_status' => $newStatus,
+            'updated_at' => now(),
+        ];
+    }
+
+    public function getFilteredDatesData($customerData)
+    {
+        return [
+            'pickup_date' => $customerData['pickup_date'],
+            'rented_date' => $customerData['rented_date'],
+            'return_date' => $customerData['return_date'],
+        ];
     }
 }

@@ -55,7 +55,7 @@ class AuthService
             $this->loginUser($request);
             return [
                 'message' => 'User signed in',
-                'url' => 'cashier.home'
+                'url' => 'dashboard.home'
             ];
         }
         catch (AuthException $e) {
@@ -75,11 +75,14 @@ class AuthService
             if (!$request->user()) {
                 throw AuthException::unauthenticated('No authenticated user found');
             }
+
             Auth::logout();
+
             return [
                 'message' => 'User signed out',
-                'url' => ''
+                'url' => 'login'
             ];
+
         } catch (AuthException $e) {
             // Re-throw pre-formatted auth exceptions
             throw $e;

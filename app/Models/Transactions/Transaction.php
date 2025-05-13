@@ -33,4 +33,10 @@ class Transaction extends Model
     {   
         return $this->productRent->catalog->garment->product->product_name;
     }
+
+    public function getClothingSize()
+    {
+        return $this->productRent->catalog->garment->size->measurement;
+    }
+    
 }

@@ -1,19 +1,10 @@
-
-body {
-    margin: 0;
-    font-family: 'Poppins', serif;
-    background-color: #f8f8f8;
-}
-
-
-.navbar {
+.custom-navbar {
     background-color: #F8F1E6;
     padding: 15px 40px;
     display: flex;
     flex-direction: column;
-    height: 100px;
+    height: 10em;
 }
-
 
 .navdiv {
     display: flex;

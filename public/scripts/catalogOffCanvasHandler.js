@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const title = this.getAttribute('data-title');
             const price = this.getAttribute('data-price');
-            const status = this.getAttribute('data-status');
             const image = this.getAttribute('data-image');
             const description = this.getAttribute('data-description')
             const size = this.getAttribute('data-size')
@@ -46,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <a href="${route}" class="btn btn-success mt-auto">Rent</a>
                         </div>
                     </div>
-                </div>`;
+                </div>`;    
         });
     });
 });

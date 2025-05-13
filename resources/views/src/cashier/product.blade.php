@@ -1,12 +1,9 @@
-<x-layouts.app>
+<x-layouts.cashlayout>
     @push('styles')
         <link rel="stylesheet" href="/css/products/product.css">
         <link rel="stylesheet" href="/css/cashier/cashierhead.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
         <link rel="stylesheet" href="/css/products/custom-filter.css">
     @endpush
-
-    <x-layouts.navbar/>
 
     <div class="container">
         <div class="filters">
@@ -33,7 +30,7 @@
         </div>
         
         <div class="container">
-            <div class='row gy-2'>
+            <div class='row gy-4'>
                 @foreach ($catalogs as $catalog)
                     <div class="col-md-4">
                         <x-fragments.catalog-card-component 
@@ -50,4 +47,4 @@
             <script src={{ asset('scripts/catalogOffCanvasHandler.js') }}></script>
             <script src={{ asset('scripts/navbarHandler.js') }}></script>
         @endpush
-</x-layouts.app>
+</x-layouts.cashlayout>

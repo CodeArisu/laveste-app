@@ -8,8 +8,10 @@ use App\Services\GarmentService;
 
 class CreateDisplayCatalog
 {
-    public function __construct(protected CatalogService $catalogService, protected GarmentService $garmentService)
-    {}
+    public function __construct(
+        protected CatalogService $catalogService, 
+        protected GarmentService $garmentService
+    ){}
 
     /**
      * Handle the event.

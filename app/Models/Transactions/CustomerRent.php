@@ -30,4 +30,5 @@ class CustomerRent extends Model
         $date = new \DateTime($this->pickup_date);
         return $date->format('F j, Y'); // "February 5, 2024"
     }
+
 }

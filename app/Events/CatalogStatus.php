@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Garments\Garment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,16 +10,16 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class GarmentCreated
+class CatalogStatus
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $garment;
-    public $user;
-    public function __construct($garment, $user)
+    public $status;
+    public $catalogId;
+    public function __construct($status, $catalogId)
     {
-        $this->garment = $garment;
-        $this->user = $user;
+        $this->status = $status;
+        $this->catalogId = $catalogId;
     }
 
     public function broadcastOn(): array

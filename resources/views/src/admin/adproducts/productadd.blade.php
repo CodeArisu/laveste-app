@@ -19,7 +19,7 @@
                 <!-- Product Information -->
                 <div class="form-section">
                     <h2>Product Information</h2>
-                    <label for="product-name">Product Name</label>
+                    <label for="product-name">Product Name<span class='importance'>*</span></label>
                     <input type="text" id="product-name" name='product_name' value='{{ old('product_name') }}'>
                     {{-- product name error message --}}
                     @error('product_name')
@@ -27,7 +27,7 @@
                     @enderror
                     <div class="row">
                         <div>
-                            <label for="type">Type</label>
+                            <label for="type">Type<span class='importance'>*</span></label>
                             <select id="type" name="type" onchange="updateTypeField()">
                                 <option selected>Select Type</option>
                                 @foreach ($types as $type)
@@ -42,7 +42,7 @@
                             <input type="text" name="new_type" placeholder="Enter new type (optional)">
                         </div>
                         <div>
-                            <label for="sub-type">Sub-type</label>
+                            <label for="sub-type">Sub-type<span class='importance'>*</span></label>
                             <select id="sub-type" name="subtype" onchange="updateSubtypeField()">
                                 <option selected>Select Sub-type</option>
                                 @foreach ($subtypes as $subtype)
@@ -57,14 +57,14 @@
                         </div>
                     </div>
 
-                    <label for="description">Description</label>
+                    <label for="description">Description<span class='importance'>*</span></label>
                     <textarea name="description" id="description" rows="4" value={{ old('description') }}></textarea>
                     {{-- description error message --}}
                     @error('description')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
-                    <label for="original-price">Original Price</label>
+                    <label for="original-price">Original Price<span class='importance'>*</span></label>
                     <input name="original_price" type="number" id="original-price" value={{ old('original_price') }}>
                     {{-- original price error message --}}
                     @error('original_price')
@@ -82,21 +82,21 @@
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
-                    <label for="company-name">Company Name</label>
+                    <label for="company-name">Company Name<span class='importance'>*</span></label>
                     <input name="company_name" type="text" id="company-name" value={{ old('company_name') }}>
                     {{-- company name error message --}}
                     @error('company_name')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
-                    <label for="address">Address</label>
+                    <label for="address">Address<span class='importance'>*</span></label>
                     <input name="address" type="text" id="address" value={{ old('address') }}>
                     {{-- address name error message --}}
                     @error('address')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
-                    <label for="contact">Contact</label>
+                    <label for="contact">Contact<span class='importance'>*</span></label>
                     <input name="contact" type="text" id="contact" value={{ old('contact') }}>
 
                     {{-- contact error message --}}
@@ -107,21 +107,17 @@
 
                        <!-- Buttons -->
                 <div class="button-group">
-                    <button class="clear-btn">Clear all</button>
+                    <a class="clear-btn">Clear all</a>
                     <button class="add-btn" >Add product</button>
                 </div>
                 </div>
-
-             
-
-              
             </div>
         </form>
     </div>
 
     @push('scripts')
         {{-- <script src={{ asset('scripts/toastHandler.js') }}></script> --}}
-
+        <script src={{ asset('scripts/clearInputsButton.js') }}></script>
         <script src={{ asset('scripts/addProductSelectTypesHandler.js') }}></script>
     @endpush
     

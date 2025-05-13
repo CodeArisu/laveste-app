@@ -6,8 +6,10 @@ use App\Enum\RentStatus;
 use App\Http\Requests\CustomerDetailsRequest;
 use App\Models\Statuses\ProductRentedStatus;
 use App\Models\Transactions\ProductRent;
+use Exception;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\{DB, Log};
+use RuntimeException;
 
 class ProductRentService
 {   
@@ -27,8 +29,33 @@ class ProductRentService
     }
 
     public function execProductRent($customerData, $catalogData)
-    {  
+    {   
         return $this->createProductRent($customerData, $catalogData);
+    }
+
+    public function updateProductRent($productRent)
+    {   
+        try {
+
+            $rentId = $this->getProductRentId($productRent);
+
+            $this->handleProductRentStatusUpdate($rentId);
+
+            // rent status and catalog status
+            // event(new GarmentReturned());
+
+        } catch (\Exception $e) {
+            \Log::error($e);
+        }
+    }
+
+    private function getProductRentId($productRent) 
+    {
+        if (!$productRent) {
+            throw new RuntimeException('Product Rent does not exists');
+        }
+
+        return $productRent->id;
     }
 
     /**
@@ -102,5 +129,13 @@ class ProductRentService
         }
 
         return ProductRentedStatus::find($statusID)->id ?? null;
+    }
+
+    private function handleProductRentStatusUpdate($rentedId)
+    {
+        ProductRent::where('id', $rentedId)->update([
+            'product_rented_status_id' => RentStatus::RETURNED->value,
+            'updated_at' => now(),
+        ]);
     }
 }
