@@ -29,8 +29,7 @@ class AuthController extends ApiBaseController
     public function loginUser(AuthRequest $request) 
     {    
         $user = $this->authService->loginRequest($request);
-
-        return redirect()->route($user['url'])->with($user['message']);
+        return redirect()->route($user['url'])->with(['success' => $user['message']]);
     }
 
     public function loginIndex()
@@ -42,7 +41,7 @@ class AuthController extends ApiBaseController
     {   
         $user = $this->authService->logoutRequest($request);
 
-        return redirect()->route($user['url'])->with($user['message']);
+        return redirect()->route($user['url'])->with(['success' => $user['message']]);
     }
 
     public function displayUsers()

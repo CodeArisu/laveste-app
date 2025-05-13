@@ -1,3 +1,7 @@
+body {
+    background-color: #F8F1E6;
+}
+
 .importance {
     color: red !important;
 }

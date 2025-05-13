@@ -5,11 +5,16 @@
     <div class="main">
         <header class="header">
             <h1 class="title">La Veste Rentals</h1>
-            <div class="admin-info">
+            <div class="admin-info d-flex align-items-center">
                 <span>Admin {{ Auth::user()->name }}</span>
                 <div class="avatar">
                     <img src="{{ asset('assets/images/catty.jpg') }}" alt="Admin Avatar">
+                    
                 </div>
+                <form action="{{ route('logout') }}" method="POST" class="p-0 d-inline-block">
+                    @csrf
+                    <button type="submit" class="btn">Sign Out</button>
+                </form>
             </div>
         </header>
 

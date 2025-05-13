@@ -26,7 +26,7 @@ class ProductService extends BaseServicesClass
                 if (empty($products)) {
                     throw ProductException::productNotFound();
                 }
-                return ['message' => 'Successfully created', 'data' => $products];
+                return ['message' => 'Successfully created', 'route' => 'dashboard.product.form'];
             });
         } catch (\Exception $e) {
             report($e);
@@ -61,7 +61,7 @@ class ProductService extends BaseServicesClass
                 $updatedProducts = $this->updateProduct($request, $product);
                 $this->validateUpdateResults($updatedProducts);
 
-                return ['message' => 'Successfully updated', 'data' => $updatedProducts];
+                return ['message' => 'Successfully updated', 'route' => 'dashboard.product.show'];
             });
         } catch (\Exception $e) {
             report($e);
@@ -91,9 +91,12 @@ class ProductService extends BaseServicesClass
     public function requestDeleteProduct(Product $product)
     {
         try {
+
             $product->productCategories()->delete();
+
             $product->deleteOrFail();
-            return ['message' => 'Successfully deleted', 'data' => $product];
+            
+            return ['message' => 'Successfully deleted', 'route' => 'dashboard.product.index'];
         } catch (\Exception $e) {
             report($e);
             throw ProductException::productDeleteFailed();

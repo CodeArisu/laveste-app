@@ -7,20 +7,7 @@ use Throwable;
 
 class AuthException extends InternalExceptions
 {
-    // public function render($request, Throwable $exception) 
-    // {
-    //     if ($exception instanceOf AuthException)
-    //     {
-    //         return redirect()
-    //             ->back()
-    //             ->withInput()
-    //             ->withErrors([
-    //                 'auth_error' => $exception->getMessage(),
-    //                 'auth_error_code' => $exception->getCode(),
-    //             ]);
-    //     }
-    //     return parent::render($request, $exception);
-    // }
+    // app/Exceptions/AuthException.php
 
     public static function userAlreadyRegistered(): self
     {

@@ -1,7 +1,6 @@
 <x-layouts.app>
     @push('styles')
-        <link rel="stylesheet" href="/css/login.css">
-        <link rel="stylesheet" href="/css/login.css">
+        <link rel="stylesheet" href="{{ asset('css/login.css') }}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     @endpush
 
@@ -9,6 +8,12 @@
         <div class="form-container">
             <h1>La Veste Rentals</h1>
             <h2>Welcome Back!</h2>
+            @if ($errors->has('internal_error'))
+                <div class="alert alert-danger">
+                    <strong>Error:</strong> {{ $errors->first('internal_error') }}
+                    <p>{{ $errors->first('internal_error_description') }}</p>
+                </div>
+            @endif
             <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <label for="email"></label>

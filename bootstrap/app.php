@@ -18,13 +18,21 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render( function (InternalExceptions $e) {
-            $code = $e->getStatusCode();
+        $exceptions->render(function (App\Exceptions\InternalExceptions $e, $request) {
+        if ($request->expectsJson()) {
             return response()->json([
-                'status' => 'error',
-                'code' => $code->value,
-                'message' => $e->getMessage(),
+                'error' => $e->getMessage(),
                 'description' => $e->getDescription(),
-            ], $e->getCode());
+                'status' => $e->getStatusCode()->value,
+            ], $e->getStatusCode()->getStatusCode());
+        }
+
+        return redirect()
+            ->back()
+            ->withInput()
+            ->withErrors([
+                'internal_error' => $e->getMessage(),
+                'internal_error_description' => $e->getDescription(),
+            ]);
         });
     })->create();

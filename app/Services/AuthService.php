@@ -32,15 +32,10 @@ class AuthService
                 ];
             });
         } catch (QueryException $e) {
-            // Database errors (e.g., unique constraint violations)
-            report($e); // Log to error tracking system
             throw AuthException::userRegistrationFailed();
         } catch (ModelNotFoundException $e) {
-            // Missing required relations (if your registration has dependencies)
             throw AuthException::userRegistrationFailed();
         } catch (\Throwable $e) {
-            // Catch-all for unexpected errors
-            report($e);
             throw AuthException::userRegistrationFailed();
         }
     }
@@ -54,7 +49,7 @@ class AuthService
         try {
             $this->loginUser($request);
             return [
-                'message' => 'User signed in',
+                'message' => 'Login Successful',
                 'url' => 'dashboard.home'
             ];
         }

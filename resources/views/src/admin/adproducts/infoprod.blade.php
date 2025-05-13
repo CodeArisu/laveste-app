@@ -7,6 +7,11 @@
         <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
         <div class="info-sections">
             <div class="product-section">
+                @if(session('success'))
+                    <div class="alert alert-success fade show" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 <br>
                 <h3>Product Information</h3>
                 <div class="product-content">
@@ -68,11 +73,6 @@
             <a href="{{ route('dashboard.product.index') }}" class="back-btn2">←</a>
             <br><br>
             <h2>Add to Garment</h2>
-            @if(session('success'))
-            <div class="alert alert-success fade show" role="alert">
-                {{ session('success') }}
-            </div>
-            @endif
             <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}"
                 enctype="multipart/form-data">
                 @csrf
@@ -184,8 +184,6 @@
             </div>
         </div>
 
-
-
         <div class="buttons">
             <form action="{{ route('dashboard.product.delete', [$products->id]) }}" method="POST">
                 @csrf
@@ -197,10 +195,6 @@
                 onclick="window.location.href='{{ route('dashboard.product.edit', [$products->id]) }}'">Update</button>
             <button class="add">Add to Garment</button>
         </div>
-
-
-
-
     </div>
 
 

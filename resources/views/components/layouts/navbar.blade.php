@@ -5,7 +5,7 @@
             <div class="cashier">
                 <h3>{{ Auth::user()->name }}</h3>
                 <img src="/assets/images/catty.jpg" alt="CashierProfile" id="cashierImage">
-               <div class="text-center" id="logoutMenu">
+                <div class="text-center" id="logoutMenu">
                     <form action="{{ route('logout') }}" method="POST" class="p-0 d-inline-block mt-3">
                         @csrf
                         <button type="submit" class="btn">Sign Out</button>
