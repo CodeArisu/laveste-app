@@ -8,9 +8,7 @@
 
         {{-- shows message after success API --}}
         @if (session('success'))
-            <div class="alert alert-success fade show" role="alert">
-                {{ session('success') }}
-            </div>
+            <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
         @endif
 
         <form action="{{ route('dashboard.product.store') }}" method="POST">

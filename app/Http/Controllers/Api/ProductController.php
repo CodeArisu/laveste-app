@@ -42,7 +42,7 @@ class ProductController extends ApiBaseController
     public function store(ProductRequest $request)
     {   
         $createdProduct = $this->productService->requestCreateProduct($request);
-        return redirect()->route('route')->with('success', $createdProduct['message']);
+        return redirect()->route($createdProduct['route'])->with('success', $createdProduct['message']);
     }
 
     public function show(Product $product)

@@ -7,8 +7,6 @@ use Throwable;
 
 class AuthException extends InternalExceptions
 {
-    // app/Exceptions/AuthException.php
-
     public static function userAlreadyRegistered(): self
     {
         return static::new(StatusCode::UserIsAlreadyRegistered);

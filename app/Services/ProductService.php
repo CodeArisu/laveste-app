@@ -26,7 +26,7 @@ class ProductService extends BaseServicesClass
                 if (empty($products)) {
                     throw ProductException::productNotFound();
                 }
-                return ['message' => 'Successfully created', 'route' => 'dashboard.product.form'];
+                return ['message' => 'Successfully Created', 'route' => 'dashboard.product.form'];
             });
         } catch (\Exception $e) {
             report($e);

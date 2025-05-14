@@ -8,6 +8,7 @@ use App\Exceptions\AuthException;
 use App\Http\Requests\AuthRequest;
 use App\Models\Auth\User;
 use App\Models\Auth\Role;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -57,6 +58,8 @@ class AuthService
             // Re-throw Auth-specific exceptions (invalid credentials, locked account, etc.)
             throw $e;
             throw AuthException::userNotFound();
+        } catch (Exception $e) {   
+            throw AuthException::userLoginFailed();
         }
     }
 
@@ -145,7 +148,7 @@ class AuthService
                 throw AuthException::invalidUserCredentials();
             }
 
-            return compact('user');
+            return $user;
     }
 
     /**
