@@ -67,7 +67,6 @@ body {
 .nav-item.active img {
     filter: brightness(0) invert(1) sepia(100%) saturate(400%) hue-rotate(180deg);  /* Changes the icon to a light color like #f4ebd4 */
 }
-
 /* Hover effect = expanded but preserves icon original color */
 .nav-item:hover {
     background: #933;
@@ -77,21 +76,26 @@ body {
     border-bottom-right-radius: 35px;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    color: white;
+    color: #F8F1E6;
 }
 
-/* Change icon color when hovering over a nav item */
-.nav-item:hover img {
-    transform: scale(1.2);  /* Increased scale of icons on hover */
-    filter: brightness(0) invert(1) sepia(100%) saturate(400%) hue-rotate(180deg);  /* Changes the icon to a light color like #f4ebd4 */
+/* Make the active item retain hover styles */
+.nav-item.active, .nav-item.active:hover {
+    background: #933;
+    width: 140px;  /* Same width as hover */
+    height: 70px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    color: white;  /* Ensure the text remains white in active state */
 }
 
-/* Icon styling */
-.nav-item img {
-    transition: opacity 0.3s ease, transform 0.3s ease, filter 0.3s ease;
-    width: 40px;  /* Increased icon size */
-    height: 40px; /* Increased icon size */
+.nav-item.active img, .nav-item.active:hover img {
+    transform: scale(1.2);  /* Keep the icon scale on active */
+    filter: brightness(0) invert(1) sepia(100%) saturate(400%) hue-rotate(180deg);  /* Icon color remains the same */
 }
+
 
 /* Main content area */
 .main {
