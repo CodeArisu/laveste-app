@@ -26,14 +26,7 @@ class ProductService extends BaseServicesClass
                 if (empty($products)) {
                     throw ProductException::productNotFound();
                 }
-                // Validate all products were created successfully
-                foreach ($products as $product) {
-                    if (!Product::exists()) {
-                        throw ProductException::productCreateFailed();
-                    }
-                }
-
-                return ['message' => 'Successfully created', 'data' => $products];
+                return ['message' => 'Successfully Created', 'route' => 'dashboard.product.form'];
             });
         } catch (\Exception $e) {
             report($e);
@@ -67,7 +60,8 @@ class ProductService extends BaseServicesClass
             return DB::transaction(function () use ($request, $product) {
                 $updatedProducts = $this->updateProduct($request, $product);
                 $this->validateUpdateResults($updatedProducts);
-                return ['message' => 'Successfully updated', 'data' => $updatedProducts];
+
+                return ['message' => 'Successfully updated', 'route' => 'dashboard.product.edit'];
             });
         } catch (\Exception $e) {
             report($e);
@@ -85,6 +79,7 @@ class ProductService extends BaseServicesClass
         } catch (\RuntimeException $e) {
             // Your custom runtime exceptions
             throw ProductException::productUpdateFailed();
+            dd($e->getMessage());
         }
     }
 
@@ -96,9 +91,12 @@ class ProductService extends BaseServicesClass
     public function requestDeleteProduct(Product $product)
     {
         try {
+
             $product->productCategories()->delete();
+
             $product->deleteOrFail();
-            return ['message' => 'Successfully deleted', 'data' => $product];
+            
+            return ['message' => 'Successfully deleted', 'route' => 'dashboard.product.index'];
         } catch (\Exception $e) {
             report($e);
             throw ProductException::productDeleteFailed();
@@ -114,7 +112,7 @@ class ProductService extends BaseServicesClass
      * @return array
      */
     private function createProduct(ProductRequest $request): array
-    {
+    {   
         $validated = $request->safe();
         
         // new supplier data

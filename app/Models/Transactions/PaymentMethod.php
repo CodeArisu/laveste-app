@@ -10,4 +10,9 @@ class PaymentMethod extends Model
     protected $fillable = [
         'method_name',
     ];
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class, 'id');
+    }
 }

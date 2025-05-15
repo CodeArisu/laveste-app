@@ -1,39 +1,17 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #F8F1E6;
-    font-family: 'Ovo', serif;
-    margin: 0;
-}
-
 
 .container {
     display: flex;
     width: 1500px; 
-    background: #F8F1E6;
+    background-color: #FFFF;
     border-radius: 20px; 
     overflow: hidden;
     flex-direction: row;
     padding: 60px; 
 }
 
-
-.form-container {
-    flex: 1;
-    padding: 60px; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100%; 
-}
-
-
 h1 {
     color: #973131;
-    font-size: 80px; 
+    font-size: 70px; 
     margin-bottom: 20px; 
     text-align: center;
     font-weight: 400;
@@ -45,21 +23,63 @@ h2 {
     margin-bottom: 0px; 
     text-align: left;
     font-weight: lighter;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+
+.form-container {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 1000;
+    max-width: 1500px; /* wider form container if needed */
+    
 }
 
 input[type="email"],
-input[type="password"] {
-    width: 100%; 
-    max-width: 800px; 
+input[type="password"],
+input[type="text"] { /* Include 'text' as well */
+    width: 100%;
+    max-width: 1100px; /* made wider */
+    height: 60px;
     padding: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px; 
-    border: 1px solid #D8B6A4; 
-    border-radius: 10px; 
-    background: #FDF7F2;
-    font-size: 22px; 
-    color: #57332E; 
+    margin-top: 5px; /* less margin between inputs */
+    margin-bottom: 5px;
+    border: 1px solid #D8B6A4;
+    border-radius: 10px;
+    background: #F8F1E6;
+    font-size: 18px;
+    color: #57332E;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
 }
+
+/* This ensures both password and text inputs look the same */
+.password-container input[type="password"],
+.password-container input[type="text"] {
+    padding-right: 60px; /* space for the eye icon */
+}
+
+
+input[type="submit"] {
+    width: 100%;
+    max-width: 1100px;
+    height: 50px;
+    background-color: #dbbcb7;
+    color: #973131;
+    border: 1px solid #973131;
+    border-radius: 20px;
+    font-size: 22px;
+    cursor: pointer;
+    margin-top: 35px;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+}
+
 
 
 input[type="email"]:focus,
@@ -76,18 +96,6 @@ input[type="password"]::placeholder {
 }
 
 
-input[type="submit"] {
-    width: 100%; 
-    max-width: 800px;
-    padding: 15px; 
-    background-color: #dbbcb7;
-    color: #973131;
-    border: 1px solid #973131; 
-    border-radius: 10px; 
-    font-size: 22px; 
-    cursor: pointer;
-    margin-top: 30px; 
-}
 
 
 input[type="submit"]:hover {
@@ -164,4 +172,29 @@ input[type="submit"]:hover {
 .logout-menu a:hover {
     color: red !important;
 }
+
+
+.password-container {
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+}
+
+.password-container input[type="password"],
+.password-container input[type="text"] {
+    padding-right: 60px;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #7A4A42;
+    font-size: 24px;
+}
+
+/* rest of your CSS stays exactly as it is */
+
 

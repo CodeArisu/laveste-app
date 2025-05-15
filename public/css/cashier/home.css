@@ -8,6 +8,7 @@
     max-width: 95%;
     margin-left: 1px;
     margin-right: 1px;
+    
 }
 
 
@@ -83,6 +84,8 @@
     align-items: center;
     text-decoration: none; /* In case it's an <a> tag */
     transition: background 0.3s ease-in-out;
+    
+    font-family: 'Poppins', sans-serif;
 }
 
 .book-rental img {
@@ -146,6 +149,8 @@ table {
     border-spacing: 0 10px; /* Adds vertical space between rows */
     background: white;
     font-size: 18px; /* Slightly larger font */
+    
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Table Header Styling */
@@ -155,6 +160,8 @@ thead {
     color: #983031;
     font-family: 'Poppins', serif;
     font-size: 19px;
+    
+    font-family: 'Poppins', sans-serif;
 }
 
 /* Table Cell Styling */
@@ -166,27 +173,29 @@ th, td {
 }
 
 /* Status Badge Styling */
-.status {
-    padding: 8px 16px; /* Bigger badge */
-    border-radius: 20px;
+.status, 
+.transaction_rentstatus, 
+.transaction_appstatus {
+    display: inline-block; /* So padding applies nicely */
+    padding: 8px 16px;      /* Bigger badge look */
+    border-radius: 20px;    /* Fully pill-shaped */
     font-size: 15px;
     font-weight: bold;
+    text-align: center;
 }
 
-.status.pending {
+/* Specific colors */
+.status.pending, 
+.transaction_rentstatus {
     background: #f9e89f;
     color: #a33b3b;
 }
 
-.status.confirmed {
+.status.confirmed, 
+.transaction_appstatus {
     background: #a3d9a5;
     color: #2a7d2e;
 }
-
-
-
-
-
 
 .appointment-side-panel {
     position: fixed;

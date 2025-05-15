@@ -8,6 +8,7 @@ use App\Exceptions\AuthException;
 use App\Http\Requests\AuthRequest;
 use App\Models\Auth\User;
 use App\Models\Auth\Role;
+use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -32,15 +33,10 @@ class AuthService
                 ];
             });
         } catch (QueryException $e) {
-            // Database errors (e.g., unique constraint violations)
-            report($e); // Log to error tracking system
             throw AuthException::userRegistrationFailed();
         } catch (ModelNotFoundException $e) {
-            // Missing required relations (if your registration has dependencies)
             throw AuthException::userRegistrationFailed();
         } catch (\Throwable $e) {
-            // Catch-all for unexpected errors
-            report($e);
             throw AuthException::userRegistrationFailed();
         }
     }
@@ -54,14 +50,16 @@ class AuthService
         try {
             $this->loginUser($request);
             return [
-                'message' => 'User signed in',
-                'url' => 'cashier.home'
+                'message' => 'Login Successful',
+                'url' => 'dashboard.home'
             ];
         }
         catch (AuthException $e) {
             // Re-throw Auth-specific exceptions (invalid credentials, locked account, etc.)
             throw $e;
             throw AuthException::userNotFound();
+        } catch (Exception $e) {   
+            throw AuthException::userLoginFailed();
         }
     }
 
@@ -75,11 +73,14 @@ class AuthService
             if (!$request->user()) {
                 throw AuthException::unauthenticated('No authenticated user found');
             }
+
             Auth::logout();
+
             return [
                 'message' => 'User signed out',
-                'url' => ''
+                'url' => 'login'
             ];
+
         } catch (AuthException $e) {
             // Re-throw pre-formatted auth exceptions
             throw $e;
@@ -147,7 +148,7 @@ class AuthService
                 throw AuthException::invalidUserCredentials();
             }
 
-            return compact('user');
+            return $user;
     }
 
     /**

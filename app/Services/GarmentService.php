@@ -255,7 +255,7 @@ class GarmentService
                 'product_id' => $product->id,
                 'rent_price' => $garmentData['rent_price'],
                 'additional_description' => $garmentData['additional_description'],
-                'poster' => $garmentData['poster'] ?? 'no poster',
+                'poster' => $garmentData['poster'] ?? null,
                 'size_id' => $relations['size_id'],
                 'condition_id' => $relations['condition_id'],
             ]
@@ -305,8 +305,8 @@ class GarmentService
     {
         return Size::firstOrCreate([
                 'measurement' => $sizeData['measurement'],
-                'length' => $sizeData['length'],
-                'width' => $sizeData['width'],
+                'length' => $sizeData['length'] ?? 0,
+                'width' => $sizeData['width'] ?? 0,
             ]
         );
     }
@@ -331,7 +331,10 @@ class GarmentService
         // counts the difference between existing and all statuses
         if (count(array_diff($allStatuses, $existingStatuses))) {
             foreach (ConditionStatus::cases() as $status) {
-                Condition::updateOrCreate(['id' => $status->value, 'condition_name' => $status->label()]);
+                Condition::updateOrCreate([
+                    'id' => $status->value, 
+                    'condition_name' => $status->label()
+                ]);
             }
         }
     }

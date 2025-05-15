@@ -1,95 +1,113 @@
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<x-layouts.app>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/admin/infoprod.css') }}">
+    @endpush
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Information</title>
-    <link rel="stylesheet" href="{{ asset('css/admin/infoprod.css') }}">
-</head>
-
-<body>
-    @php
-        use App\Enum\Measurement;
-        use App\Enum\ConditionStatus;
-    @endphp
-    <div class="container">
-        <div class="product-section">
-            <a href="{{ url()->previous() }}" class="back-btn">← Back</a>
-            <h3>Product Information</h3>
-            <div class="product-content">
-                <img src="/assets/images/h1.png" alt="Gown Image" class="product-image">
-                <div class="product-details">
-                    <h2>{{ $products->product_name }}</h2>
-                    <br>
-                    <p><strong>Type</strong>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong></p>
-                    <p>{{ $products->types->type_name }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $products->subtypes[0]->subtype_name }}</p>
-                    <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
+    <div class="info-container">
+        <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
+        <div class="info-sections">
+            <div class="product-section">
+                @if (session('success'))
+                    <x-fragments.alert-response message="{{ session('success') }}" type='success' />
+                @endif
+                <br>
+                <h3>Product Information</h3>
+                <div class="product-content">
+                    <div class="product-details">
+                        <h2>{{ $products->product_name }}</h2>
+                        <p><strong>Type</strong>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>Sub-type</strong>
+                        </p>
+                        <p>{{ $products->types->type_name }}
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ $products->subtypes[0]->subtype_name }}
+                        </p>
+                        <p><strong>Original Price</strong><br>{{ $products->getFormattedOriginalPrice() }}</p>
+                    </div>
+                </div>
+                <br><br>
+                <div class="description">
+                    <h4>Description</h4>
+                    <p>
+                        {{ $products->description }}
+                    </p>
                 </div>
             </div>
-            <br><br>
-            <div class="description">
-                <h4>Description</h4>
-                <p>
-                    {{ $products->description }}
-                </p>
+            <div class="supplier-section">
+                <br>
+                <h3>Supplier Information</h3>
+                <br>
+                <div class="supplier-details">
+                    <div class="supplier-row">
+                        <span class="label">Supplier Name</span>
+                        <span class="value">{{ $products->supplier->supplier_name }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Company Name</span>
+                        <span class="value">{{ $products->supplier->company_name }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Address</span>
+                        <span class="value">{{ $products->supplier->address }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Contact</span>
+                        <span class="value">{{ $products->supplier->contact }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Original Price</span>
+                        <span class="value">{{ $products->getFormattedOriginalPrice() }}</span>
+                    </div>
+                    <div class="supplier-row">
+                        <span class="label">Date</span>
+                        <span class="value">{{ $products->getFormattedDate() }}</span>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div class="supplier-section">
-            <br>
-            <h3>Supplier Information</h3>
-            <div class="supplier-details">
-                <p><strong>Supplier Name</strong><span class="indented">{{ $products->supplier->supplier_name }}</span>
-                </p>
-                <p><strong>Company Name</strong><span class="indented">{{ $products->supplier->company_name }}</span>
-                </p>
-                <p><strong>Address</strong><span class="indented">{{ $products->supplier->address }}</span></p>
-                <p><strong>Contact</strong><span class="indented">{{ $products->supplier->contact }}</span></p>
-                <p><strong>Original Price</strong><span class="indented">{{ $products->getFormattedOriginalPrice() }}</span></p>
-                <p><strong>Date</strong><span class="indented">{{ $products->getFormattedDate() }}</span></p>
-            </div>
-
-        </div>
-
 
         <div id="addGarmentPanel" class="side-panel">
             <br>
-            <a href="{{ url()->previous() }}" class="back-btn">←</a>
+            <a href="{{ route('dashboard.product.index') }}" class="back-btn2">←</a>
             <br><br>
             <h2>Add to Garment</h2>
-            <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}" enctype="multipart/form-data">
+            <form class="garment-form" method='POST' action="{{ route('dashboard.garment.store', [$products->id]) }}"
+                enctype="multipart/form-data">
                 @csrf
                 {{-- gets product id as input --}}
                 <input hidden name='product_id' value='{{ $products->id }}'></input>
                 <div class="form-row">
                     <div>
                         {{-- sets image upload --}}
-                        <label>Upload Image</label>
+                        <label>Product Image<span class='importance'>*</span></label>
                         <input name="poster" type="file">
+                        @error('poster')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div>
                         {{-- add new condition to the garment data --}}
                         <label for="condition">Condition</label>
                         <select id="condition" name='condition_id' class="green-input">
-                            <option value="">Select Condition</option>
-                            @foreach (ConditionStatus::cases() as $condition)
+                            @foreach ($conditions as $condition)
                                 <option value="{{ $condition->value }}">{{ ucfirst($condition->label()) }}</option>
                             @endforeach
                         </select>
+                        @error('condition')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
                 <div class="tight-group">
                     <label>Product Name</label>
-                    <input type="text" value="{{ $products->product_name }}">
+                    <input type="text" value="{{ $products->product_name }}" readonly>
                     <label>Description</label>
                     <textarea name='additional_description' rows="4">{{ $products->description }}</textarea>
                 </div>
 
                 <div class="form-row">
                     <div>
-                        <label for="type">Type</label>
+                        <label for="type">Type<span class='importance'>*</span></label>
                         <select id="type">
                             @if (empty($products->types->type_name))
                                 <option value="">Select Type</option>
@@ -99,12 +117,13 @@
                                 <option value="filipiniana">Filipiniana</option>
                             @else
                                 <option value="">Select Type</option>
-                                <option selected value="{{ $products->types->type_name }}">{{ ucfirst($products->types->type_name) }}</option>
+                                <option selected value="{{ $products->types->type_name }}">
+                                    {{ ucfirst($products->types->type_name) }}</option>
                             @endif
                         </select>
                     </div>
                     <div>
-                        <label for="sub-type">Sub-type</label>
+                        <label for="sub-type">Sub-type<span class='importance'>*</span></label>
                         <select id="sub-type">
                             @if (empty($products->subtypes[0]->subtype_name))
                                 <option value="">Select Type</option>
@@ -114,7 +133,8 @@
                                 <option value="filipiniana">Filipiniana</option>
                             @else
                                 <option value="">Select Type</option>
-                                <option selected value="{{ $products->subtypes[0]->subtype_name }}">{{ ucfirst($products->subtypes[0]->subtype_name) }}</option>
+                                <option selected value="{{ $products->subtypes[0]->subtype_name }}">
+                                    {{ ucfirst($products->subtypes[0]->subtype_name) }}</option>
                             @endif
                         </select>
                     </div>
@@ -122,31 +142,33 @@
 
                 <div class="form-row">
                     <div>
-                        <label>Rental Price</label>
-                        <input type="number" name='rent_price'>
+                        <label>Rental Price<span class='importance'>*</span></label>
+                        <input type="number" name='rent_price' value={{ $products->original_price }}>
                     </div>
                     <div>
-                        <label for="size">Size</label>
+                        <label for="size">Size<span class='importance'>*</span></label>
                         <select id="size" name='measurement'>
                             <option value="">Select Size</option>
-                            <option value="{{ Measurement::XS->value }}">Extra Small</option>
-                            <option value="{{ Measurement::S->value }}">Small</option>
-                            <option value="{{ Measurement::M->value }}">Medium</option>
-                            <option value="{{ Measurement::L->value }}">Large</option>
-                            <option value="{{ Measurement::XL->value }}">Extra Large</option>
-                            <option value="{{ Measurement::XXL->value }}">XXL</option>
+                            @foreach ($measurements as $measurement)
+                                <option value="{{ $measurement->value }}">
+                                    {{ ucfirst($measurement->label()) }}
+                                </option>
+                            @endforeach
                         </select>
+                        @error('measurement')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
                 <div class='form-row'>
                     <div>
-                        <label>Width</label>
-                        <input type="number" name='width' >
+                        <label>Width (optional)</label>
+                        <input type="number" name='width'>
                     </div>
                     <div>
-                        <label>Height</label>
-                        <input type="number" name='length' >
+                        <label>Height (optional)</label>
+                        <input type="number" name='length'>
                     </div>
                 </div>
 
@@ -169,11 +191,7 @@
         </div>
 
         <div class="buttons">
-            <form action="{{ route('dashboard.product.delete', [$products->id]) }}" method="POST">
-                @csrf
-                @method('DELETE')
-                <button type='submit' class="delete">Delete</button>
-            </form>
+            <button type='button' class="delete" data-bs-toggle="modal" data-bs-target="#archiveModal">Archive</button>
 
             <button class="update"
                 onclick="window.location.href='{{ route('dashboard.product.edit', [$products->id]) }}'">Update</button>
@@ -181,65 +199,17 @@
         </div>
     </div>
 
+    <x-fragments.archive-confirmation-modal>
+        <form action="{{ route('dashboard.product.delete', [$products->id]) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type='submit' class="modal-confirm">Archive</button>
+        </form>
+    </x-fragments.archive-confirmation-modal>
 
     <script>
         document.querySelector('.add').addEventListener('click', () => {
             document.getElementById('addGarmentPanel').style.display = 'block';
         });
-
-
-        // const subTypes = {
-        //     gown: ['Evening Gown', 'Cocktail Gown', 'Ball Gown', 'Wedding Gown', 'Bridesmaid Gown', 'Prom Gown'],
-        //     tuxedo: ['Black Tuxedo', 'White Tuxedo', 'Velvet Tuxedo', 'Slim Fit Tuxedo', 'Classic Tuxedo',
-        //         'Modern Tuxedo'
-        //     ],
-        //     barong: ['Barong Tagalog (traditional)', 'Modern Barong', 'Embroidered Barong', 'Formal Barong',
-        //         'Casual Barong'
-        //     ],
-        //     filipiniana: ['Balintawak', 'Terno', 'Mestiza Dress', 'Maria Clara Gown', "Baro't Saya",
-        //         'Modern Filipiniana'
-        //     ]
-        // };
-
-        // function updateSubTypes() {
-        //     const typeSelect = document.getElementById('type');
-        //     const subTypeSelect = document.getElementById('sub-type');
-        //     const selectedType = typeSelect.value;
-
-        //     // Enable the sub-type dropdown if a valid type is selected
-        //     subTypeSelect.disabled = !selectedType;
-
-        //     // Clear existing options in the sub-type dropdown
-        //     subTypeSelect.innerHTML = '<option value="">Select Sub-type</option>';
-
-        //     // If a valid type is selected, populate the sub-type dropdown
-        //     if (selectedType && subTypes[selectedType]) {
-        //         subTypes[selectedType].forEach(subType => {
-        //             const option = document.createElement('option');
-        //             option.value = subType.toLowerCase().replace(/\s+/g, '-'); // Make value suitable for HTML
-        //             option.textContent = subType;
-        //             subTypeSelect.appendChild(option);
-        //         });
-        //     }
-        // }
-
-        // Open modal when delete is clicked
-        document.querySelector('.delete').addEventListener('click', () => {
-            document.getElementById('deleteModal').style.display = 'flex';
-        });
-
-        // Close modal when cancel is clicked
-        document.querySelector('.modal-cancel').addEventListener('click', () => {
-            document.getElementById('deleteModal').style.display = 'none';
-        });
-
-        // Archive button logic (can replace this later with form submission or AJAX)
-        document.querySelector('.modal-confirm').addEventListener('click', () => {
-            alert('Item archived!');
-            document.getElementById('deleteModal').style.display = 'none';
-        });
     </script>
-
-</body>
-
-</html>
+</x-layouts.app>

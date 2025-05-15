@@ -1,19 +1,10 @@
-
-body {
-    margin: 0;
-    font-family: 'Poppins', serif;
-    background-color: #f8f8f8;
-}
-
-
-.navbar {
+.custom-navbar {
     background-color: #F8F1E6;
     padding: 15px 40px;
     display: flex;
     flex-direction: column;
-    height: 100px;
+    height: 10em;
 }
-
 
 .navdiv {
     display: flex;
@@ -59,6 +50,7 @@ body {
     padding: 0;
     margin: 0;
     gap: 30px;
+    font-family: 'Poppins', sans-serif;
 }
 
 .nav-links li a {
@@ -77,4 +69,9 @@ body {
 .nav-links li a.active {
     font-weight: bold;
     color: #923333;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px; /* thinner line — adjust as needed */
+    text-underline-offset: 10px; /* more gap between text and underline */
 }
+
+

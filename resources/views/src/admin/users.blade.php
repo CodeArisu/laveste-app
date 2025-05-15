@@ -1,10 +1,8 @@
 <x-layouts.admin>
-
     @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/tables.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/users.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+        <link rel="stylesheet" href="{{ asset('css/admin/tables.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/admin/users.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @endpush
 
     <div class="product-page">
@@ -25,18 +23,14 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="product-row" onclick="openPanel()">
-                    <td>0001</td>
-                    <td>Anna</td>
-                    <td>anna@gmail.com</td>
-                    <td>Cashier</td>
-                </tr>
-                <tr class="product-row" onclick="openPanel()">
-                    <td>0002</td>
-                    <td>Lara</td>
-                    <td>lara@gmail.com</td>
-                    <td>Admin</td>
-                </tr>
+                @foreach ($users as $user)
+                    <tr class="product-row" onclick="openPanel()">
+                        <td>{{ $user->id }}</td>
+                        <td>{{ $user->name }}</td>
+                        <td>{{ $user->email }}</td>
+                        <td>{{ $user->role->role_name }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
 
@@ -53,7 +47,7 @@
             <div class="section">
                 <div class="section-title">
                     <h2>User Information</h2>
-                    <a href="/admin/user_blades/edituser" class="edit-btn">
+                    <a href="/admin/users/edituser" class="edit-btn">
                         <i class="fas fa-edit"></i> Edit
                     </a>                    
                 </div>

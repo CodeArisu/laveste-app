@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\AuthRequest;
+use App\Models\Auth\User;
 use App\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,7 +29,7 @@ class AuthController extends ApiBaseController
     public function loginUser(AuthRequest $request) 
     {    
         $user = $this->authService->loginRequest($request);
-        return redirect()->route($user['url'])->with($user['message']);
+        return redirect()->route($user['url'])->with(['success' => $user['message']]);
     }
 
     public function loginIndex()
@@ -36,11 +37,16 @@ class AuthController extends ApiBaseController
         return view('src.login');
     }
 
-    public function logoutUser(Request $request) : JsonResponse
+    public function logoutUser(Request $request)
     {   
         $user = $this->authService->logoutRequest($request);
-        return $this->authService->userResponse([
-            "message" => $user['message']
-        ]);
+
+        return redirect()->route($user['url'])->with(['success' => $user['message']]);
+    }
+
+    public function displayUsers()
+    {   
+        $user = User::all();
+        return view('src.admin.users', ['users' => $user]);
     }
 }

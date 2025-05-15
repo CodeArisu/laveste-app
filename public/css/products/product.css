@@ -41,8 +41,9 @@
     box-shadow: 0 0 0 2px #a73b3b inset;
 }
 
-
-
+.color-default {
+    color: #a73b3b !important; 
+}
 
 .search-container {
     display: flex;
@@ -212,11 +213,14 @@
     cursor: pointer;
     transition: background 0.3s ease;
     width: 200px;
+    text-align: center;
+    text-decoration: none;
 }
 
 .rent-button:hover {
     background: #a73b3b;
 }
+
 
 .close-btn {
     background: none;

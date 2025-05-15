@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\ResponseCode;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CustomerDetailsRequest extends FormRequest
 {
@@ -23,17 +26,31 @@ class CustomerDetailsRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'contact' => 'required|string',
+            'contact' => 'required|string|max:11',
             'address' => 'required|string|max:255',
             'email' => 'sometimes|string',
 
-            'venue' => 'nullable|string',
-            'event_data' => 'nullable|date',
-            'reason_for_renting' => 'nullable|string',
+            'venue' => 'sometimes|string',
+            'event_date' => 'sometimes|date',
+            'reason_for_renting' => 'sometimes|string',
+            'is_regular' => 'sometimes|boolean',
 
             'pickup_date' => 'required|date',
             'rented_date' => 'required|date',
             'return_date' => 'required|date',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Please enter customer name',
+            'contact.required' => 'Please enter phone number',
+            'address.required' => 'Please enter address',
+
+            'pickup_date.required' => 'Enter pickup date',
+            'rented_date.required' => 'Enter rented date',
+            'return_date.required' => 'Enter return date',
         ];
     }
 }

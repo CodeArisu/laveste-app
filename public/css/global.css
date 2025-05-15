@@ -1,0 +1,11 @@
+body {
+    background-color: #F8F1E6;
+}
+
+.importance {
+    color: rgb(218, 2, 2) !important;
+}
+
+.text-red-500 {
+     color: rgb(182, 13, 13) !important;
+}

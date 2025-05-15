@@ -31,22 +31,18 @@ class GarmentRequest extends FormRequest
             'poster' => 'nullable|mimes:png,jpg,jpeg,webp|max:2048|unique:garments,poster',
 
             'measurement' => 'required|string',
-            'length' => 'required|numeric',
-            'width' => 'required|numeric',
+            'length' => 'nullable|numeric',
+            'width' => 'nullable|numeric',
 
             'condition_id' => 'nullable|integer'
         ];
     }
 
-    public function failedValidation(Validator $validator)
+    public function messages()
     {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'Invalid data request',
-            'details' => $errors->messages(),
-        ], ResponseCode::INVALID->value);
-
-        throw new HttpResponseException($response);
+        return [
+            'poster.mimes' => 'It only accepts PNG, JPEG, JPG files',
+            'measurement.required' => 'Assign size first',
+        ];
     }
 }

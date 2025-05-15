@@ -1,10 +1,6 @@
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Georgia', serif;
-    background: #fbf1de;
+.color-default {
+    background-color: #fbf1de;
     color: #823c35;
-    font-size: 18px;  /* increased from default */
 }
 
 .checkout-container {
@@ -132,6 +128,58 @@ body {
     border: 1px solid #c88c6b;
     border-radius: 10px 0 0 10px;
     font-size: 16px;
+}
+
+.modal-content {
+    background: white;
+    border: 2px solid #e38888;
+    border-radius: 25px;
+    padding: 40px 50px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal-icon img {
+    width: 90px;
+    height: auto;
+    background-color: #f2f2f2;
+    border-radius: 50%;
+    padding: 20px;
+}
+
+.modal-text {
+    font-size: 24px;
+    color: #000;
+    font-weight: 500;
+    margin: 30px 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    padding: 14px 40px;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 2px solid #e38888;
+    transition: transform 0.2s ease;
+}
+
+.modal-cancel {
+    background-color: #fff;
+    color: #000;
+}
+
+.modal-confirm {
+    background-color: #ff9d9d;
+    color: #000;
 }
 
 .discount-code button {
