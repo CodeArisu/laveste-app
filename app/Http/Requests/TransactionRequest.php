@@ -32,15 +32,12 @@ class TransactionRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
+    public function messages()
     {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'Invalid data request',
-            'details' => $errors->messages(),
-        ], ResponseCode::INVALID->value);
-
-        throw new HttpResponseException($response);
+        return [
+            'payment_method.required' => 'Enter payment method',
+            'payment.required' => 'Enter payment',
+            'payment.numeric' => 'Enter only numeric number',
+        ];
     }
 }

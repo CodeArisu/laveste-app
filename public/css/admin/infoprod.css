@@ -108,7 +108,7 @@ h3 {
     width: 100%;
     display: flex;
     justify-content: end;
-    gap: 40px;
+    gap: 5em;
     margin-top: 5px; /* adjusted for more space between buttons and content */
     margin-bottom: 50px; /* added margin at the end */
 }
@@ -120,7 +120,7 @@ button {
     padding: 0;         /* reset padding since height is fixed */
    
     border-radius: 25px !important;
-
+    box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.1);
 
     font-size: 18px;
     font-weight: 600;

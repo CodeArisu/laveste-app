@@ -36,11 +36,12 @@ class TransactionService
             Session::put('checkout.transaction_data', $validated);
             $catalogId = $request->only(['catalog']);
     
-            $this->setTransactionData($catalogId);
+            $response = $this->setTransactionData($catalogId);
 
             return [
                 'message' => 'Transaction Created Successfully.',
-                'url' => 'cashier.checkout.receipt',
+                'route' => 'cashier.checkout.receipt',
+                'transactionData' => $response['transaction'],
             ];
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
@@ -57,9 +58,12 @@ class TransactionService
 
         $transactionSession = Session::get($sessionName);
 
+        $event = new TransactionSession($transactionSession, $catalogId);
+        event($event);
         // triggers transaction event
-        event(new TransactionSession($transactionSession, $catalogId));
         \Log::info('Event Triggered');
+
+        return $event->response;
     }
 
     public function getTotalPrice($price)
@@ -67,6 +71,12 @@ class TransactionService
         // calculates price + 12% vat
         $total = ($price + ($price * .12));
         return $total;
+    }
+
+     public function getTotalChange($price, $payment)
+    {   
+        $change = ($payment - $price);
+        return $change;
     }
 
     public function getCustomerData()
@@ -146,7 +156,7 @@ class TransactionService
 
     public function execTransaction($transactionData, $productRent)
     {   
-        $this->createTransaction($transactionData, $productRent);
+        return $this->createTransaction($transactionData, $productRent);
     }
 
     /**

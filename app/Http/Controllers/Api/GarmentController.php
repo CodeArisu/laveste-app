@@ -22,7 +22,7 @@ class GarmentController extends ApiBaseController
     {   
         $createdGarment = $this->garmentService->requestCreateGarment($request);
         
-        return redirect()->route('dashboard.garment.index')->with('message', $createdGarment['message']);
+        return redirect()->route('dashboard.garment.index')->with('success', $createdGarment['message']);
     }
 
     public function show(Garment $garment)

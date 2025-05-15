@@ -23,7 +23,8 @@ class CreateTransaction
     {
         try {
             $checkoutData = $this->transactionService->getCheckoutData($event->transactionData, $event->catalogId);
-            $this->completeCheckoutService->completeCheckout($checkoutData);
+            $completedData = $this->completeCheckoutService->completeCheckout($checkoutData);
+            $event->response = $completedData;
         } catch (\Exception $e) {
             // Handle the exception
             \Log::error('Failed to create transaction: ' . $e->getMessage());

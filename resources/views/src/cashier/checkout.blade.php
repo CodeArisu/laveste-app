@@ -6,13 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
     <link rel="stylesheet" href="{{ asset('css/cashier/checkout.css') }}?v={{ time() }}">
+    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
 </head>
 
 <body>
     <form action="{{ route('cashier.details.store', ['catalogs' => $catalogs]) }}" method='POST'>
         @csrf
         <div class="rental-header">
-            <a href="{{ url()->previous() }}" class="back">&#8592;</a>
+            <a href="{{ route('cashier.index') }}" class="back">&#8592;</a>
             <h1>Rental Details</h1>
         </div>
 
@@ -31,10 +32,10 @@
             </div>
 
             <div class="date-inputs">
-                <label for="start">Start</label>
-                <input name='rented_date' type="text" id="start" placeholder="Select start date" readonly>
-                <label for="end">End</label>
-                <input name='return_date' type="text" id="end" placeholder="Select end date" readonly>
+                <label for="start">Start<span class='importance'>*</span></label>
+                <input name='rented_date' type="text" id="start" placeholder="Select start date" value='{{ old('rented_date') }}' readonly>
+                <label for="end">End<span class='importance'>*</span></label>
+                <input name='return_date' type="text" id="end" placeholder="Select end date" value='{{ old('return_date') }}' readonly>
             </div>
 
         </div>
@@ -42,14 +43,14 @@
         <div class="details-section">
             <div class="details-group">
                 <div class="section-title">Customer Details</div>
-                <label for="customer-name">Customer Name</label>
-                <input name='name' type="text" id="customer-name">
+                <label for="customer-name">Customer Name<span class='importance'>*</span></label>
+                <input name='name' type="text" id="customer-name" value="{{ old('name') }}"">
 
-                <label for="address">Address</label>
-                <input name='address' type="text" id="address">
+                <label for="address">Address<span class='importance'>*</span></label>
+                <input name='address' type="text" id="address" value="{{ old('address') }}">
 
-                <label for="contact">Contact Number</label>
-                <input name='contact' type="tel" id="contact">
+                <label for="contact">Contact Number<span class='importance'>*</span></label>
+                <input name='contact' type="tel" id="contact" value="{{ old('contact') }}">
 
                 <label>Regular Customer</label>
                 <div class="radio-group">
@@ -65,8 +66,8 @@
 
                 <div class="date-pair">
                     <div class="input-block">
-                        <label for="pickup">Pick - up Date</label>
-                        <input name='pickup_date' type="date" id="pickup">
+                        <label for="pickup">Pick - up Date<span class='importance'>*</span></label>
+                        <input name='pickup_date' type="date" id="pickup" value="{{ old('pickup_date') }}">
                     </div>
                 </div>
 
@@ -74,7 +75,7 @@
                 <div class="input-block">
                     <div class="input-block">
                         <label for="reason">Reason for Renting</label>
-                        <input type="text" id="reason" name='reason_for_renting'>
+                        <input type="text" id="reason" name='reason_for_renting' value="{{ old('reason') }}">
                     </div>
 
                     <label for="venue">Venue</label>
@@ -82,8 +83,8 @@
                 </div>
 
                 <div class="input-block">
-                    <label for="event-date">Event Date</label>
-                    <input type="date" id="event-date" name='event_date' readonly>
+                    <label for="event-date">Event Date<span class='importance'>*</span></label>
+                    <input type="date" id="event-date" name='event_date' value="{{ old('event_date') }}" readonly>
                 </div>
             </div>
         </div>

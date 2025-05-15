@@ -26,7 +26,7 @@ class CustomerDetailsRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'contact' => 'required|string',
+            'contact' => 'required|string|max:11',
             'address' => 'required|string|max:255',
             'email' => 'sometimes|string',
 
@@ -41,15 +41,16 @@ class CustomerDetailsRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
+    public function messages()
     {
-        $errors = $validator->errors();
+        return [
+            'name.required' => 'Please enter customer name',
+            'contact.required' => 'Please enter phone number',
+            'address.required' => 'Please enter address',
 
-        $response = response()->json([
-            'message' => 'Invalid data request',
-            'details' => $errors->messages(),
-        ], ResponseCode::INVALID->value);
-
-        throw new HttpResponseException($response);
+            'pickup_date.required' => 'Enter pickup date',
+            'rented_date.required' => 'Enter rented date',
+            'return_date.required' => 'Enter return date',
+        ];
     }
 }

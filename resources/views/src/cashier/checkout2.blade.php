@@ -13,25 +13,31 @@
             @csrf
             <div class="checkout-body">
                 <div class="shipping-section">
-                    <h3>Shipping information</h3>
+                    <h3>Transaction information</h3>
                     <input name='catalog' value='{{ $catalog->id }}' hidden>
 
-                    <label>Full name</label>
+                    <label>Full name<span class='importance'>*</span></label>
                     <input type="text" placeholder="Name" value="{{ $customerData['name'] ?? 'no name input' }}" name="name">
 
-                    <label>Address</label>
+                    <label>Address<span class='importance'>*</span></label>
                     <input type="text" placeholder="Address" value='{{ $customerData['address'] ?? 'no address input' }}' name="address">
 
-                    <label>Amount</label>
-                    <input name='payment' type="number" placeholder="100.00" >
+                    <label>Amount<span class='importance'>*</span></label>
+                    <input name='payment' type="number" placeholder="100.00">
+                     @error('payment')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
 
-                    <label>Payment Method</label>
+                    <label>Payment Method<span class='importance'>*</span></label>
                     <select name='payment_method' id="payment_method">
                         <option>Select payment method</option>
                         @foreach ($paymentMethods as $paymentMethod)
                             <option value='{{ $paymentMethod->value }}'>{{ ucfirst($paymentMethod->label()) }}</option>
                         @endforeach
                     </select>
+                    @error('payment_method')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
 
                     <label>Leave note with your order</label>
                     <textarea rows="4"></textarea>
@@ -57,13 +63,15 @@
 
                     <div class="order-summary">
                         <p>Sub total <span>{{ $catalog->getFormattedRentPrice() }}</span></p>
-                        <p>VAT <span>25%</span></p>
+                        <p>VAT <span>12%</span></p>
                         <p class="total">Total <span>₱ {{ $totalPrice }}</span></p>
                     </div>
                     <button type="button" class="place-order" data-bs-toggle="modal" data-bs-target="#confirmationModal">Place Order</button>
                 </div>
             </div>
-            <x-fragments.confirmation-modal/>
+            <x-fragments.confirmation-modal>
+                <button type='submit' class="modal-confirm">Confirm</button>
+            </x-fragments.confirmation-modal>
         </form>
     </div>
 </x-layouts.app>

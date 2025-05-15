@@ -16,6 +16,8 @@ class TransactionSession
 
     public $transactionData;
     public $catalogId;
+
+    public $response;
     public function __construct($transactionData, $catalogId)
     {
         $this->transactionData = $transactionData;

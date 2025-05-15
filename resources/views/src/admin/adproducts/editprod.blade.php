@@ -2,8 +2,13 @@
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/admin/productadd.css') }}">
     @endpush
-    <link rel="stylesheet" href="{{ asset('css/admin/productadd.css') }}">
+
     <div class="container">
+
+        @if (Session('success'))
+            <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
+        @endif
+
         <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
         <h1>Update Product</h1>
         <form action="{{ route('dashboard.product.update', ['product' => $products]) }}" method="POST">
@@ -21,46 +26,66 @@
                     @enderror
                     <div class="row">
                         <div>
-                            <label for="type">Type</label>
-                            <select id="type" name="type" onchange="updateTypeField()">
+                            <label for="type">Type<span class='importance'>*</span></label>
+                            <select id="type" name="type" required>
                                 @foreach ($types as $type)
-                                    @if ($types === $products->type)
-                                        <option value="{{ $type->type_name }}" selected>
-                                            {{ Str::ucfirst($products->type->type_name) }}
-                                        </option>
-                                    @endif
-                                    <option value="{{ $type->type_name }}">
+                                    @if($type->type_name === $products->types->type_name)
+                                        <option value="{{ $type->type_name }}" selected>{{ Str::ucfirst($products->types->type_name) }}</option>
+                                    @else
+                                    <option value="{{ $type->type_name }}"
+                                        {{ old('type') == $type->type_name ? 'selected' : '' }}>
                                         {{ Str::ucfirst($type->type_name) }}
                                     </option>
+                                    @endif
                                 @endforeach
-                                <option value="new_type">New Type</option>
-                                @error('type')
+                                <option value="new_type" {{ old('type') == 'new_type' ? 'selected' : '' }}>Add New Type
+                                </option>
+                            </select>
+                            @error('type')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+
+                            <div id="new-type-container"
+                                style="{{ old('type') == 'new_type' ? '' : 'display: none;' }}">
+                                <input type="text" name="new_type" placeholder="Enter new type"
+                                    value="{{ old('new_type') }}">
+                                @error('new_type')
                                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                                 @enderror
-                            </select>
-
-                            {{-- <div id="newTypeContainer" style="display: none;">
-                                <input type="text" name="type" id="newTypeInput" placeholder="Enter new type name">
-                            </div> --}}
+                            </div>
                         </div>
                         <div>
-                            <label for="sub-type">Sub-type</label>
-                            <select id="sub-type" name="subtype" onchange="updateSubtypeField()">
+                            <label for="sub-type">Sub-type<span class='importance'>*</span></label>
+                            <select id="sub-type" name="subtype" required>
+
+                                </option>
                                 @foreach ($subtypes as $subtype)
-                                    @if ($subtypes === $products->subtypes)
-                                        <option value="{{ $subtype->subtype_name }}" selected>
-                                            {{ Str::ucfirst($products->subtype->subtype_name) }}
+                                    @if ($subtype->subtype_name === $products->subtypes[0]->subtype_name)
+                                        <option value="{{ $subtype->subtype_name }}" selected>{{ Str::ucfirst($subtype->subtype_name) }}
+                                    @else
+                                        <option value="{{ $subtype->subtype_name }}"
+                                            {{ old('subtype') == $subtype->subtype_name ? 'selected' : '' }}>
+                                            {{ Str::ucfirst($subtype->subtype_name) }}
                                         </option>
                                     @endif
-                                    <option value="{{ $subtype->subtype_name }}">
-                                        {{ Str::ucfirst($subtype->subtype_name) }}
-                                    </option>
                                 @endforeach
-                                <option value="new_subtype">New subtype</option>
-                                @error('sub-type')
+                                <option value="new_subtype" {{ old('subtype') == 'new_subtype' ? 'selected' : '' }}>Add
+                                    New Sub-type</option>
+                            </select>
+                            @error('subtype')
+                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
+
+                            <div id="new-subtype-container"
+                                style="{{ old('subtype') == 'new_subtype' ? '' : 'display: none;' }}">
+                                <input type="text" name="new_subtype"
+                                    placeholder="Enter new sub-type (comma separated)" value="{{ old('new_subtype') }}"
+                                    class="mb-0">
+                                <small>Separate using commas for multiple inputs.</small>
+                                @error('new_subtype')
                                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                                 @enderror
-                            </select>
+                            </div>
                         </div>
                     </div>
 
@@ -111,18 +136,18 @@
                     @enderror
 
 
-                       <div class="button-group">
-                    <button class="clear-btn">Clear all</button>
-                    <button class="add-btn">Update product</button>
+                    <div class="button-group">
+                        <button type='button' id='clear-btn' class="clear-btn">Clear all</button>
+                        <button type='submit' class="add-btn">Update product</button>
+                    </div>
                 </div>
-                </div>
-
-                 
-                </div>
-
-                <!-- Buttons -->
-                
             </div>
         </form>
     </div>
+
+    @section('scripts')
+        <script src={{ asset('scripts/clearInputsButton.js') }}></script>
+        <script src={{ asset('scripts/addProductSelectTypesHandler.js') }}></script>
+        <script src={{ asset('scripts/categoriesHandler.js') }}></script>
+    @endsection
 </x-layouts.app>

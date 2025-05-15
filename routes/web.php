@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\Catalog;
 use App\Models\Products\Product;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return redirect()->route('dashboard.home');
@@ -40,10 +42,7 @@ Route::middleware(['auth', 'web'])->group(function () {
     // dashboard routes
     Route::name('dashboard.')->prefix('dashboard')->group( function () {
         
-        Route::get('/', function () {
-            $product = Product::all();
-            return view('src.admin.dashboard', ['productCount' => count($product)]);
-        })->name('home');
+        Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('home');
 
         Route::get('/users', [App\Http\Controllers\Auth\AuthController::class, 'displayUsers'])->name('users')->middleware(['role:admin']);
         
@@ -73,9 +72,6 @@ Route::middleware(['auth', 'web'])->group(function () {
         });
     });
 });
-
-Route::post('/cashier/catalog/transaction', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'store'])->name('cashier.transaction.store');
-Route::get('/cashier/catalog/transaction/{transaction}', [App\Http\Controllers\Api\Transactions\CheckoutController::class, 'show'])->name('cashier.receipt.show');
 
 Route::get('/cashier/appointment/checkout', function () {
     return view('src.cashier.checkout3');

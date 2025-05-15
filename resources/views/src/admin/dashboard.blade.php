@@ -29,7 +29,7 @@
                     <img src="{{ asset('assets/icons/d3.png') }}" alt="Displayed Products Icon" class="card-icon">
                     <p class="card-label">Displayed Products</p>
                 </div>
-                <span class="card-value">30</span>
+                <span class="card-value">{{ $catalogCount }}</span>
             </div>
         </div>
     </div>

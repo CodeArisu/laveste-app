@@ -41,7 +41,7 @@ class CompleteCheckoutService
             });
 
             // removes previous session data
-            session()->forgot('checkout.customer_data', 'checkout.transaction_data');
+            session()->forget('checkout.customer_data', 'checkout.transaction_data');
 
             return $result;
         } catch (\Exception $e) {
@@ -63,4 +63,5 @@ class CompleteCheckoutService
 
         event(new CatalogStatus($rentStatus, $catalogData->id));
     }
+
 }
