@@ -47,7 +47,7 @@
             <div class="section">
                 <div class="section-title">
                     <h2>User Information</h2>
-                    <a href="/admin/user_blades/edituser" class="edit-btn">
+                    <a href="/admin/users/edituser" class="edit-btn">
                         <i class="fas fa-edit"></i> Edit
                     </a>                    
                 </div>
