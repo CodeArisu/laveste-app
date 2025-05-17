@@ -22,6 +22,7 @@
                 </tr>
             </thead>
             <tbody>
+{{--                 
                 <!-- Only one tbody here -->
                 <tr class="product-row">
                     <td>0001</td>
@@ -36,7 +37,22 @@
                     <td>3,600.00</td>
                     <td>Filipiniana</td>
                     <td><span class="status good">Missing</span></td>
-                </tr>
+                </tr> --}}
+                @foreach ($productRents as $productRent)
+                        <tr class='table-rows'>
+                            <td>{{ $productRent->id }}</td>
+                            <td>{{ $productRent->customerRent->customerDetail->name }}</td>
+                            <td>{{ $productRent->catalog->getFormattedRentPrice() }}</td>
+                            <td>type</td>
+                            <td>
+                                @if($productRent->productRentedStatus->status_name === 'rented')
+                                    <span class="status good">Rented</span>
+                                @elseif ($productRent->productRentedStatus->status_name === 'returned')
+                                    <span class="status confirmed">Returned</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
             </tbody> <!-- Only one tbody here -->
         </table>
 

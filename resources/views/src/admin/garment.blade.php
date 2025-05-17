@@ -1,23 +1,21 @@
 <x-layouts.admin>
-<<<<<<< Updated upstream
   @push('styles')
   <link rel="stylesheet" href="{{ asset('css/admin/tables.css') }}">
   <link rel="stylesheet" href="{{ asset('css/admin/garment.css') }}">
   @endpush
 
+   @if(Session('success'))
+    <x-fragments.alert-response message="{{ Session('success') }}" type="success"/>
+  @endif
+
   <div class="product-page">
     <div class="header-section">
       <h2 class="section-title">Garments</h2>
-=======
-
+{{-- 
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/admin/tables.css') }}">
         <link rel="stylesheet" href="{{ asset('css/admin/garment.css') }}">
     @endpush
-
-    @if(Session('success'))
-      <x-fragments.alert-response message="{{ Session('success') }}" type="success"/>
-    @endif
 
     <div class="product-page">
         <div class="header-section">
@@ -40,17 +38,15 @@
               @foreach ($garments as $garment)
                 <tr>
                     <td>{{ $garment->id }}</td>
-                    <td class='text-center'>{{ $garment->product->product_name }}</td>
+                    <td class='text-center'></td>
                     <td class='text-center'>{{ $garment->rent_price }}</td>
                     <td class='text-center'>{{ $garment->product->types->type_name }}</td>
                     <td class='text-center'>
-                      {{-- loop through array of subtypes --}}
                       @foreach($garment->product->subtypes as $subtypes)
                         {{ $subtypes->subtype_name }}
                       @endforeach
                     </td>
                     <td class='text-center'>
-                      {{-- for condition status design conditions --}}
                       @if($garment->condition->condition_name == 'ok')
                         <span class="status good">{{ $garment->condition->condition_name }}</span>
                       @else
@@ -119,8 +115,7 @@
               </div>
             </div>
         
-          </div>
->>>>>>> Stashed changes
+          </div> --}}
     </div>
 
     <table class="product-table">
@@ -169,7 +164,7 @@
         <div class="sidepanel-content">
           <img src="/assets/images/h1.png" alt="Gown Image" class="product-img">
           <div class="product-info">
-            <h2 class="product-name">Very pretty cute gown</h2>
+            <h2 class="product-name">{{ $garment->product->product_name }}</h2>
             <br><br><br>
             <div class="info-row">
               <span class="label">Type</span>
@@ -308,9 +303,6 @@
         <button type="submit" class="green-button">Save Changes</button>
       </form>
     </div>
-
-
-
   </div>
 
   <script>

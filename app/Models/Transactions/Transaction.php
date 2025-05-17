@@ -29,6 +29,11 @@ class Transaction extends Model
         return $this->belongsTo(PaymentMethod::class);
     }
 
+    public function formatPayment()
+    {
+        return '₱' . number_format($this->payment, 2);
+    }
+
     public function getProductName()
     {   
         return $this->productRent->catalog->garment->product->product_name;
@@ -37,6 +42,11 @@ class Transaction extends Model
     public function getClothingSize()
     {
         return $this->productRent->catalog->garment->size->measurement;
+    }
+
+    public function getCustomerName()
+    {
+        return $this->productRent->customerRent->customerDetail->name;
     }
     
 }

@@ -15,6 +15,7 @@ class GarmentController extends ApiBaseController
     public function index()
     {
         $garments = Garment::with(['product', 'size', 'condition'])->get();
+
         return view('src.admin.garment', ['garments' => GarmentResource::collection($garments)]);
     }
 
@@ -29,18 +30,21 @@ class GarmentController extends ApiBaseController
     {
         // Eager load the relationships to avoid N+1 query problem
         $garments = $garment->with(['product', 'size', 'condition'])->find($garment);
+
         return GarmentResource::collection($garments);
     }
 
     public function update(GarmentRequest $request, Garment $garment)
     {
         $updatedGarment = $this->garmentService->requestUpdateGarment($request, $garment);
+
         return $this->sendResponse($updatedGarment['message'], $updatedGarment['garment']);
     }
 
     public function destroy(Garment $garment)
     {
         $deletedGarment = $this->garmentService->requestDeleteGarment($garment);
+        
         return $this->sendResponse($deletedGarment['message'], $deletedGarment['garment']);
     }
 }
