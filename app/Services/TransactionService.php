@@ -66,6 +66,15 @@ class TransactionService
         return $event->response;
     }
 
+    public function checkIfPaymentExceeds($payment, $totalPayment)
+    {
+        if ($payment > $totalPayment) {
+            throw new \Exception('Payment must be greater than total.');
+        }
+
+        return $payment;
+    }
+
     public function getTotalPrice($price)
     {   
         // calculates price + 12% vat
@@ -91,9 +100,27 @@ class TransactionService
         return $transactionData;
     }
 
+    private function getDiscountedAmount($price, float $discount)
+    {
+        // price * 12%
+        $total = ($price - ($price * $discount));
+        return $total;
+    }
+
     public function getCheckoutData(array $transactionData, $catalogId)
     {   
-        $totalPayment = $this->getTotalPrice($transactionData['payment']);
+        $payment = $transactionData['payment'];
+
+        // if ($transactionData['has_discount']) {
+        //     $transactionData['discount_amount'] = $this->getDiscountedAmount($payment);
+        // }
+
+        $totalPayment = $this->getTotalPrice($payment);
+
+        // $totalPayment = ($totalPayment - $transactionData['discount_amount']);
+
+        $this->checkIfPaymentExceeds($payment, $totalPayment);
+
         return [
             'payment' => $transactionData['payment'],
             'total_amount' => $totalPayment,
@@ -157,6 +184,11 @@ class TransactionService
     public function execTransaction($transactionData, $productRent)
     {   
         return $this->createTransaction($transactionData, $productRent);
+    }
+
+    public function checkIfDiscountCompatible()
+    {
+        
     }
 
     /**

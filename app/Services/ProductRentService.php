@@ -36,14 +36,12 @@ class ProductRentService
     public function updateProductRent($productRent)
     {
         try {
-
             $rentId = $this->getProductRentId($productRent);
 
             $this->handleProductRentStatusUpdate($rentId);
 
             // rent status and catalog status
             // event(new GarmentReturned());
-
         } catch (\Exception $e) {
             \Log::error($e);
         }
@@ -81,7 +79,7 @@ class ProductRentService
             [
                 'catalog_id' => $catalogData->id,
                 'rent_status' => $rentStatus,
-            ]
+            ],
         );
     }
 
@@ -117,7 +115,7 @@ class ProductRentService
             foreach (RentStatus::cases() as $status) {
                 ProductRentedStatus::updateOrCreate([
                     'id' => $status->value,
-                    'status_name' => $status->label()
+                    'status_name' => $status->label(),
                 ]);
             }
         }

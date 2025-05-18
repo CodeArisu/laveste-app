@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="discount-code">
-                        <input type="text" placeholder="Discount Code">
+                        <input type="text" placeholder="Discount Code" name='discount_code' value='{{ old('discount_code') ?? null }}'>
                         <button>Apply</button>
                     </div>
 

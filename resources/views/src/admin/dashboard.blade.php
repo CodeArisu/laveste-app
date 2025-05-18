@@ -39,28 +39,24 @@
                 <form action="{{ route('dashboard.code.register') }}" method='POST'>
                     @csrf
                     <div class='d-flex flex-row'>
-                        <input type="text" placeholder="code" name='code' value="{{ old('code', session('generatedCode') ?? '') }}"
+                        <input type="text" placeholder="code" name='code'
+                            value="{{ old('code', session('generatedCode') ?? '') }}"
                             class='form-control border border-primary'>
 
-                        <select>
-                            <option selected >Select</option>
-                            <option>Regular</option>
-                            <option>Senior</option>
-                            <option>Promo</option>
+                        <select name='coupon_type'>
+                            <option value='null' selected>Select</option>
+                            @foreach ($discounts as $discount)
+                                <option value={{ $discount->type() }}>{{ ucfirst($discount->type()) }}</option>
+                            @endforeach
                         </select>
                         <div class='btn-group ms-2'>
 
                             {{-- generates code --}}
-                            <button 
-                            formaction="{{ route('dashboard.code') }}" 
-                            formmethod="POST"
-                            class='btn btn-secondary p-1 text-nowrap' 
-                            type="submit">Generate Code</button>
+                            <button formaction="{{ route('dashboard.code') }}" formmethod="POST"
+                                class='btn btn-secondary p-1 text-nowrap' type="submit">Generate Code</button>
 
                             {{-- registers code --}}
-                            <button 
-                            class='btn btn-success p-1 text-nowrap' 
-                            type="submit">Register Code</button>
+                            <button class='btn btn-success p-1 text-nowrap' type="submit">Register Code</button>
 
                         </div>
                     </div>
@@ -70,19 +66,22 @@
                     <table class="table table-striped ">
                         <thead>
                             <tr>
-                                <td>Code ID</td>
+                                <td>Code</td>
                                 <td>Description</td>
                                 <td>Type</td>
                                 <td>Expiry</td>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>row col1</td>
-                                <td>row col2</td>
-                                <td>row col3</td>
-                                <td>row col4</td>
-                            </tr>
+                            @foreach ($codes as $code)
+                                <tr>
+                                    <td>{{ $code->code }}</td>
+                                    <td>{{ $code->description ?? 'no description' }}</td>
+                                    <td>{{ ucfirst($code->coupon_type) }}</td>
+                                    <td>{{ $code->expiry_date }}</td>
+                                </tr>
+                            @endforeach
+
                         </tbody>
                     </table>
                 </div>
