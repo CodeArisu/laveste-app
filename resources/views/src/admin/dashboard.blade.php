@@ -33,17 +33,40 @@
             </div>
         </div>
 
+        {{-- code --}}
         <div class='pt-5 d-flex flex-row justify-content-between gap-4 h-100'>
             <div class='d-flex flex-column w-50'>
-                <div class='d-flex flex-row'>
-                    <input type="text" placeholder="code" class='form-control border border-primary'>
-                    <div class='btn-group ms-2'>
-                        <button class='btn btn-secondary p-1 text-nowrap' type="button">Generate Code</button>
-                        <button class='btn btn-success p-1 text-nowrap' type="button">Register Code</button>
-                    </div>
-                </div>
+                <form action="{{ route('dashboard.code.register') }}" method='POST'>
+                    @csrf
+                    <div class='d-flex flex-row'>
+                        <input type="text" placeholder="code" name='code' value="{{ old('code', session('generatedCode') ?? '') }}"
+                            class='form-control border border-primary'>
 
-                <div class='mt-5 border border-primary h-100'>
+                        <select>
+                            <option selected >Select</option>
+                            <option>Regular</option>
+                            <option>Senior</option>
+                            <option>Promo</option>
+                        </select>
+                        <div class='btn-group ms-2'>
+
+                            {{-- generates code --}}
+                            <button 
+                            formaction="{{ route('dashboard.code') }}" 
+                            formmethod="POST"
+                            class='btn btn-secondary p-1 text-nowrap' 
+                            type="submit">Generate Code</button>
+
+                            {{-- registers code --}}
+                            <button 
+                            class='btn btn-success p-1 text-nowrap' 
+                            type="submit">Register Code</button>
+
+                        </div>
+                    </div>
+                </form>
+                <h3 class='my-3'>Generated Codes</h3>
+                <div class='border border-primary h-100'>
                     <table class="table table-striped ">
                         <thead>
                             <tr>
@@ -67,7 +90,7 @@
 
             <div class='w-100'>
                 <h3 class='p-0 m-0 text-start'>
-                    Recent
+                    Recent Transactions
                 </h3>
                 <div class='border border-primary mt-3 h-100'>
                     <table class="table table-striped ">

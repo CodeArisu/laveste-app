@@ -44,17 +44,23 @@ Route::middleware(['auth', 'web'])->group(function () {
 
         Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('home');
 
+        Route::post('/code', [\App\Http\Controllers\DashboardController::class, 'generate'])->name('code');
+        Route::post('/code/register', [\App\Http\Controllers\DashboardController::class, 'register'])->name('code.register');
+
         Route::get('/users', [App\Http\Controllers\Auth\AuthController::class, 'displayUsers'])->name('users')->middleware(['role:admin']);
 
         // dashboard products routes
         Route::middleware(['role:admin'])->name('product.')->prefix('product')->group(function () {
             Route::get('/', [\App\Http\Controllers\Api\ProductController::class, 'index'])->name('index');
+
             Route::get('/create', [\App\Http\Controllers\Api\ProductController::class, 'create'])->name('form');
 
             Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');
+            
             Route::get('/{product}', [\App\Http\Controllers\Api\ProductController::class, 'show'])->name('show');
 
             Route::get('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'edit'])->name('edit');
+            
             Route::put('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'update'])->name('update');
 
             Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
@@ -67,7 +73,12 @@ Route::middleware(['auth', 'web'])->group(function () {
 
             Route::post('/{products}/create', [\App\Http\Controllers\Api\GarmentController::class, 'store'])->name('store');
 
+            Route::get('/{garment}/edit', [\App\Http\Controllers\Api\GarmentController::class, 'edit'])->name('edit');
+
             Route::put('/{garment}', [\App\Http\Controllers\Api\GarmentController::class, 'update'])->name('update');
+
+            Route::get('/{garment}/details', [\App\Http\Controllers\Api\GarmentController::class, 'show'])->name('show');
+
             Route::delete('/{garment}/r', [\App\Http\Controllers\Api\GarmentController::class, 'destroy'])->name('delete');
         });
 

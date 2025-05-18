@@ -5,6 +5,10 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @endpush
 
+    @if(session('success'))
+        <x-fragments.alert-response message="{{ Session('success') }}" type="success" />
+    @endif
+
     <div class="product-page">
         <div class="header-section">
             <h2 class="section-title1">User Management</h2>
@@ -33,7 +37,6 @@
                 @endforeach
             </tbody>
         </table>
-
 
         <div id="overlay" class="overlay" onclick="closePanel()"></div>
        

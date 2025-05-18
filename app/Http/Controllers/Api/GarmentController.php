@@ -26,12 +26,17 @@ class GarmentController extends ApiBaseController
         return redirect()->route('dashboard.garment.index')->with('success', $createdGarment['message']);
     }
 
-    public function show(Garment $garment)
+    public function edit($garmentId)
+    {   
+        $garment = Garment::with(['product', 'size', 'condition'])->findOrFail($garmentId);
+        return view('src.admin.partials.garment-edit-details', compact('garment'));
+    }
+
+    public function show($garmentId)
     {
         // Eager load the relationships to avoid N+1 query problem
-        $garments = $garment->with(['product', 'size', 'condition'])->find($garment);
-
-        return GarmentResource::collection($garments);
+        $garment = Garment::with(['product', 'size', 'condition'])->findOrFail($garmentId);
+        return view('src.admin.partials.garment-details', compact('garment'));
     }
 
     public function update(GarmentRequest $request, Garment $garment)

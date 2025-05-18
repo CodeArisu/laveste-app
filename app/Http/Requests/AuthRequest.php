@@ -36,6 +36,11 @@ class AuthRequest extends FormRequest
             'name' => 'required|string|max:50',
             'email' => 'required|string|email|max:50|unique:users',
             'password' => 'required|string|confirmed|min:8',
+
+            'first_name' => 'required|string|max:25',
+            'last_name' => 'required|string|max:25',
+            'contact' => 'required|string|digits:11',
+            'address' => 'required|string|max:255'
         ];
     }
 
@@ -75,6 +80,14 @@ class AuthRequest extends FormRequest
             'email.unique' => 'Email already exists',
             'password.required' => 'Password is required',
             'password.confirmed' => 'Password confirmation does not match',
+
+            'first_name.required' => 'Fill in required first name',
+            'first_name.max' => 'Max name length of 25',
+            'last_name.required' => 'Fill in required last name',
+            'last_name.max' => 'Max name length of 25',
+            'address.required' => 'Address is required',
+            'contact.required' => 'The contact number is required',
+            'contact.digits' => 'The contact number must be 11 digits',
         ];
     }
 }
