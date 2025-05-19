@@ -19,6 +19,7 @@
     font-weight: 400;
     color: #923333;
     text-decoration: none;
+    font-family: "Ovo";
 }
 
 .cashier {
@@ -32,6 +33,7 @@
     font-size: 25px;
     margin: 0;
     font-weight: 100;
+    font-family: "Ovo";
 }
 
 .cashier img {
@@ -72,6 +74,20 @@
     text-decoration: underline;
     text-decoration-thickness: 1.5px; /* thinner line — adjust as needed */
     text-underline-offset: 10px; /* more gap between text and underline */
+}
+
+
+
+#logoutMenu {
+  display: none;
+  position: absolute; /* so it floats nicely */
+  background: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  top: 70px; /* adjust as needed */
+  right: 40px; /* adjust as needed */
+  z-index: 1000;
 }
 
 

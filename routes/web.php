@@ -24,7 +24,7 @@ Route::middleware(['auth', 'web'])->group(function () {
         // updates product rented status
         Route::put('/home/{ProductRent}', [App\Http\Controllers\Api\CashierController::class, 'productRentUpdate'])->name('rent-update');
 
-        Route::get('/catalog', [App\http\Controllers\Api\CatalogController::class, 'index'])->name('index');
+        Route::get('/catalog', [App\Http\Controllers\Api\CatalogController::class, 'index'])->name('index');
         
         // pre checkout customers details API
         Route::get('/catalog/{catalogs}/details', [\App\Http\Controllers\Api\Transactions\ProductRentController::class, 'index'])->name('details');
