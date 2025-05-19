@@ -11,10 +11,8 @@
 
             <div class="checkout">Checkout</div>
         </div>
-
         <br>
         <br>
-
         <div class="receipt-card">
             <div class="receipt-header">
                 <div class="receipt-title">RECEIPT</div>
@@ -40,6 +38,7 @@
                 <div class="summary">
                     <p>VAT <span class="price">₱{{ $totalPrice - $originalPrice }}</span></p>
                     <p class="total">Total Amount <span class="price bold">₱{{ $totalPrice }}</span></p>
+                    <p>Change: <span>₱{{ $totalChange }}</span></p>
                 </div>
             </div>
         </div>

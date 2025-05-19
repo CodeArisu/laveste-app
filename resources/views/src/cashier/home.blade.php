@@ -16,7 +16,7 @@
                         <button class="tab active" data-tab="rentals">Rentals</button>
                         <button class="tab" data-tab="appointments">Appointment</button>
                     </div>
-                </div>  
+                </div>
                 <div class="buttons">
                     <a href="{{ route('cashier.index') }}" class="book-rental">
                         <img src="/assets/icons/hanger.png" alt="Book Rental Icon" class="icon"> Book Rental
@@ -52,14 +52,14 @@
                             <td>{{ $productRent->catalog->getFormattedRentPrice() }}</td>
                             <td>{{ $productRent->customerRent->convertDateFormat() }}</td>
                             <td>
-                                @if($productRent->productRentedStatus->status_name === 'rented')
+                                @if ($productRent->productRentedStatus->status_name === 'rented')
                                     <span class="status pending">Rented</span>
                                 @elseif ($productRent->productRentedStatus->status_name === 'returned')
                                     <span class="status confirmed">Returned</span>
                                 @endif
                             </td>
                             <td class='status_col'>
-                                @if($productRent->productRentedStatus->status_name === 'rented')
+                                @if ($productRent->productRentedStatus->status_name === 'rented')
                                     <a href="#" class='btn btn-danger'>Returned</a>
                                 @else
                                     no action
@@ -98,36 +98,37 @@
                 &#8592; Back
             </button>
 
-            <h2>Schedule Appointment</h2>
-
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <button id="prevMonth">&lt;</button>
-                    <span id="monthYear">September 2025</span>
-                    <button id="nextMonth">&gt;</button>
+            <form action="" method="POST">
+                @csrf
+                <h2>Schedule Appointment</h2>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth">&lt;</button>
+                        <span id="monthYear">September 2025</span>
+                        <button id="nextMonth">&gt;</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Days will be generated here by JS -->
+                    </div>
                 </div>
-                <div class="calendar-grid" id="calendarGrid">
-                    <!-- Days will be generated here by JS -->
+
+                <div class="card time-card">
+                    <select id="appointmentTime" class="time-select">
+                        <option value="" disabled selected>Select time</option>
+                        <option value="09:00">09:00-10:00 AM</option>
+                        <option value="10:00">10:00-11:00 AM</option>
+                        <option value="11:00">01:00-02:00 PM</option>
+                        <option value="13:00">02:00-03:00 PM</option>
+                        <option value="14:00">03:00-04:00 PM</option>
+                        <option value="15:00">04:00-05:00 PM</option>
+                    </select>
                 </div>
-            </div>
 
-            <div class="card time-card">
-                <select id="appointmentTime" class="time-select">
-                    <option value="" disabled selected>Select time</option>
-                    <option value="09:00">09:00-10:00 AM</option>
-                    <option value="10:00">10:00-11:00 AM</option>
-                    <option value="11:00">01:00-02:00 PM</option>
-                    <option value="13:00">02:00-03:00 PM</option>
-                    <option value="14:00">03:00-04:00 PM</option>
-                    <option value="15:00">04:00-05:00 PM</option>
-                </select>
-            </div>
-
-            <button class="next-btn" id="nextAppointmentBtn">
-                Next <span>&#x2192;</span>
-            </button>
+                <button class="next-btn" id="nextAppointmentBtn">
+                    Next <span>&#x2192;</span>
+                </button>
+            </form>
         </div>
-
     </div>
 
     <div class="side-panel-container3">

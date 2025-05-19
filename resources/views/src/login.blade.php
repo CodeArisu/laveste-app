@@ -8,16 +8,18 @@
         <div class="form-container">
             <h1>La Veste Rentals</h1>
             <h2>Welcome Back!</h2>
+
             @if ($errors->has('internal_error'))
-                <div class="alert alert-danger">
+                <div class="alert alert-danger text-wrap mt-1">
                     <strong>Error:</strong> {{ $errors->first('internal_error') }}
-                    <p>{{ $errors->first('internal_error_description') }}</p>
+                    <p class='p-0 m-0'>{{ $errors->first('internal_error_description') }}</p>
                 </div>
             @endif
+           
             <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <label for="email"></label>
-                <input type="email" id="email" name="email" placeholder="Email" required><br>
+                <input type="email" id="email" name="email" placeholder="Email" required value={{ old('email') }}> <br>
                 @error('email')
                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                 @enderror

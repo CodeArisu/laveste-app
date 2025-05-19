@@ -38,15 +38,11 @@ class GarmentRequest extends FormRequest
         ];
     }
 
-    public function failedValidation(Validator $validator)
+    public function messages()
     {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'Invalid data request',
-            'details' => $errors->messages(),
-        ], ResponseCode::INVALID->value);
-
-        throw new HttpResponseException($response);
+        return [
+            'poster.mimes' => 'It only accepts PNG, JPEG, JPG files',
+            'measurement.required' => 'Assign size first',
+        ];
     }
 }

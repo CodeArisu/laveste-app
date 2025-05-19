@@ -1,9 +1,9 @@
 <x-layouts.admin>
     @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/tables.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/admin/garment.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/admin/tables.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/admin/garment.css') }}">
 
-    <link rel="stylesheet" href="/css/cashier/rentalside.css">
+        <link rel="stylesheet" href="/css/cashier/rentalside.css">
     @endpush
 
     <div class="product-page">
@@ -22,26 +22,26 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Only one tbody here -->
-                <tr class="product-row">
-                    <td>0001</td>
-                    <td>Jane Gow</td>
-                    <td>3,600.00</td>
-                    <td>Gown</td>
-                    <td><span class="status good">Rented</span></td>
-                </tr>
-                <tr class="product-row">
-                    <td>0001</td>
-                    <td>Shienna Laredo</td>
-                    <td>3,600.00</td>
-                    <td>Filipiniana</td>
-                    <td><span class="status good">Missing</span></td>
-                </tr>
+                @foreach ($productRents as $productRent)
+                    <tr class='table-rows'>
+                        <td>{{ $productRent->id }}</td>
+                        <td>{{ $productRent->customerRent->customerDetail->name }}</td>
+                        <td>{{ $productRent->catalog->getFormattedRentPrice() }}</td>
+                        <td>type</td>
+                        <td>
+                            @if ($productRent->productRentedStatus->status_name === 'rented')
+                                <span class="status good">Rented</span>
+                            @elseif ($productRent->productRentedStatus->status_name === 'returned')
+                                <span class="status confirmed">Returned</span>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
             </tbody> <!-- Only one tbody here -->
         </table>
 
         <div class="side-panel1" id="rentalSidePanel" style="display: none;">
-            <a class="back-btn1" href="/admin/prodrented" >&#8592; Back</a>
+            <a class="back-btn1" href="/admin/prodrented">&#8592; Back</a>
             <div class="side-content1">
                 <div class="image-container1">
                     <img src="/assets/images/cat1.png" alt="Product Image">

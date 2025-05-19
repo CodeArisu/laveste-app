@@ -1,14 +1,14 @@
 <x-layouts.admin>
 
     @push('styles')
-    <link rel="stylesheet" href="/css/cashier/home.css">
-    <link rel="stylesheet" href="/css/cashier/appointside.css">
-    <link rel="stylesheet" href="/css/cashier/rentalside.css">
-    <link rel="stylesheet" href="/css/cashier/appointment.css">
+        <link rel="stylesheet" href="/css/cashier/home.css">
+        <link rel="stylesheet" href="/css/cashier/appointside.css">
+        <link rel="stylesheet" href="/css/cashier/rentalside.css">
+        <link rel="stylesheet" href="/css/cashier/appointment.css">
     @endpush
 
     <div class="home-page">
-        
+
         <h2 class="transactions-title">Transactions</h2>
         <div id="home-container">
             <!-- Tabs= -->
@@ -34,18 +34,20 @@
                         <th>Product</th>
                         <th>Customer Name</th>
                         <th>Amount Due</th>
-                        <th>Pickup Date</th>
+                        <th>Payment Method</th>
                         <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>0001</td>
-                        <td>Very nice gown</td>
-                        <td>Juan Dela Cruz</td>
-                        <td>3,600.00</td>
-                        <td>March 20, 2025</td>
-                        <td><span class="status pending">Pending</span></td>
+                        @foreach ($transactions as $transaction)
+                            <td>{{ $transaction->id }}</td>
+                            <td>{{ $transaction->getProductName() }}</td>
+                            <td>{{ $transaction->getCustomerName() }}</td>
+                            <td>{{ $transaction->formatPayment() }}</td>
+                            <td>{{ $transaction->paymentMethod->method_name }}</td>
+                            <td>{{ $transaction->productRent->productRentedStatus->status_name}}</td>
+                        @endforeach
                     </tr>
                 </tbody>
             </table>
@@ -72,8 +74,6 @@
                 </tbody>
             </table>
         </div>
-
-
 
 
         <div class="appointment-side-panel" id="appointmentPanel" style="display: none;">

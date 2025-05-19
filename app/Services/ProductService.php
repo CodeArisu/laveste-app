@@ -61,7 +61,7 @@ class ProductService extends BaseServicesClass
                 $updatedProducts = $this->updateProduct($request, $product);
                 $this->validateUpdateResults($updatedProducts);
 
-                return ['message' => 'Successfully updated', 'route' => 'dashboard.product.show'];
+                return ['message' => 'Successfully updated', 'route' => 'dashboard.product.edit'];
             });
         } catch (\Exception $e) {
             report($e);
@@ -112,7 +112,7 @@ class ProductService extends BaseServicesClass
      * @return array
      */
     private function createProduct(ProductRequest $request): array
-    {
+    {   
         $validated = $request->safe();
         
         // new supplier data

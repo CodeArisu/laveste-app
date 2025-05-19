@@ -27,20 +27,17 @@ class TransactionRequest extends FormRequest
         return [
             'payment_method' => 'required|string',
             'payment' => 'required|numeric',
-            'has_discount' => 'nullable|boolean',
+            'coupon_code' => 'nullable|string|max:8',
             'vat' => 'numeric',
         ];
     }
 
-    public function failedValidation(Validator $validator)
+    public function messages()
     {
-        $errors = $validator->errors();
-
-        $response = response()->json([
-            'message' => 'Invalid data request',
-            'details' => $errors->messages(),
-        ], ResponseCode::INVALID->value);
-
-        throw new HttpResponseException($response);
+        return [
+            'payment_method.required' => 'Enter payment method',
+            'payment.required' => 'Enter payment',
+            'payment.numeric' => 'Enter only numeric number',
+        ];
     }
 }

@@ -62,7 +62,7 @@ class ProductController extends ApiBaseController
     public function update(ProductRequest $request, Product $product)
     {   
         $updatedProduct = $this->productService->requestUpdateProduct($request, $product);
-        return redirect()->route($updatedProduct['route'])->with('success', $updatedProduct['message']);
+        return redirect()->back()->with('success', $updatedProduct['message']);
     }
 
     public function destroy(Product $product)

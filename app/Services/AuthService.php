@@ -17,19 +17,22 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\{Auth, Hash};
 
 class AuthService
-{
+{   
+    public function __construct(protected UserDetailsService $userDetailsService)
+    {}
+
     /**
      * @param AuthRequest $request
      * @return array
      */
     public function registerRequest(AuthRequest $request)
-    {
+    {   
         try {
             return DB::transaction(function () use ($request) {
                 $this->registerUser($request);
                 return [
-                    'message' => 'User registered',
-                    'url' => ''
+                    'success' => 'User registered',
+                    'route' => 'dashboard.users',
                 ];
             });
         } catch (QueryException $e) {
@@ -96,13 +99,18 @@ class AuthService
      * @return array
      */
     private function registerUser($request)
-    {
+    {   
         if (!Role::exists()) {
             $this->registerRoles();
         }
 
-        $this->checkIfExists($request);
-        $this->handleRegister($request->validated());
+        $validated = $request->validated();
+
+        $this->checkIfExists($validated);
+
+        $userDetails = $this->userDetailsService->userDetailsRequest($validated);
+
+        $this->handleRegister($validated, $userDetails);
     }
 
     /**
@@ -110,8 +118,8 @@ class AuthService
      */
     private function checkIfExists($request)
     {
-        $exist = User::where('email', $request->email)
-        ->orWhere('name', $request->name)
+        $exist = User::where('email', $request['email'])
+        ->orWhere('name', $request['name'])
         ->exists();
 
         if ($exist) {
@@ -123,14 +131,14 @@ class AuthService
      * @param AuthRequest $request
      * @return array
      */
-    private function handleRegister($request)
+    private function handleRegister($request, $userDetails)
     {
         return User::firstOrCreate([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
-            'role_id' => UserRoles::MANAGER->value,
-            'user_details_id' => $request['user_details_id'] ?? null,
+            'role_id' => UserRoles::EMPLOYEE->value,
+            'user_details_id' => $userDetails->id ?? null,
         ]);
     }
 

@@ -5,6 +5,10 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     @endpush
 
+    @if(session('success'))
+        <x-fragments.alert-response message="{{ Session('success') }}" type="success" />
+    @endif
+
     <div class="product-page">
         <div class="header-section">
             <h2 class="section-title1">User Management</h2>
@@ -34,7 +38,6 @@
             </tbody>
         </table>
 
-
         <div id="overlay" class="overlay" onclick="closePanel()"></div>
        
         <div id="overlay" class="overlay" onclick="closePanel()"></div>
@@ -47,7 +50,7 @@
             <div class="section">
                 <div class="section-title">
                     <h2>User Information</h2>
-                    <a href="/admin/user_blades/edituser" class="edit-btn">
+                    <a href="/admin/users/edituser" class="edit-btn">
                         <i class="fas fa-edit"></i> Edit
                     </a>                    
                 </div>

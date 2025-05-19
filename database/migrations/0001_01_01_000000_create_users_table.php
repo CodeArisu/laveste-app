@@ -22,8 +22,8 @@ return new class extends Migration
             $table->string('first_name', 25);
             $table->string('last_name', 25);
             $table->text('address', 255);
-            $table->integer('contact')->unique();
-            $table->timestamp('created_at');
+            $table->string('contact', 11)->unique();
+             $table->timestamps();
         });
 
         Schema::create('users', function (Blueprint $table) {

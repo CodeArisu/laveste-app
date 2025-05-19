@@ -3,17 +3,18 @@
 namespace App\Http\Controllers\Api\Transactions;
 
 use App\Models\Catalog;
+use App\Models\Transactions\Transaction;
 use App\Services\CompleteCheckoutService;
 use Illuminate\Http\Request;
 
 class CheckoutController
 {
     public function __construct(
-        protected CompleteCheckoutService $completeCheckoutService, 
+        protected CompleteCheckoutService $completeCheckoutService,
     ) {}
 
-    public function store(Request $request)
-    {
-        $this->completeCheckoutService->completeCheckout($request);
+    public function show(Transaction $transaction)
+    {   
+        return view('src.cashier.receipt', ['transaction' => $transaction]);
     }
 }

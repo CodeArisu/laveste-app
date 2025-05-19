@@ -1,15 +1,17 @@
-<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModal" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-        <div class="modal-body text-center" style='min-height: 20em;'>
-            <span class="fs-3">
-                Confirm Transactions?
-            </span>
-        </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="submit" class="btn btn-success" id="confirmButton">Confirm</button>
-      </div>
-    </div>
-  </div>
-</div>
+ <div class="modal fade mt-5" tabindex="-1" id="confirmationModal" aria-labelledby="confirmationModal" aria-hidden="true">
+     <div class="modal-dialog">
+         <div class="modal-content">
+             <div class="modal-body">
+                 <div class="modal-icon">
+                     <img src="/assets/icons/check.png" alt="check Icon">
+                 </div>
+                 <p class="modal-text">Are you sure you want to<br><strong>Proceed?</strong></p>
+             </div>
+             <div class="modal-buttons pt-5">
+                 <button type="button" data-bs-dismiss="modal" class="modal-cancel ">Cancel</button>
+                 {{-- <button type="button" class="modal-confirm">Archive</button> --}}
+                 {{ $slot }}
+             </div>
+         </div>
+     </div>
+ </div>

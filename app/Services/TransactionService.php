@@ -36,11 +36,12 @@ class TransactionService
             Session::put('checkout.transaction_data', $validated);
             $catalogId = $request->only(['catalog']);
     
-            $this->setTransactionData($catalogId);
+            $response = $this->setTransactionData($catalogId);
 
             return [
                 'message' => 'Transaction Created Successfully.',
-                'url' => 'cashier.checkout.receipt',
+                'route' => 'cashier.checkout.receipt',
+                'transactionData' => $response['transaction'],
             ];
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
@@ -57,9 +58,21 @@ class TransactionService
 
         $transactionSession = Session::get($sessionName);
 
+        $event = new TransactionSession($transactionSession, $catalogId);
+        event($event);
         // triggers transaction event
-        event(new TransactionSession($transactionSession, $catalogId));
         \Log::info('Event Triggered');
+
+        return $event->response;
+    }
+
+    public function checkIfPaymentExceeds($payment, $totalPayment)
+    {
+        if ($payment > $totalPayment) {
+            throw new \Exception('Payment must be greater than total.');
+        }
+
+        return $payment;
     }
 
     public function getTotalPrice($price)
@@ -67,6 +80,12 @@ class TransactionService
         // calculates price + 12% vat
         $total = ($price + ($price * .12));
         return $total;
+    }
+
+     public function getTotalChange($price, $payment)
+    {   
+        $change = ($payment - $price);
+        return $change;
     }
 
     public function getCustomerData()
@@ -81,9 +100,27 @@ class TransactionService
         return $transactionData;
     }
 
+    private function getDiscountedAmount($price, float $discount)
+    {
+        // price * 12%
+        $total = ($price - ($price * $discount));
+        return $total;
+    }
+
     public function getCheckoutData(array $transactionData, $catalogId)
     {   
-        $totalPayment = $this->getTotalPrice($transactionData['payment']);
+        $payment = $transactionData['payment'];
+
+        // if ($transactionData['has_discount']) {
+        //     $transactionData['discount_amount'] = $this->getDiscountedAmount($payment);
+        // }
+
+        $totalPayment = $this->getTotalPrice($payment);
+
+        // $totalPayment = ($totalPayment - $transactionData['discount_amount']);
+
+        $this->checkIfPaymentExceeds($payment, $totalPayment);
+
         return [
             'payment' => $transactionData['payment'],
             'total_amount' => $totalPayment,
@@ -146,7 +183,12 @@ class TransactionService
 
     public function execTransaction($transactionData, $productRent)
     {   
-        $this->createTransaction($transactionData, $productRent);
+        return $this->createTransaction($transactionData, $productRent);
+    }
+
+    public function checkIfDiscountCompatible()
+    {
+        
     }
 
     /**

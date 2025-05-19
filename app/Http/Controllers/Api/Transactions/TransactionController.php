@@ -41,23 +41,27 @@ class TransactionController
     public function show(Transaction $transaction)
     {   
         $originalPrice = $transaction->productRent->catalog->garment->rent_price;
+        $payment = $transaction->payment;
 
         $customerData = $this->transactionService->getFilteredDatesData($transaction->productRent->customerRent);
         $formattedDates = $this->transactionService->getFormattedDates($customerData);
         
         $totalPrice = $this->transactionService->getTotalPrice($originalPrice);
 
+        $totalChange = $this->transactionService->getTotalChange($totalPrice, $payment);
+
         return view('src.cashier.receipt', [
             'transactions' => $transaction,
             'formattedDates' => $formattedDates,
             'originalPrice' => $originalPrice,
             'totalPrice' => $totalPrice,
+            'totalChange' => $totalChange,
         ]);
     }
 
     public function store(TransactionRequest $request)
     {   
         $transaction = $this->transactionService->requestTransaction($request);
-        return redirect()->route($transaction['url'])->with('success', $transaction['message']);
+        return redirect()->route($transaction['route'], ['transaction' => $transaction['transactionData']])->with('success', $transaction['message']);
     }
 }
