@@ -44,7 +44,7 @@
                             class='form-control border border-primary'>
 
                         <select name='coupon_type'>
-                            <option value='null' selected>Select</option>
+                            <option value='' disabled selected>Select</option>
                             @foreach ($discounts as $discount)
                                 <option value={{ $discount->type() }}>{{ ucfirst($discount->type()) }}</option>
                             @endforeach

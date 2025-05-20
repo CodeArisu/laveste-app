@@ -13,10 +13,10 @@ enum Discounts : int
     {
         return match($this)
         {
-            self::Regular => .16,
-            self::Promo => .18,
-            self::Limited => .25,
-            self::Senior => .20,
+            self::Regular => .06,
+            self::Promo => .09,
+            self::Limited => .1,
+            self::Senior => .08,
         };
     }
 

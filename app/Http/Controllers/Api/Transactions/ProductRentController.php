@@ -24,7 +24,7 @@ class ProductRentController extends ApiBaseController
 
         if (!Session::has('checkout.customer_data')) {
             // return exception
-            dd('Session does not exist');
+            Throw new \Exception('Session doesn\'t exists');
         }
 
         return redirect()->route('cashier.checkout', ['catalogs' => $catalogs]);

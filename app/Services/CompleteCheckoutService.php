@@ -20,7 +20,6 @@ class CompleteCheckoutService
     {
         try {
             $result = DB::transaction(function () use ($transactionData) {
-
                 $transactionData = array_merge([
                     'customer_data' => $this->transactionService->getCustomerData(),
                     'transaction_data' => $transactionData,
@@ -31,27 +30,22 @@ class CompleteCheckoutService
 
                 $catalogData = Catalog::where('id', $transactionData['catalog_id'])->first();
 
-                // check discount_code if exists
-                $couponExists =  Discounts::Regular->type();
-                
-                // checks if there is a coupon or discount applied
-                $isDiscounted = $this->checkIfHasDiscount([
-                    'has_discount' => true,
-                    'coupon_type' => $couponExists ?? null,
-                ]);
-
-                dd($isDiscounted);
+                $transactionData = $this->checkIfRegular($customerData['is_regular'], $transactionData);
                 
                 // records customer data
                 $productRent = $this->productRentService->execProductRent($customerData, $catalogData);
                 // records transaction data
                 $transaction = $this->transactionService->execTransaction($transactionData, $productRent);
+
+                $additionalData = $this->filterAdditionalData($transactionData);
+
                 // product status to "Rented"
                 $this->handleStatusChange($productRent, $catalogData);
 
                 return [
                     'product_rent' => $productRent,
                     'transaction' => $transaction,
+                    'additional_data' => $additionalData,
                 ];
             });
 
@@ -79,48 +73,33 @@ class CompleteCheckoutService
         event(new CatalogStatus($rentStatus, $catalogData->id));
     }
 
-    private function checkIfHasDiscount(array $discount)
+    private function checkIfRegular($isRegular, array $transactionData)
     {
-        if (!$discount['has_discount']) {
-            return false;
+        if (!$isRegular) {
+            return $transactionData;
         }
 
-        $discountPercent = $this->discountType($discount['coupon_type']);
+        $discount = Discounts::Regular->percent();
 
+        $newTotalDiscount =  ($transactionData['discount_amount'] + $discount);
+
+        $newTotalAmount = $this->transactionService->execGetDiscountedAmount($transactionData['total_amount'], $discount);
+
+        $newTotalChange = $this->transactionService->getTotalChange($newTotalAmount, $transactionData['payment']);
+
+        $transactionData['total_amount'] = $newTotalAmount;
+        $transactionData['discount_amount'] = $newTotalDiscount;
+        $transactionData['change'] = $newTotalChange;
+
+        return $transactionData;
+    }
+
+    private function filterAdditionalData(array $transactionData)
+    {
         return [
-            'has_discount' => $discount['has_discount'],
-            'coupon_type' => $discount['coupon_type'],
-            'discount_amount' => $discountPercent,
+            'discount_percent' => $transactionData['discount_amount'],
+            'change' => $transactionData['change'],
+            'code' => $transactionData['code']
         ];
-    }
-
-    private function discountType($discountType)
-    {   
-        $discountAmount = 0;
-
-        switch($discountType) {
-            case Discounts::Regular->type():
-                $discountAmount = Discounts::Regular->percent();
-                break;
-            case Discounts::Promo->type():
-                $discountAmount = Discounts::Promo->percent();
-                break;
-            case Discounts::Limited->type():
-                $discountAmount = Discounts::Limited->percent();
-                break;
-            case Discounts::Senior->type():
-                $discountAmount = Discounts::Senior->percent();
-                break;
-            default:
-                $discountAmount = 0;
-                break;
-        }
-
-        return $discountAmount;
-    }
-
-    private function checkIfCodeExists($code)
-    {
-        return $code;
     }
 }

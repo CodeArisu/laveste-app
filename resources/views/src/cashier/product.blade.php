@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <x-fragments.catalog-off-canvas/>
+        <x-fragments.catalog-off-canvas canvasId="catalogOffCanvas" />
 
         @push('scripts')
             <script src={{ asset('scripts/catalogOffCanvasHandler.js') }}></script>

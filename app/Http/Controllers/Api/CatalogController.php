@@ -15,9 +15,4 @@ class CatalogController extends ApiBaseController
         $catalog = Catalog::all();
         return view('src.cashier.product', ['catalogs' => $catalog]);
     }
-
-    public function update()
-    {
-        // should only be the status
-    }
 }

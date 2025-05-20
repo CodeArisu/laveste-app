@@ -36,7 +36,19 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'index'])->name('checkout');
         Route::post('/catalog/{catalogs}/checkout', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'store'])->name('checkout.store');
 
+        Route::post('/catalog/{catalogs/checkout/verify_code', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'verifyCode'])->name('verify.code');
+
         Route::get('/checkout/receipt/{transaction}', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'show'])->name('checkout.receipt');
+
+        Route::middleware(['role:admin,manager,accountant'])->name('appointment.')->prefix('appointment')->group(function () {
+
+            Route::get('/details', [\App\Http\Controllers\Api\AppointmentController::class, 'preindex'])->name('preindex');
+            Route::post('/details', [\App\Http\Controllers\Api\AppointmentController::class, 'storeAppointmentSession'])->name('session');
+
+            Route::get('/details/process', [\App\Http\Controllers\Api\AppointmentController::class, 'index'])->name('checkout');
+            Route::post('/details/process', [\App\Http\Controllers\Api\AppointmentController::class, 'store'])->name('store');
+            
+        });
     });
 
     // dashboard routes
@@ -56,11 +68,11 @@ Route::middleware(['auth', 'web'])->group(function () {
             Route::get('/create', [\App\Http\Controllers\Api\ProductController::class, 'create'])->name('form');
 
             Route::post('/create', [\App\Http\Controllers\Api\ProductController::class, 'store'])->name('store');
-            
+
             Route::get('/{product}', [\App\Http\Controllers\Api\ProductController::class, 'show'])->name('show');
 
             Route::get('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'edit'])->name('edit');
-            
+
             Route::put('/{product}/edit', [\App\Http\Controllers\Api\ProductController::class, 'update'])->name('update');
 
             Route::delete('/{product}/r', [\App\Http\Controllers\Api\ProductController::class, 'destroy'])->name('delete');
@@ -87,9 +99,10 @@ Route::middleware(['auth', 'web'])->group(function () {
     });
 });
 
-Route::get('/cashier/appointment/checkout', function () {
-    return view('src.cashier.checkout3');
-})->name('appointment.checkout');
+
+Route::get('/cashier/appointment/receipt', function () {
+    return view('src.cashier.receipt2');
+})->name('appointment.receipt');
 
 Route::get('/admin/users/edituser', function () {
     return view('src.admin.users.edituser');

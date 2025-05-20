@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Transactions\Appointment;
 use App\Models\Transactions\ProductRent;
 use App\Models\Transactions\Transaction;
 use App\Services\ProductRentService;
@@ -18,9 +19,12 @@ class CashierController
     public function rentalsIndex() 
     {   
         $productRents = ProductRent::with(['catalog.garment', 'customerRent.customerDetail'])->get();
-        return view('src.cashier.home', 
-            ['productRents' => $productRents,]
-        );
+        $customerAppointments = Appointment::with(['customerDetail', 'appointmentStatus'])->get();
+
+        return view('src.cashier.home', [
+            'productRents' => $productRents,
+            'appointments' => $customerAppointments,
+        ]);
     }
 
     public function productRentUpdate(ProductRent $productRent)

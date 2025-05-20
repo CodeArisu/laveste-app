@@ -16,7 +16,7 @@
         <div class="receipt-card">
             <div class="receipt-header">
                 <div class="receipt-title">RECEIPT</div>
-                <div class="order-number">Rent #{{ "00" . $transactions->id }}</div>
+                <div class="order-number">Rent #{{ '00' . $transactions->id }}</div>
             </div>
             <div class="receipt-body">
                 <p class="thanks">Thanks for your order!</p>
@@ -25,7 +25,8 @@
                     <div class="item-details">
                         <p class="item-name">{{ $transactions->getProductName() }}</p>
                         <p class="item-size">{{ $transactions->getClothingSize() }}</p>
-                        <p>Start date: &nbsp; {{ $formattedDates['pickup_date'] }}&emsp; <span class="price">₱{{ $originalPrice }}</span></p>
+                        <p>Start date: &nbsp; {{ $formattedDates['pickup_date'] }}&emsp; <span
+                                class="price">₱{{ $originalPrice }}</span></p>
                         <p>Return date: {{ $formattedDates['return_date'] }}</p>
                     </div>
                 </div>

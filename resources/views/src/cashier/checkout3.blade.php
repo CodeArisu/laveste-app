@@ -9,11 +9,10 @@
 <body>
     <div class="checkout-container">
         <header class="checkout-header">
-            <a href="/cashier/home" class="back-arrow">&larr;</a>
+            <a href="{{ route('cashier.home') }}" class="back-arrow">&larr;</a>
             <h1>La Veste Rentals</h1>
             <h2>Checkout</h2>
         </header>
-        
 
         <div class="checkout-body">
             <div class="shipping-section">
@@ -52,20 +51,18 @@
                     <p>Event Date : <span>mm/dd/yyyy</span></p>
                 </div>
 
-                <div class="discount-code">
+                {{-- <div class="discount-code">
                     <input type="text" placeholder="Discount Code">
                     <button>Apply</button>
-                </div>
+                </div> --}}
 
                 <div class="order-summary">
                     <p class="total">Total <span>₱ 3,100.00</span></p>
                 </div>
 
-
-                <form action="/cashier/receipt2" method="GET">
-                    <button type="submit" class="place-order">Place Order</button>
+                <form action="" method="GET">
+                    <a type="button" href="{{ route('appointment.receipt') }}" class="place-order">Place Order</a>
                 </form>
-                
                 
             </div>
         </div>

@@ -3,6 +3,12 @@
         <link rel="stylesheet" href="{{ asset('css/cashier/checkout2.css') }}?v={{ time() }}">
     @endpush
 
+    @if (Session('success'))
+        <x-fragments.alert-response message="{{ Session('success') }}" type="success" />
+    @elseif (Session('failed'))
+        <x-fragments.alert-response message="{{ Session('failed') }}" type="warning" />
+    @endif
+
     <div class="checkout-container">
         <header class="checkout-header">
             <a href="{{ url()->previous() }}" class="back-arrow">&larr;</a>
@@ -17,22 +23,25 @@
                     <input name='catalog' value='{{ $catalog->id }}' hidden>
 
                     <label>Full name<span class='importance'>*</span></label>
-                    <input type="text" placeholder="Name" value="{{ $customerData['name'] ?? 'no name input' }}" name="name">
+                    <input type="text" placeholder="Name" value="{{ $customerData['name'] ?? 'no name input' }}"
+                        name="name">
 
                     <label>Address<span class='importance'>*</span></label>
-                    <input type="text" placeholder="Address" value='{{ $customerData['address'] ?? 'no address input' }}' name="address">
+                    <input type="text" placeholder="Address"
+                        value='{{ $customerData['address'] ?? 'no address input' }}' name="address">
 
                     <label>Amount<span class='importance'>*</span></label>
-                    <input name='payment' type="number" placeholder="100.00">
-                     @error('payment')
+                    <input name='payment' type="number" placeholder="100.00" value={{ old('payment', Session('payment'))}}>
+                    @error('payment')
                         <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                     @enderror
 
                     <label>Payment Method<span class='importance'>*</span></label>
                     <select name='payment_method' id="payment_method">
-                        <option>Select payment method</option>
+                        <option value='' disabled selected>Select payment method</option>
                         @foreach ($paymentMethods as $paymentMethod)
-                            <option value='{{ $paymentMethod->value }}'>{{ ucfirst($paymentMethod->label()) }}</option>
+                            <option value='{{ $paymentMethod->value }}'>{{ ucfirst($paymentMethod->label()) }}
+                            </option>
                         @endforeach
                     </select>
                     @error('payment_method')
@@ -57,16 +66,22 @@
                     </div>
 
                     <div class="discount-code">
-                        <input type="text" placeholder="Discount Code" name='discount_code' value='{{ old('discount_code') ?? null }}'>
-                        <button>Apply</button>
+                        <input type="text" placeholder="Discount Code" name='coupon_code'
+                            value={{ old('coupon_code', Session('coupon_code')) }}>
+                        <button formaction='{{ route('cashier.verify.code') }}' formmethod='POST' class=''
+                            type='submit'>Apply</button>
                     </div>
 
                     <div class="order-summary">
                         <p>Sub total <span>{{ $catalog->getFormattedRentPrice() }}</span></p>
                         <p>VAT <span>12%</span></p>
                         <p class="total">Total <span>₱ {{ $totalPrice }}</span></p>
+                        @if (Session('success'))
+                            <p class="total">Discounted <span>{{ session('discount') }}</span></p>
+                        @endif
                     </div>
-                    <button type="button" class="place-order" data-bs-toggle="modal" data-bs-target="#confirmationModal">Place Order</button>
+                    <button type="button" class="place-order" data-bs-toggle="modal"
+                        data-bs-target="#confirmationModal">Place Order</button>
                 </div>
             </div>
             <x-fragments.confirmation-modal>

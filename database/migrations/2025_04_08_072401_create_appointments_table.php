@@ -21,6 +21,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_details_id');
             $table->dateTime('appointment_date');
+            $table->time('appointment_time');
             $table->unsignedBigInteger('appointment_status_id');
 
             $table->foreign('customer_details_id')

@@ -29,9 +29,9 @@ class Transaction extends Model
         return $this->belongsTo(PaymentMethod::class);
     }
 
-    public function formatPayment()
+    public function formatPayment($payment)
     {
-        return '₱' . number_format($this->payment, 2);
+        return '₱' . number_format($payment, 2);
     }
 
     public function getProductName()

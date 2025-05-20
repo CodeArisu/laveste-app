@@ -8,7 +8,6 @@
     @endpush
 
     <div class="home-page">
-
         <h2 class="transactions-title">Transactions</h2>
         <div id="home-container">
             <!-- Tabs= -->
@@ -16,12 +15,10 @@
                 <div class="tabs-wrapper">
                     <div class="tabs">
                         <div class="slider"></div>
-                        <button class="tab active" data-tab="rentals">Rentals</button>
+                        <button class="tab active" data-tab="rentals">Transactions</button>
                         <button class="tab" data-tab="appointments">Appointment</button>
                     </div>
                 </div>
-
-
             </div>
         </div>
 
@@ -33,7 +30,8 @@
                         <th>Order ID</th>
                         <th>Product</th>
                         <th>Customer Name</th>
-                        <th>Amount Due</th>
+                        <th>Payment</th>
+                        <th>Amount Paid</th>
                         <th>Payment Method</th>
                         <th>Status</th>
                     </tr>
@@ -44,9 +42,10 @@
                             <td>{{ $transaction->id }}</td>
                             <td>{{ $transaction->getProductName() }}</td>
                             <td>{{ $transaction->getCustomerName() }}</td>
-                            <td>{{ $transaction->formatPayment() }}</td>
+                            <td>{{ $transaction->formatPayment($transaction->payment) }}</td>
+                            <td>{{ $transaction->formatPayment($transaction->total_amount) }}</td>
                             <td>{{ $transaction->paymentMethod->method_name }}</td>
-                            <td>{{ $transaction->productRent->productRentedStatus->status_name}}</td>
+                            <td>{{ $transaction->productRent->productRentedStatus->status_name }}</td>
                         @endforeach
                     </tr>
                 </tbody>
@@ -75,14 +74,11 @@
             </table>
         </div>
 
-
         <div class="appointment-side-panel" id="appointmentPanel" style="display: none;">
             <button class="back-btn" id="backBtn">
                 &#8592; Back
             </button>
-
             <h2>Schedule Appointment</h2>
-
             <div class="calendar-container">
                 <div class="calendar-header">
                     <button id="prevMonth">&lt;</button>
@@ -106,17 +102,13 @@
                 </select>
             </div>
 
-            <button class="next-btn" id="nextAppointmentBtn">
+            <button class="" id="">
                 Next <span>&#x2192;</span>
             </button>
         </div>
-
-
     </div>
 
-
-
-    <div class="side-panel-container3">
+    {{-- <div class="side-panel-container3">
         <div class="appointment-container3">
             <h1 class="page-title">Schedule Appointment</h1>
             <h2 class="section-title">Customer Information</h2>
@@ -178,9 +170,6 @@
         </div>
     </div>
 
-
-
-
     <div class="side-panel1" id="rentalSidePanel" style="display: none;">
         <button class="back-btn" onclick="closePanel('rentalSidePanel')">&#8592; Back</button>
         <div class="side-content1">
@@ -214,11 +203,7 @@
             <p class="status-label1">Status</p>
             <span class="status-pill1">Completed</span>
         </div>
-
-
     </div>
-
-
 
     <div class="side-panel" id="appointmentSidePanel" style="display: none;">
         <div class="image-container">
@@ -259,9 +244,9 @@
         <div class="status-wrapper1">
             <p class="status-label1">Status</p>
             <span class="status-pill1">Completed</span>
-        </div>
+        </div> 
 
-    </div>
+    </div> --}}
 
     <script>
         let selectedDate = null;

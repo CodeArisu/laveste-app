@@ -34,7 +34,7 @@
             <table id="rentals-table">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
+                        <th>Transaction ID</th>
                         <th>Product</th>
                         <th>Customer Name</th>
                         <th>Amount Due</th>
@@ -59,16 +59,21 @@
                                 @endif
                             </td>
                             <td class='status_col'>
-                                @if ($productRent->productRentedStatus->status_name === 'rented')
-                                    <a href="#" class='btn btn-danger'>Returned</a>
-                                @else
-                                    no action
-                                @endif
+                                <form action="">
+                                    @if ($productRent->productRentedStatus->status_name === 'rented')
+                                        <button type='button' class='btn btn-danger' data-bs-toggle="offcanvas"
+                                            data-bs-target="#productRentCanvas">Returned</button>
+                                    @else
+                                        no action
+                                    @endif
+                                </form>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+
+            <x-fragments.catalog-off-canvas canvasId='productRentCanvas' />
 
             <!-- Appointments Table -->
             <table id="appointments-table" style="display: none;">
@@ -79,26 +84,40 @@
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1001</td>
-                        <td>Maria Santos</td>
-                        <td>April 1, 2025</td>
-                        <td>10:00 AM</td>
-                        <td><span class="status confirmed">Confirmed</span></td>
-                    </tr>
+                    @foreach ($appointments as $appointment)
+                        <tr>
+                            <td>{{ $appointment->id }}</td>
+                            <td>{{ $appointment->customerDetail->name }}</td>
+                            <td>{{ $appointment->appointment_date }}</td>
+                            <td>{{ $appointment->appointment_time }}</td>
+                            <td>
+                                @if ($appointment->appointmentStatus->id == 1)
+                                    <span
+                                        class="status confirmed">{{ $appointment->appointmentStatus->status_name }}</span>
+                                @endif
+                            </td>
+                            <td>
+                                <button type='button' class='btn btn-warning' data-bs-toggle="offcanvas"
+                                    data-bs-target="#appointmentCanvas">Proceed</button>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
+
+        <x-fragments.catalog-off-canvas canvasId='appointmentCanvas' />
 
         <div class="appointment-side-panel" id="appointmentPanel" style="display: none;">
             <button class="back-btn" id="backBtn">
                 &#8592; Back
             </button>
 
-            <form action="" method="POST">
+            <form action="{{ route('cashier.appointment.session') }}" method="POST">
                 @csrf
                 <h2>Schedule Appointment</h2>
                 <div class="calendar-container">
@@ -110,92 +129,28 @@
                     <div class="calendar-grid" id="calendarGrid">
                         <!-- Days will be generated here by JS -->
                     </div>
+                    <input type="hidden" id="dateSchedule" name="date_schedule" placeholder="Select a date" readonly
+                        class="date-display-input">
                 </div>
 
                 <div class="card time-card">
-                    <select id="appointmentTime" class="time-select">
+                    <select name="appointment_time" id="appointmentTime" class="time-select">
                         <option value="" disabled selected>Select time</option>
-                        <option value="09:00">09:00-10:00 AM</option>
-                        <option value="10:00">10:00-11:00 AM</option>
-                        <option value="11:00">01:00-02:00 PM</option>
-                        <option value="13:00">02:00-03:00 PM</option>
-                        <option value="14:00">03:00-04:00 PM</option>
-                        <option value="15:00">04:00-05:00 PM</option>
+                        <option value="09:00 AM">09:00-10:00 AM</option>
+                        <option value="10:00 AM">10:00-11:00 AM</option>
+                        <option value="02:00 PM">02:00-03:00 PM</option>
+                        <option value="03:00 PM">03:00-04:00 PM</option>
                     </select>
                 </div>
 
-                <button class="next-btn" id="nextAppointmentBtn">
+                <button type='submit' class="next-btn" id="nextAppointmentBtn">
                     Next <span>&#x2192;</span>
                 </button>
             </form>
         </div>
     </div>
 
-    <div class="side-panel-container3">
-        <div class="appointment-container3">
-            <h1 class="page-title">Schedule Appointment</h1>
-            <h2 class="section-title">Customer Information</h2>
-
-            <form action="#" method="POST" class="appointment-form">
-                <label class="form-label">Customer Name</label>
-                <input type="text" name="customerName" class="form-input">
-
-                <label class="form-label">Address</label>
-                <input type="text" name="address" class="form-input">
-
-                <label class="form-label">Contact Number</label>
-                <input type="text" name="contactNumber" class="form-input">
-
-                <h2 class="section-title">Fitting Details</h2>
-
-                <div class="inline-inputs">
-                    <div class="input-group">
-                        <label class="form-label" for="size">Size</label>
-                        <select name="size" id="size" class="form-input">
-                            <option value="">Select size</option>
-                            <option value="xs">Extra Small</option>
-                            <option value="s">Small</option>
-                            <option value="m">Medium</option>
-                            <option value="l">Large</option>
-                            <option value="xl">Extra Large</option>
-                            <option value="xxl">2XL</option>
-                            <option value="xxxl">3XL</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label class="form-label" for="height">Height (in feet)</label>
-                        <select name="height" id="height" class="form-input">
-                            <option value="">Select height</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="inline-inputs">
-                    <div class="input-group">
-                        <label class="form-label">Event Type</label>
-                        <input type="text" name="eventType" class="form-input">
-                    </div>
-                    <div class="input-group">
-                        <label class="form-label">Event Date</label>
-                        <input type="date" name="eventDate" class="form-input">
-                    </div>
-                </div>
-
-                <label class="form-label">Style Preference</label>
-                <input type="text" name="stylePreference" class="form-input">
-
-                <br><br>
-
-                <div class="button-row3">
-                    <a href="" class="back-btn3" id="backBtn3">← Back</a>
-                    <a href="{{ route('appointment.checkout') }}" class="next-btn3" id="nextBtn3">Next →</a>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="side-panel1" id="rentalSidePanel" style="display: none;">
+    {{-- <div class="side-panel1" id="rentalSidePanel" style="display: none;">
         <button class="back-btn" onclick="closePanel('rentalSidePanel')">&#8592; Back</button>
         <div class="side-content1">
             <div class="image-container1">
@@ -274,9 +229,9 @@
         <div class="btn-section">
             <a href="#" class="cancel-button">Canceled</a>
             <a href="#" class="completed-button">Completed</a>
-        </div>
+        </div> 
 
-    </div>
+    </div> --}}
 
     @push('scripts')
         <script src={{ asset('scripts/cashierCalendar.js') }}></script>

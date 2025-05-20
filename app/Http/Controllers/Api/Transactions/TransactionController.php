@@ -12,13 +12,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 class TransactionController
-{   
+{
     private const PROCESS_STEP = 2;
     public function __construct(protected TransactionService $transactionService) {}
 
     // form
     public function index(Catalog $catalogs)
-    {   
+    {
         if (!Session::has('checkout.customer_data')) {
             return redirect()->route('cashier.details')->with('error', 'Please fill out the customer details first.');
         }
@@ -39,13 +39,13 @@ class TransactionController
     }
 
     public function show(Transaction $transaction)
-    {   
+    {
         $originalPrice = $transaction->productRent->catalog->garment->rent_price;
         $payment = $transaction->payment;
 
         $customerData = $this->transactionService->getFilteredDatesData($transaction->productRent->customerRent);
         $formattedDates = $this->transactionService->getFormattedDates($customerData);
-        
+
         $totalPrice = $this->transactionService->getTotalPrice($originalPrice);
 
         $totalChange = $this->transactionService->getTotalChange($totalPrice, $payment);
@@ -60,8 +60,29 @@ class TransactionController
     }
 
     public function store(TransactionRequest $request)
-    {   
+    {
         $transaction = $this->transactionService->requestTransaction($request);
         return redirect()->route($transaction['route'], ['transaction' => $transaction['transactionData']])->with('success', $transaction['message']);
+    }
+
+    public function verifyCode(TransactionRequest $request)
+    {
+        $validated = $request->safe();
+        $data = $validated->only('payment', 'coupon_code');
+
+        $verified = $this->transactionService->execVerifyCode($data['coupon_code']);
+
+        if (empty($verified['has_discount']) || !isset($verified['has_discount'])) {
+            return redirect()->back()->with('failed', 'Code doesnt exists!');
+        }
+
+        $converted = ($verified['discount_amount'] * 100);
+
+        return redirect()->back()->with([
+            'success' => 'Currently using ' . $verified['coupon_type'] . ' Code verified!',
+            'discount' => "-" . $converted . "%",
+            'payment' => $data['payment'],
+            'coupon_code' => $data['coupon_code'],
+        ]);
     }
 }
