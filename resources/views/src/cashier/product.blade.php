@@ -1,7 +1,6 @@
 <x-layouts.cashlayout>
     @push('styles')
         <link rel="stylesheet" href="/css/products/product.css">
-        <link rel="stylesheet" href="/css/cashier/cashierhead.css">
         <link rel="stylesheet" href="/css/products/custom-filter.css">
     @endpush
 
