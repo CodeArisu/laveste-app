@@ -17,21 +17,21 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\{Auth, Hash};
 
 class AuthService
-{   
-    public function __construct(protected UserDetailsService $userDetailsService)
-    {}
+{
+    public function __construct(protected UserDetailsService $userDetailsService) {}
 
     /**
      * @param AuthRequest $request
      * @return array
      */
     public function registerRequest(AuthRequest $request)
-    {   
+    {
         try {
             return DB::transaction(function () use ($request) {
                 $this->registerUser($request);
+
                 return [
-                    'success' => 'User registered',
+                    'message' => 'User registered',
                     'route' => 'dashboard.users',
                 ];
             });
@@ -51,17 +51,35 @@ class AuthService
     public function loginRequest(AuthRequest $request)
     {
         try {
+            $validated = $request->validated();
+
+            // Use first() instead of get() to get a single user model
+            $user = User::where('email', $validated['email'])->first();
+
+            // Check if user exists
+            if (!$user) {
+                throw AuthException::userNotFound();
+            }
+
+            // Check if user is disabled
+            if ($user->isDisabled()) {
+                throw AuthException::accountDisabled();
+            }
+
+
             $this->loginUser($request);
-            return [
-                'message' => 'Login Successful',
-                'url' => 'dashboard.home'
-            ];
-        }
-        catch (AuthException $e) {
+
+            return match ($user->role->role_name) {
+                'admin'    => ['route' => 'dashboard.home', 'message' => 'Successfully Logged In'],
+                'manager'  => ['route' => 'dashboard.home', 'message' => 'Successfully Logged In'],
+                'user'     => ['route' => 'cashier.home', 'message' => 'Successfully Logged In'],
+                default    => ['route' => 'cashier.home', 'message' => 'Successfully Logged In'],
+            };
+        } catch (AuthException $e) {
             // Re-throw Auth-specific exceptions (invalid credentials, locked account, etc.)
             throw $e;
             throw AuthException::userNotFound();
-        } catch (Exception $e) {   
+        } catch (Exception $e) {
             throw AuthException::userLoginFailed();
         }
     }
@@ -83,7 +101,6 @@ class AuthService
                 'message' => 'User signed out',
                 'url' => 'login'
             ];
-
         } catch (AuthException $e) {
             // Re-throw pre-formatted auth exceptions
             throw $e;
@@ -99,7 +116,7 @@ class AuthService
      * @return array
      */
     private function registerUser($request)
-    {   
+    {
         if (!Role::exists()) {
             $this->registerRoles();
         }
@@ -108,9 +125,19 @@ class AuthService
 
         $this->checkIfExists($validated);
 
-        $userDetails = $this->userDetailsService->userDetailsRequest($validated);
+        $user = $this->handleRegister($validated);
 
-        $this->handleRegister($validated, $userDetails);
+        $this->userDetailsService->userDetailsRequest($validated, $user);
+    }
+
+    private function filterUser($validated)
+    {
+        return [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'role_id' => UserRoles::EMPLOYEE->value,
+        ];
     }
 
     /**
@@ -119,8 +146,8 @@ class AuthService
     private function checkIfExists($request)
     {
         $exist = User::where('email', $request['email'])
-        ->orWhere('name', $request['name'])
-        ->exists();
+            ->orWhere('name', $request['name'])
+            ->exists();
 
         if ($exist) {
             throw AuthException::userAlreadyRegistered();
@@ -131,14 +158,15 @@ class AuthService
      * @param AuthRequest $request
      * @return array
      */
-    private function handleRegister($request, $userDetails)
+    private function handleRegister($request)
     {
+        $data = $this->filterUser($request);
+
         return User::firstOrCreate([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
-            'role_id' => UserRoles::EMPLOYEE->value,
-            'user_details_id' => $userDetails->id ?? null,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role_id' => $data['role_id'],
         ]);
     }
 
@@ -146,17 +174,16 @@ class AuthService
      * @param Request creates new roles enums exists
      */
     private function loginUser(AuthRequest $request)
-    {   
-            $authenticated = $request->authenticate();
-            $request = $request->safe();
-            
-            $user = User::where('email', $request['email'])->first();
-            if (!$authenticated || !$user || !Hash::check($request['password'], $user->password))
-            {
-                throw AuthException::invalidUserCredentials();
-            }
+    {
+        $authenticated = $request->authenticate();
+        $request = $request->safe();
 
-            return $user;
+        $user = User::where('email', $request['email'])->first();
+        if (!$authenticated || !$user || !Hash::check($request['password'], $user->password)) {
+            throw AuthException::invalidUserCredentials();
+        }
+
+        return $user;
     }
 
     /**
@@ -178,8 +205,8 @@ class AuthService
      * @param array $params
      * @return \Illuminate\Http\JsonResponse
      */
-    public function userResponse(array $params) : JsonResponse
-    {   
+    public function userResponse(array $params): JsonResponse
+    {
         Log::info('Status: Success \n' .  $params['message']);
         return response()->json([
             'status' => 'success',
@@ -189,5 +216,15 @@ class AuthService
                 'token_type' => !empty($params['token']) ? 'bearer' : 'revoked',
             ],
         ], ResponseCode::OK->value);
+    }
+
+    protected function authenticated(AuthResponse $request, $user)
+    {
+        return match ($user->role->role_name) {
+            'admin'    => redirect()->route('dashboard.home'),
+            'manager'  => redirect()->route('dashboard.home'),
+            'accountant'   => redirect()->route('cashier.home'),
+            default    => redirect()->route('cashier.home'),
+        };
     }
 }

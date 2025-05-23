@@ -26,7 +26,16 @@
             <tbody>
                 <!-- Only one tbody here -->
                 @foreach ($garments as $garment)
-                    <tr class="product-row" data-garment-id="{{ $garment->id }}">
+                    <tr class="product-row" 
+                    data-bs-toggle="offcanvas" 
+                    data-bs-target="#garmentCanvas"
+                    data-name="{{ $garment->product->product_name }}"
+                    data-rented-price="{{ $garment->getFormattedRentedPrice() }}"
+                    data-image="{{ $garment->getImageUrl() }}"
+                    data-description="{{ $garment->additional_description }}"
+                    data-condition="{{ $garment->condition->condition_name }}"
+                    data-size="{{ $garment->size->measurement }}"
+                    >
                         <td>{{ $garment->id }}</td>
                         <td>{{ $garment->product->product_name }}</td>
                         <td>{{ $garment->rent_price }}</td>
@@ -50,18 +59,13 @@
             </tbody> <!-- Only one tbody here -->
         </table>
 
-        <div class="sidepanel" id="garmentSidePanel">
-            {{-- side panel content --}}
-        </div>
-
-        <div class="side-panel" id="editGarmentPanel">
-            {{-- garment edit panel --}}
-        </div>  
-    
     </div>
+
+    <x-fragments.dynamic-off-canvas offCanvasId='garmentCanvas' />
 
     @push('scripts')
         <script src='{{ asset('scripts/garmentPanelsHandler.js') }}'></script>
+        <script src='{{ asset('scripts/dynamicOffCanvas.js') }}'></script>
     @endpush
 
 </x-layouts.admin>

@@ -6,6 +6,11 @@
 @endpush
 
 <x-layouts.cashlayout>
+
+    @if (Session('success'))
+        <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
+    @endif
+
     <div class="home-page">
         <div id="home-container">
             <!-- Tabs= -->
@@ -45,7 +50,16 @@
                 </thead>
                 <tbody>
                     @foreach ($productRents as $productRent)
-                        <tr class='table-rows'>
+                        <tr class='product-row' data-bs-toggle='offcanvas' data-bs-target='#dynamicCanvas'
+                            data-type="product"
+                            data-name="{{ $productRent->catalog->garment->product->product_name }}"
+                            data-rented-price="{{ $productRent->catalog->garment->getFormattedRentedPrice() }}"
+                            data-image="{{ $productRent->catalog->garment->getImageUrl() }}"
+                            data-description="{{ $productRent->catalog->garment->additional_description }}"
+                            data-condition="{{ ucfirst($productRent->productRentedStatus->status_name) }}"
+                            data-size="{{ $productRent->catalog->garment->size->measurement }}"
+                            data-start="{{ $productRent->customerRent->convertStartDateFormat() }}"
+                            data-end="{{ $productRent->customerRent->convertEndDateFormat() }}">
                             <td>{{ $productRent->id }}</td>
                             <td>{{ $productRent->catalog->garment->product->product_name }}</td>
                             <td>{{ $productRent->customerRent->customerDetail->name }}</td>
@@ -59,12 +73,12 @@
                                 @endif
                             </td>
                             <td class='status_col'>
-                                <form action="">
+                                <form action="{{ route('cashier.receive', $productRent->id) }}" method='POST'>
                                     @if ($productRent->productRentedStatus->status_name === 'rented')
-                                        <button type='button' class='btn btn-danger' data-bs-toggle="offcanvas"
-                                            data-bs-target="#productRentCanvas">Returned</button>
+                                        @csrf
+                                        <button type='submit' class='btn btn-danger'>Returned</button>
                                     @else
-                                        no action
+                                        <span>No action needed</span>
                                     @endif
                                 </form>
                             </td>
@@ -72,8 +86,6 @@
                     @endforeach
                 </tbody>
             </table>
-
-            <x-fragments.catalog-off-canvas canvasId='productRentCanvas' />
 
             <!-- Appointments Table -->
             <table id="appointments-table" style="display: none;">
@@ -89,20 +101,46 @@
                 </thead>
                 <tbody>
                     @foreach ($appointments as $appointment)
-                        <tr>
+                        <tr class='appointment-row' data-bs-toggle='offcanvas' data-bs-target='#dynamicCanvas'
+                        data-type="appointment"
+                                data-image="{{ asset('assets/images/h5.png') }}"
+                                data-date="{{ $appointment->appointment_date->format('F j, Y') }}"
+                                data-time="{{ $appointment->appointment_time->format('h:i:s A')  }}"
+                                data-status="{{ ucfirst($appointment->appointmentStatus->status_name) }}"
+                            >
                             <td>{{ $appointment->id }}</td>
                             <td>{{ $appointment->customerDetail->name }}</td>
-                            <td>{{ $appointment->appointment_date }}</td>
-                            <td>{{ $appointment->appointment_time }}</td>
+                            <td>{{ $appointment->appointment_date->format('F j, Y') }}</td>
+                            <td>{{ $appointment->appointment_time->format('h:i:s A') }}</td>
                             <td>
-                                @if ($appointment->appointmentStatus->id == 1)
+                                @if ($appointment->appointmentStatus->id == 2)
                                     <span
-                                        class="status confirmed">{{ $appointment->appointmentStatus->status_name }}</span>
+                                        class="status pending">{{ ucfirst($appointment->appointmentStatus->status_name) }}</span>
+                                @elseif ($appointment->appointmentStatus->id == 1)
+                                    <span
+                                        class="status confirmed">{{ ucfirst($appointment->appointmentStatus->status_name) }}</span>
+                                @elseif ($appointment->appointmentStatus->id == 4)
+                                    <span
+                                        class="status bg-danger">{{ ucfirst($appointment->appointmentStatus->status_name) }}</span>
                                 @endif
                             </td>
-                            <td>
-                                <button type='button' class='btn btn-warning' data-bs-toggle="offcanvas"
-                                    data-bs-target="#appointmentCanvas">Proceed</button>
+                            <td style="padding: 0;">
+                                <div class='d-flex flex-row gap-2 align-items-center w-100 h-100' style="padding: 0;">
+                                    @if ($appointment->appointmentStatus->id == 2)
+                                        <form action="{{ route('cashier.appointment.completed', $appointment) }}"
+                                            method='POST' class='p-0 m-0'>
+                                            @csrf
+                                            <button type='submit' class='btn btn-success'>Complete</button>
+                                        </form>
+                                        <form action="{{ route('cashier.appointment.cancelled', $appointment) }}"
+                                            method='POST' class='p-0 m-0'>
+                                            @csrf
+                                            <button type='submit' class='btn btn-danger'>Cancel</button>
+                                        </form>
+                                    @else
+                                        No action needed
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach
@@ -110,12 +148,19 @@
             </table>
         </div>
 
-        <x-fragments.catalog-off-canvas canvasId='appointmentCanvas' />
+          <x-fragments.catalog-off-canvas canvasId='dynamicCanvas' />
 
         <div class="appointment-side-panel" id="appointmentPanel" style="display: none;">
             <button class="back-btn" id="backBtn">
                 &#8592; Back
             </button>
+
+            @if ($errors->has('internal_error'))
+                <div class="alert alert-danger text-wrap mt-1">
+                    <strong>Error:</strong> {{ $errors->first('internal_error') }}
+                    <p class='p-0 m-0'>{{ $errors->first('internal_error_description') }}</p>
+                </div>
+            @endif
 
             <form action="{{ route('cashier.appointment.session') }}" method="POST">
                 @csrf
@@ -235,5 +280,6 @@
 
     @push('scripts')
         <script src={{ asset('scripts/cashierCalendar.js') }}></script>
+        <script src='{{ asset('scripts/appointmentCanvas.js') }}'></script>
     @endpush
 </x-layouts.cashlayout>

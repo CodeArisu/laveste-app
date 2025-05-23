@@ -51,6 +51,7 @@ enum StatusCode : int
     case UserNotFound = 10_007;
     case Unauthenticated = 10_008;
     case LogoutFailed = 10_009;
+    case AccountDisabled = 10_010;
 
     // product error responses
     case ProductNotFound = 12_000;

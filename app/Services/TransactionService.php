@@ -39,11 +39,11 @@ class TransactionService
             $catalogId = $request->only(['catalog']);
 
             $response = $this->setTransactionData($catalogId);
-
             return [
                 'message' => 'Transaction Created Successfully.',
                 'route' => 'cashier.checkout.receipt',
                 'transactionData' => $response['transaction'],
+                'additionalData' => $response['additional_data'],
             ];
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
@@ -61,6 +61,7 @@ class TransactionService
         $transactionSession = Session::get($sessionName);
 
         $event = new TransactionSession($transactionSession, $catalogId);
+
         event($event);
         // triggers transaction event
         \Log::info('Event Triggered');
@@ -106,7 +107,7 @@ class TransactionService
     {
         return $this->getDiscountedAmount($price, $discount);
     }
- 
+
     private function getDiscountedAmount($price, float $discount)
     {
         // price * 12%
@@ -315,9 +316,9 @@ class TransactionService
     }
 
     public function execVerifyCode($coupon)
-    {   
+    {
         $couponExists = $this->verifyCode($coupon);
-        
+
         $isDiscounted = $this->checkIfHasDiscount([
             'has_discount' => $couponExists['has_discount'],
             'coupon_type' => $couponExists['type'] ?? null,
@@ -370,7 +371,7 @@ class TransactionService
 
     private function totalPayments($couponCode, $payment, $price)
     {
-         // check discount_code if exists
+        // check discount_code if exists
         $couponExists = $this->verifyCode($couponCode);
 
         // checks if there is a coupon or discount applied
@@ -393,7 +394,7 @@ class TransactionService
         $this->checkIfPaymentExceeds($payment, $totalPayment);
 
         return [
-            'total_change' => $totalChange, 
+            'total_change' => $totalChange,
             'discount_data' => $isDiscounted,
             'total_amount' => $totalPayment,
         ];

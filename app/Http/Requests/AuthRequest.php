@@ -39,7 +39,7 @@ class AuthRequest extends FormRequest
 
             'first_name' => 'required|string|max:25',
             'last_name' => 'required|string|max:25',
-            'contact' => 'required|string|digits:11',
+            'contact' => 'required|string|digits:11|unique:user_details,contact',
             'address' => 'required|string|max:255'
         ];
     }
@@ -88,6 +88,7 @@ class AuthRequest extends FormRequest
             'address.required' => 'Address is required',
             'contact.required' => 'The contact number is required',
             'contact.digits' => 'The contact number must be 11 digits',
+            'contact.unique' => 'The contact number should be unique',
         ];
     }
 }

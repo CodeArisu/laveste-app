@@ -18,6 +18,12 @@ Route::middleware(['auth', 'web'])->group(function () {
     Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerIndex'])->name('form.register'); // register form page
     Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'registerUser'])->name('register');
 
+    Route::get('/edit/{user}', [\App\Http\Controllers\Auth\AuthController::class, 'edit'])->name('form.edit');
+    Route::put('/edit/{user}', [\App\Http\Controllers\Auth\AuthController::class, 'update'])->name('update');
+
+    Route::patch('/disable/{user}', [\App\Http\Controllers\Auth\AuthController::class, 'disable'])
+    ->name('disable');
+
     // cashier routes
     Route::middleware(['role:admin,manager,accountant'])->name('cashier.')->prefix('cashier')->group(function () {
 
@@ -40,14 +46,24 @@ Route::middleware(['auth', 'web'])->group(function () {
 
         Route::get('/checkout/receipt/{transaction}', [App\Http\Controllers\Api\Transactions\TransactionController::class, 'show'])->name('checkout.receipt');
 
-        Route::middleware(['role:admin,manager,accountant'])->name('appointment.')->prefix('appointment')->group(function () {
+        // sets catalog to received
+        Route::post('/receive/{productRent}', [App\Http\Controllers\Api\CashierController::class, 'productRentUpdate'])->name('receive');
+        
 
+        Route::middleware(['role:admin,manager,accountant'])->name('appointment.')->prefix('appointment')->group(function () {
             Route::get('/details', [\App\Http\Controllers\Api\AppointmentController::class, 'preindex'])->name('preindex');
             Route::post('/details', [\App\Http\Controllers\Api\AppointmentController::class, 'storeAppointmentSession'])->name('session');
 
-            Route::get('/details/process', [\App\Http\Controllers\Api\AppointmentController::class, 'index'])->name('checkout');
-            Route::post('/details/process', [\App\Http\Controllers\Api\AppointmentController::class, 'store'])->name('store');
-            
+            Route::get('/details/process', [\App\Http\Controllers\Api\AppointmentController::class, 'showProcess'])->name('process');
+            Route::post('/details/process', [\App\Http\Controllers\Api\AppointmentController::class, 'storeSession'])->name('store');
+
+            Route::get('/details/process/checkout', [\App\Http\Controllers\Api\AppointmentController::class, 'index'])->name('check');
+            Route::post('/details/process/checkout', [\App\Http\Controllers\Api\AppointmentController::class, 'store'])->name('checkout');
+
+            Route::get('/details/process/{appointment}', [\App\Http\Controllers\Api\AppointmentController::class, 'show'])->name('show');
+
+            Route::post('/{appointment}/completed', [App\Http\Controllers\Api\CashierController::class, 'appointmentCompleted'])->name('completed');
+            Route::post('/{appointment}/cancel', [App\Http\Controllers\Api\CashierController::class, 'appointmentCancelled'])->name('cancelled');
         });
     });
 
@@ -98,11 +114,6 @@ Route::middleware(['auth', 'web'])->group(function () {
         Route::get('/rented', [App\Http\Controllers\DashboardController::class, 'rented'])->name('rented');
     });
 });
-
-
-Route::get('/cashier/appointment/receipt', function () {
-    return view('src.cashier.receipt2');
-})->name('appointment.receipt');
 
 Route::get('/admin/users/edituser', function () {
     return view('src.admin.users.edituser');

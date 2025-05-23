@@ -31,7 +31,6 @@ class CompleteCheckoutService
                 $catalogData = Catalog::where('id', $transactionData['catalog_id'])->first();
 
                 $transactionData = $this->checkIfRegular($customerData['is_regular'], $transactionData);
-                
                 // records customer data
                 $productRent = $this->productRentService->execProductRent($customerData, $catalogData);
                 // records transaction data
@@ -99,7 +98,7 @@ class CompleteCheckoutService
         return [
             'discount_percent' => $transactionData['discount_amount'],
             'change' => $transactionData['change'],
-            'code' => $transactionData['code']
+            'code' => $transactionData['coupon_code'],
         ];
     }
 }

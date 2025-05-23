@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\AppointmentRequest;
+use App\Models\Transactions\Appointment;
 use App\Services\AppointmentService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Support\Facades\Session;
+
 
 class AppointmentController
 {
@@ -19,35 +21,56 @@ class AppointmentController
 
     public function storeAppointmentSession(Request $request)
     {
-        $request->merge([
-            'date_schedule' => Carbon::parse($request->date_schedule)->format('Y-m-d'),
-            'appointment_time' => date('H:i', strtotime($request->appointment_time))
-        ]);
+        $result = $this->appointmentService->storeSession($request);
 
-        $validated = Validator::make($request->all(), [
-            'date_schedule' => 'required|date|after_or_equal:today',
-            'appointment_time' => 'required|date_format:H:i'
-        ])->validate();
-
-        return redirect()->route('cashier.appointment.checkout')->with([
-            'date_schedule' => $validated['date_schedule'],
-            'appointment_time' => $validated['appointment_time'],
-        ]);
+        if ($result['success']) {
+            return redirect()->route('cashier.appointment.process')->with($result['data']);
+        } else {
+            return $result['error']['redirect'];
+        }
     }
 
-    public function index() 
-    {   
+    public function showProcess()
+    {
         if (!session()->has('date_schedule') || !session()->has('appointment_time')) {
-            return redirect()->back()->withErrors('Appointment schedule not set');
+            return redirect()->back() // Specify a concrete route
+                ->withErrors('Please select an appointment time first.');
         }
 
         return view('src.cashier.appointment');
     }
 
+    public function storeSession(AppointmentRequest $request)
+    {   
+        $validated = $request->validated();
+        // store session temporarily
+        Session::put($validated);
+
+        return redirect()->route('cashier.appointment.check');
+    }
+
+    public function index()
+    {   
+        if (!session()->has('appointment_date') || !session()->has('appointment_time') 
+            && !session()->has('name') && !session()->has('address') && !session()->has('contact')) {
+            return redirect()->back() // Specify a concrete route
+                ->withErrors('Please select an appointment time first.');
+        }
+
+        return view('src.cashier.checkout3');
+    }
+
     public function store(AppointmentRequest $request)
-    {
+    {   
         $appointmentData = $this->appointmentService->createAppointment($request);
-        
-        return redirect()->route($appointmentData['route'])->with('success', $appointmentData['message']);
+        // Clear the session data
+        session()->forget(['date_schedule', 'appointment_time', 'name', 'address', 'contact']);
+
+        return redirect()->route($appointmentData['route'], $appointmentData['appointment'])->with('success', $appointmentData['message']);
+    }
+
+    public function show(Appointment $appointment)
+    {
+        return view('src.cashier.receipt2', ['appointment' => $appointment]);
     }
 }

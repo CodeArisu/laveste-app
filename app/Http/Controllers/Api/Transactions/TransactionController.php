@@ -62,7 +62,10 @@ class TransactionController
     public function store(TransactionRequest $request)
     {
         $transaction = $this->transactionService->requestTransaction($request);
-        return redirect()->route($transaction['route'], ['transaction' => $transaction['transactionData']])->with('success', $transaction['message']);
+        return redirect()->route($transaction['route'], ['transaction' => $transaction['transactionData']])->with([
+            'success' => $transaction['message'],
+            'additional_data' => $transaction['additionalData'],
+        ]);
     }
 
     public function verifyCode(TransactionRequest $request)

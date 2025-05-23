@@ -25,7 +25,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
-        'user_details_id'
+        'disabled_at',
     ];
 
     /**
@@ -48,11 +48,22 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'user_details_id' => 'integer:nullable'
+            'user_details_id' => 'integer:nullable',
+            'disabled_at' => 'datetime',
         ];
     }
 
-    public function role() : BelongsTo
+    public function isDisabled()
+    {
+        return !is_null($this->disabled_at);
+    }
+
+    public function userDetail()
+    {
+        return $this->hasOne(UserDetail::class);
+    }
+
+    public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
@@ -62,13 +73,21 @@ class User extends Authenticatable
         return $this->hasOne(Catalog::class);
     }
 
-    public function hasRole($role) : bool
-    {
-        return $this->role->role_name === $role;
-    }
-
-    public function hasAnyRole(array $roles) : bool
+    public function hasAnyRole(array $roles): bool
     {
         return in_array($this->role->role_name, $roles);
+    }
+
+    public function hasRole($role): bool
+    {
+        if (is_string($role)) {
+            return strtolower($this->role->role_name) === strtolower($role);
+        }
+        
+        if ($role instanceof Role) {
+            return $this->role->id === $role->id;
+        }
+        
+        return false;
     }
 }

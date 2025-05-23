@@ -10,20 +10,11 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {   
+    {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
             $table->string('role_name');
             $table->timestamps();
-        });
-
-        Schema::create('user_details', function (Blueprint $table) {
-            $table->id();
-            $table->string('first_name', 25);
-            $table->string('last_name', 25);
-            $table->text('address', 255);
-            $table->string('contact', 11)->unique();
-             $table->timestamps();
         });
 
         Schema::create('users', function (Blueprint $table) {
@@ -32,21 +23,33 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-
-            $table->unsignedBigInteger('user_details_id')->nullable();
-            $table->foreign('user_details_id')
-            ->references('id')
-            ->on('user_details')
-            ->onDelete('cascade');
-
             $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')
-            ->references('id')
-            ->on('roles')
-            ->onDelete('cascade');
+                ->references('id')
+                ->on('roles')
+                ->onDelete('cascade');
 
             $table->rememberToken();
+
+            $table->timestamp('disabled_at')->nullable();
             $table->timestamps(6);
+        });
+
+        Schema::create('user_details', function (Blueprint $table) {
+            $table->id();
+            $table->string('first_name', 25);
+            $table->string('last_name', 25);
+
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
+
+            $table->text('address', 255);
+            $table->string('contact', 11)->unique();
+            $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

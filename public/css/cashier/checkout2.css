@@ -7,7 +7,7 @@
     max-width: 1280px;  /* was 960px */
     margin: 50px auto;
     padding: 30px;
-    background: #fbf1de;
+   
 }
 
 .checkout-header {
@@ -35,13 +35,14 @@
     font-weight: normal;
 }
 
-.checkout-body {
+.checkout-body form{
     display: flex;
+    flex-direction: row;
     gap: 60px;  /* was 40px */
 }
 
 .shipping-section, .order-section {
-    background: #fbf1de;
+   
 }
 
 .shipping-section {
@@ -67,7 +68,7 @@
     padding: 15px;  /* was 10px */
     border: 1px solid #c88c6b;
     border-radius: 10px;
-    background: #fbf1de;
+   
     font-size: 18px;
     outline: none;
 }

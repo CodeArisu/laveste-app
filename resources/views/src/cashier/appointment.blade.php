@@ -10,14 +10,23 @@
                 <div class='col'>
                     <label class="form-label">Customer Name <span class='importance'>*</span></label>
                     <input type="text" name="name" class="form-control rounded-pill form-input">
+                    @error('name')
+                        <span class='text-danger'>{{ $message }}</span>
+                    @enderror
                 </div>
                 <div class='col'>
                     <label class="form-label">Address <span class='importance'>*</span></label>
                     <input type="text" name="address" class="form-control rounded-pill form-input">
+                    @error('address')
+                        <span class='text-danger'>{{ $message }}</span>
+                    @enderror
                 </div>
                 <div class='col'>
                     <label class="form-label">Contact Number <span class='importance'>*</span></label>
                     <input type="text" name="contact" class="form-control rounded-pill form-input">
+                     @error('contact')
+                        <span class='text-danger'>{{ $message }}</span>
+                    @enderror
                 </div>
                 <div>
                     <input name='appointment_date' type="hidden"
@@ -47,33 +56,6 @@
                     <input type="text" name="preference" class="form-control rounded-pill form-input">
                 </div>
             </div>
-            {{-- <div class="row g-3 align-items-start mb-5"> <!-- Changed to align-items-start -->
-                <!-- Left Column (Event Type and Date) -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Venue</label>
-                        <input type="text" name="venue" class="form-control rounded-pill form-input">
-                    </div>
-                    <div>
-                        <label class="form-label">Event Date</label>
-                        <input type="date" name="event_date" class="form-control rounded-pill form-input">
-                    </div>
-                </div>
-
-                <!-- Right Column (Style Preference) -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label class="form-label">Reason For Renting</label>
-                        <input type="text" name="reason_for_renting" class="form-control rounded-pill form-input">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Style Preference</label>
-                        <input type="text" name="stylePreference" class="form-control rounded-pill form-input">
-                    </div>
-                    <!-- Empty div to occupy same vertical space as Event Date -->
-                    <div style="visibility: hidden; height: 20px;"></div>
-                </div>
-            </div> --}}
 
             <div class="btn-group">
                 <a href="{{ route('cashier.home') }}" class="btn" style='background-color: #973131; color: #ffff;'>←
