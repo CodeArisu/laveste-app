@@ -15,7 +15,7 @@ class GarmentController extends ApiBaseController
     public function index()
     {
         $garments = Garment::with(['product', 'size', 'condition'])->get();
-        return view('src.admin.garment', ['garments' => GarmentResource::collection($garments)]);
+        return view('src.admin.Garments.GarmentIndex', ['garments' => GarmentResource::collection($garments)]);
     }
 
     public function store(GarmentRequest $request)
@@ -32,15 +32,15 @@ class GarmentController extends ApiBaseController
         return GarmentResource::collection($garments);
     }
 
-    public function update(GarmentRequest $request, Garment $garment)
-    {
-        $updatedGarment = $this->garmentService->requestUpdateGarment($request, $garment);
-        return $this->sendResponse($updatedGarment['message'], $updatedGarment['garment']);
-    }
+    // public function update(GarmentRequest $request, Garment $garment)
+    // {
+    //     $updatedGarment = $this->garmentService->requestUpdateGarment($request, $garment);
+    //     return $this->sendResponse($updatedGarment['message'], $updatedGarment['garment']);
+    // }
 
-    public function destroy(Garment $garment)
-    {
-        $deletedGarment = $this->garmentService->requestDeleteGarment($garment);
-        return $this->sendResponse($deletedGarment['message'], $deletedGarment['garment']);
-    }
+    // public function destroy(Garment $garment)
+    // {
+    //     $deletedGarment = $this->garmentService->requestDeleteGarment($garment);
+    //     return $this->sendResponse($deletedGarment['message'], $deletedGarment['garment']);
+    // }
 }

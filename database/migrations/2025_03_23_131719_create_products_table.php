@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('supplier_name')->nullable();
             $table->string('company_name')->nullable();
             $table->text('address', 255);
             $table->string('contact', 11);
             $table->timestamps();
         });
-        
+
         Schema::create('types', function (Blueprint $table) {
             $table->id();
             $table->string('type_name')->nullable();
@@ -36,41 +36,40 @@ return new class extends Migration
             $table->string('id')->primary();
             $table->string('product_name', 50);
 
-            $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->string('supplier_id')->nullable();
             $table->foreign('supplier_id')
-            ->references('id')
-            ->on('suppliers')
-            ->onDelete('cascade');
-            
+                ->references('id')
+                ->on('suppliers')
+                ->onDelete('cascade');
+
             $table->double('original_price', 16, 2);
             $table->text('description', 255);
             $table->timestamps();
         });
 
         Schema::create('product_categories', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
 
             $table->unsignedBigInteger('type_id');
             $table->foreign('type_id')
-            ->references('id')
-            ->on('types')
-            ->onDelete('cascade');
+                ->references('id')
+                ->on('types')
+                ->onDelete('cascade');
 
             $table->unsignedBigInteger('subtype_id');
             $table->foreign('subtype_id')
-            ->references('id')
-            ->on('subtypes')
-            ->onDelete('cascade');
+                ->references('id')
+                ->on('subtypes')
+                ->onDelete('cascade');
 
             $table->string('product_id');
             $table->foreign('product_id')
-            ->references('id')
-            ->on('products')
-            ->onDelete('cascade');
+                ->references('id')
+                ->on('products')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });
-
     }
 
     /**

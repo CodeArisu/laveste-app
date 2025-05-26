@@ -1,6 +1,6 @@
 .product-page {
     padding: 40px 60px;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 
 .header-section {
@@ -43,40 +43,59 @@
 }
 
 .product-table {
+    color: #9b3c3c;
     width: 100%;
-    border-collapse: collapse; /* Ensures no gaps between rows */
+    border-collapse: separate; /* Ensures no gaps between rows */
     text-align: left;
 }
 
 .product-table thead {
-    background-color: #f7ecd3;
+    border-radius: 20px 20px 0 0; /* Rounded corners for the header */
+    background: #f7ecd3;
+    overflow: hidden;
+}
+.product-table thead tr {
+    cursor: pointer; /* Changes cursor to indicate it's clickable */
+    border-bottom: 2px solid #9b3c3c; /* Adds a thicker red border */
+}
+.product-table thead tr th:last-child {
+    text-align: end;
 }
 
-.product-table th {
-    padding: 20px 15px;
-    color: #9b3c3c;
+.product-table thead th {
+    padding: 20px 2em;
     font-size: 1.1rem;
+    position: relative; /* Helps with border rendering */
+}
+.product-table thead th:first-child {
+    border-top-left-radius: 20px; /* Round first header corner */
+}
+.product-table thead th:last-child {
+    border-top-right-radius: 20px; /* Round last header corner */
+    text-align: end;
+    padding: 20px 1em 1em 0;
 }
 
-.product-table td {
-    padding: 20px 15px;
-    color: #9b3c3c;
-    font-size: 1rem;
-    background-color: #fff; /* Optional: add this to make gaps visible */
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
+.product-table tbody tr {
+    background: #fdf6f0; /* Light background for rows */
+    border-bottom: 1px solid #e2b8a0; /* Subtle border between rows */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
-
-.product-table tr {
-    cursor: pointer;  /* Changes cursor to indicate it's clickable */
-    border-bottom: 1px solid #9b3c3c;  /* Adds a thicker red border */
+.product-table tbody tr:hover {
+    background: #f7ecd3; /* Light background on hover */
 }
-
-.product-table tr:last-child {
-    border-bottom: none;  /* Remove border for the last row */
+.product-table tbody tr td{
+    padding: 20px 2em;
 }
-
-.product-table td:hover {
-    background-color: #f7ecd3; /* Light gray background when hovered */
+.product-table tbody tr td:last-child {
+    text-align: end;
+}
+.product-table tbody tr td:last-child .action-btn {
+    padding: 0;
+    border: none;
+}
+.dropdown .action-btn.dropdown-toggle::after {
+    content: none !important;
 }
 
 .status {

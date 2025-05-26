@@ -3,7 +3,6 @@
         <link rel="stylesheet" href="{{ asset('css/admin/dashboard.css') }}">
     @endpush
     <div class="dashboard">
-
         @if (Session('success'))
             <x-fragments.alert-response message="{{ Session('success') }}" type="success" />
         @endif

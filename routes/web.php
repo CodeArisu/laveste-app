@@ -85,7 +85,6 @@ Route::get('/dashboard/transactions', function () {
     return view('src.admin.transactions');
 })->name('transactions');
 
-
 Route::get('/admin/users/edituser', function () {
     return view('src.admin.users.edituser');
 });

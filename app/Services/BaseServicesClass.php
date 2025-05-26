@@ -7,5 +7,5 @@ use App\Traits\ResponsesTrait;
 
 abstract class BaseServicesClass 
 {
-    use DoubleValidation, ResponsesTrait;
+
 }

@@ -2,12 +2,14 @@
 
 namespace App\Models\Products;
 
+use Illuminate\Database\Eloquent\Concerns\HasUniqueStringIds;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class ProductCategories extends Model
 {   
-    use HasFactory;
+    use HasFactory, HasUniqueStringIds;
     
     protected $table = 'product_categories';
 
@@ -36,5 +38,15 @@ class ProductCategories extends Model
     public function subtype()
     {
         return $this->belongsTo(Subtype::class, 'subtype_id');
+    }
+
+     protected function isValidUniqueId($value): bool
+    {
+        return true;
+    }
+
+    public function newUniqueId()
+    {
+        return 'CAT-' . Str::ulid();
     }
 }

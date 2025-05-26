@@ -6,5 +6,5 @@ use App\Traits\ResponsesTrait;
 
 abstract class ApiBaseController    
 {    
-    use ResponsesTrait;
+
 }

@@ -9,7 +9,6 @@
                 <span>Admin {{ Auth::user()->name }}</span>
                 <div class="avatar">
                     <img src="{{ asset('assets/images/catty.jpg') }}" alt="Admin Avatar">
-                    
                 </div>
                 <form action="{{ route('logout') }}" method="POST" class="p-0 d-inline-block">
                     @csrf
@@ -51,26 +50,17 @@
                             <img src="{{ asset('/assets/icons/i7.png') }}" alt="Users">
                         </a>
                     </li>
-
-
                     <li class="nav-item">
                         <a href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             <img src="{{ asset('/assets/icons/i1.png') }}" alt="Logout">
                         </a>
                     </li>
-
-
-
                 </ul>
-
             </aside>
-
             <div class="content-area">
                 {{ $slot }}
             </div>
         </div>
-
-
     </div>
 </x-layouts.app>
