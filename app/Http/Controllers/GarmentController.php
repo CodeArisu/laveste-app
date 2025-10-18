@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Requests\GarmentRequest;
 use App\Http\Resources\GarmentResource;
 use App\Models\Garments\Garment;
 use App\Services\GarmentService;
 
-class GarmentController extends ApiBaseController
-{   
+class GarmentController extends BaseController
+{
     public function __construct(protected GarmentService $garmentService) {}
-    
+
     public function index()
     {
         $garments = Garment::with(['product', 'size', 'condition'])->get();
@@ -20,14 +19,14 @@ class GarmentController extends ApiBaseController
     }
 
     public function store(GarmentRequest $request)
-    {   
+    {
         $createdGarment = $this->garmentService->requestCreateGarment($request);
-        
+
         return redirect()->route('dashboard.garment.index')->with('success', $createdGarment['message']);
     }
 
     public function edit($garmentId)
-    {   
+    {
         $garment = Garment::with(['product', 'size', 'condition'])->findOrFail($garmentId);
         return view('src.admin.partials.garment-edit-details', compact('garment'));
     }
@@ -49,7 +48,7 @@ class GarmentController extends ApiBaseController
     public function destroy(Garment $garment)
     {
         $deletedGarment = $this->garmentService->requestDeleteGarment($garment);
-        
+
         return $this->sendResponse($deletedGarment['message'], $deletedGarment['garment']);
     }
 }

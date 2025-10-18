@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Models\Transactions\Appointment;
 use App\Models\Transactions\ProductRent;
@@ -9,15 +9,15 @@ use App\Services\ProductRentService;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 
-class CashierController
-{   
+class CashierController extends BaseController
+{
     public function __construct(
-        protected TransactionService $transactionService, 
+        protected TransactionService $transactionService,
         protected ProductRentService $productRentService,
     ){}
 
-    public function rentalsIndex() 
-    {   
+    public function rentalsIndex()
+    {
         $productRents = ProductRent::with(['catalog.garment', 'customerRent.customerDetail'])->get();
         $customerAppointments = Appointment::with(['customerDetail', 'appointmentStatus'])->get();
 
@@ -28,14 +28,14 @@ class CashierController
     }
 
     public function productRentUpdate(ProductRent $productRent)
-    {   
+    {
         $productReceive = $this->productRentService->updateProductRent($productRent);
 
         return redirect()->back()->with('success', $productReceive['message']);
     }
 
     public function appointmentCompleted(Appointment $appointment)
-    {   
+    {
         $this->productRentService->updateToCompleted($appointment);
 
         return redirect()->back()->with('success', 'Updated to complete');

@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\Transactions;
+namespace App\Http\Controllers;
 
 use App\Services\CustomerDetailService;
 use Illuminate\Http\Request;
-
 
 class CustomerDetailsController
 {

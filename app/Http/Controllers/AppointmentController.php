@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Requests\AppointmentRequest;
 use App\Models\Transactions\Appointment;
@@ -41,7 +41,7 @@ class AppointmentController
     }
 
     public function storeSession(AppointmentRequest $request)
-    {   
+    {
         $validated = $request->validated();
         // store session temporarily
         Session::put($validated);
@@ -50,8 +50,8 @@ class AppointmentController
     }
 
     public function index()
-    {   
-        if (!session()->has('appointment_date') || !session()->has('appointment_time') 
+    {
+        if (!session()->has('appointment_date') || !session()->has('appointment_time')
             && !session()->has('name') && !session()->has('address') && !session()->has('contact')) {
             return redirect()->back() // Specify a concrete route
                 ->withErrors('Please select an appointment time first.');
@@ -61,7 +61,7 @@ class AppointmentController
     }
 
     public function store(AppointmentRequest $request)
-    {   
+    {
         $appointmentData = $this->appointmentService->createAppointment($request);
         // Clear the session data
         session()->forget(['date_schedule', 'appointment_time', 'name', 'address', 'contact']);

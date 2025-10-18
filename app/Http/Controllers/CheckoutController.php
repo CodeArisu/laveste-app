@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Transactions;
+namespace App\Http\Controllers;
 
 use App\Models\Catalog;
 use App\Models\Transactions\Transaction;
@@ -14,7 +14,7 @@ class CheckoutController
     ) {}
 
     public function show(Transaction $transaction)
-    {   
+    {
         return view('src.cashier.receipt', ['transaction' => $transaction]);
     }
 }
