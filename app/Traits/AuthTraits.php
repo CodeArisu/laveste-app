@@ -4,25 +4,31 @@ namespace App\Traits;
 
 use App\Exceptions\AuthException;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 use App\Enum\UserRoles;
 
 use App\Models\Auth\Role;
+use Exception;
 
 trait AuthTraits
 {
     /**
      * @param LoginRequest $validated
      */
-    public function loginUser($validated)
+    public function authenticate($validated)
     {
         // checks if the user exists on db
         $user = $this->model->where('email', $validated['email'])->first();
 
-        // verifies the password
         if (!$user || !Hash::check($validated['password'], $user->password)) {
-            throw AuthException::invalidUserCredentials();
+            throw new Exception('Invalid credentials provided');
         }
+
+        Auth::login($user);
+
+        session()->regenerate();
+        session()->save();
 
         return $user;
     }
@@ -31,7 +37,7 @@ trait AuthTraits
      * @param RegisterRequest $validated
      * @return array
      */
-    public function registerUser($validated)
+    public function register($validated)
     {
         // checks if roles exist, if not creates them
         if (!Role::exists()) {
@@ -45,20 +51,23 @@ trait AuthTraits
         $user = $this->handleRegister($validated);
 
         if (!$user) {
-            throw AuthException::userRegistrationFailed();
+            throw new Exception('User registration failed');
         }
 
         return $user;
     }
 
-    public function logoutUser($user)
+    public function logout($user)
     {
         // Checks if user is authenticated
         if (!$user) {
-            throw AuthException::unauthenticated('No authenticated user found');
+            throw new Exception('User is not authenticated');
         }
         // logs out user
-        $user->logout();
+        Auth::logout();
+
+        session()->invalidate();
+        session()->regenerateToken();
     }
 
     /**
@@ -107,14 +116,17 @@ trait AuthTraits
      */
     public function userRedirect($user)
     {
-        // returns matched route and message based on user role
-        return !$user ? match ($user->role->role_name) {
-            'admin'        => redirect()->route('dashboard.home'),
-            'manager'      => redirect()->route('dashboard.home'),
-            'accountant'   => redirect()->route('cashier.home'),
-            'guest'        => redirect()->route('cashier.home'),
-            default        => redirect()->back(),
-        } : [redirect()->route('login')];
+        // Check if user exists and has a role
+        if (!$user || !$user->role) {
+            return route('login');
+        }
+
+        // Return matched route based on user role
+        return match ($user->role->role_name) {
+            'admin',      'manager'    => route('dashboard.home'),
+            'accountant', 'guest'      => route('cashier.home'),
+            default                    => route('cashier.home')
+        };
     }
 
     /**
@@ -142,7 +154,12 @@ trait AuthTraits
             ->exists();
 
         if ($exist) {
-            throw AuthException::userAlreadyRegistered();
+            return [
+                'error' => true,
+                'message' => 'User already exists',
+                'next' => null,
+                'data' => []
+            ];
         }
     }
 }

@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Catalog;
-use App\Models\Products\Product;
 use Illuminate\Support\Facades\Route;
 
 
@@ -12,11 +10,21 @@ Route::get('/', function () {
 Route::get('/login', [\App\Http\Controllers\Users\AuthController::class, 'loginIndex'])->name('form.login'); // login form page
 Route::post('/login', [\App\Http\Controllers\Users\AuthController::class, 'loginUser'])->name('login');
 
-Route::middleware(['auth', 'web'])->group(function () {
+Route::get('/register', [\App\Http\Controllers\Users\AuthController::class, 'registerIndex'])->name('form.register'); // register form page
+Route::post('/register', [\App\Http\Controllers\Users\AuthController::class, 'registerUser'])->name('register');
+
+
+Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Users\AuthController::class, 'logoutUser'])->name('logout');
 
-    Route::get('/register', [\App\Http\Controllers\Users\AuthController::class, 'registerIndex'])->name('form.register'); // register form page
-    Route::post('/register', [\App\Http\Controllers\Users\AuthController::class, 'registerUser'])->name('register');
+    Route::get('/test', function () {
+    return 'Redirect successful!';
+    })->name('test');
+
+    Route::get('/redirect', function () {
+        return redirect()->route('test');
+    });
+
 
     // Route::get('/edit/{user}', [\App\Http\Controllers\Users\AuthController::class, 'edit'])->name('form.edit');
     // Route::put('/edit/{user}', [\App\Http\Controllers\Users\AuthController::class, 'update'])->name('update');
@@ -26,7 +34,6 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // cashier routes
     Route::middleware(['role:admin,manager,accountant'])->name('cashier.')->prefix('cashier')->group(function () {
-
         require __DIR__ . '/cashier.php';
 
         Route::middleware(['role:admin,manager,accountant'])->name('appointment.')->prefix('appointment')->group(function () {
@@ -36,7 +43,6 @@ Route::middleware(['auth', 'web'])->group(function () {
 
     // dashboard routes
     Route::name('dashboard.')->prefix('dashboard')->group(function () {
-
         Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->name('home');
 
         Route::post('/code', [\App\Http\Controllers\DashboardController::class, 'generate'])->name('code');

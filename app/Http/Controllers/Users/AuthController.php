@@ -11,7 +11,10 @@ use App\Services\AuthService;
 
 class AuthController extends BaseController
 {
-    public function __construct(protected AuthService $authService) {}
+    public function __construct(
+        // auth service injection
+        protected AuthService $authService
+    ) {}
 
     /**
      * @param RegisterRequest $request
@@ -20,7 +23,7 @@ class AuthController extends BaseController
     public function registerUser(RegisterRequest $request)
     {
         $response = $this->authService->registerRequest($request);
-        return $response[0]->with('success', 'Successfully Registered');
+        return $this->getResponse($response);
     }
 
     // Registration form page
@@ -36,7 +39,7 @@ class AuthController extends BaseController
     public function loginUser(LoginRequest $request)
     {
         $response = $this->authService->loginRequest($request);
-        return $response[0]->with('success', 'Successfully Logged In');
+        return $this->getResponse($response);
     }
 
     // Login form page
@@ -52,6 +55,6 @@ class AuthController extends BaseController
     public function logoutUser(Request $request)
     {
         $response = $this->authService->logoutRequest($request);
-        return $response[0]->with('success', 'Successfully Logged Out');
+        return $this->getResponse($response);
     }
 }
