@@ -29,7 +29,7 @@ class AuthController extends BaseController
     // Registration form page
     public function registerIndex()
     {
-        return view('src.admin.users.register');
+        return view('src.dashboard.users.register');
     }
 
     /**

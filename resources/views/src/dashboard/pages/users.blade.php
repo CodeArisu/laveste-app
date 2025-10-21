@@ -66,7 +66,7 @@
                 <div class="section">
                     <div class="section-title">
                         <h2>User Information</h2>
-                        <a href="{{ route('form.edit', ['user' => $user->id]) }}" class="edit-btn" id="editUserBtn">
+                        <a href="{{ route('user.form.edit', ['user' => $user->id]) }}" class="edit-btn" id="editUserBtn">
                             <i class="fas fa-edit"></i> Edit
                         </a>
                     </div>

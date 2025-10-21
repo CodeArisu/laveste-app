@@ -3,18 +3,14 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
-use App\Traits\AuthTraits;
+use App\Traits\DoubleValidation;
+use App\Traits\ProductTraits;
 
-use App\Models\Auth\User;
-
-abstract class UserRepository implements RepositoryInterface
+abstract class ProductRepository implements RepositoryInterface
 {
-    // global trait
-    use AuthTraits;
-
-    // model instance
-    protected User $model;
+    use DoubleValidation, ProductTraits;
+    // main model instance
+    protected Model $model;
 
     /**
      * @param Model $model
@@ -26,26 +22,24 @@ abstract class UserRepository implements RepositoryInterface
 
     /**
      * @param array $data
-     * @return Model
      */
     public function create(array $data): Model
     {
-        return $this->model->create($data);
-    }
-
-    /**
-     * @param array $data
-     * @return bool
-     */
-    public function update($id, array $data): bool
-    {
-        $query = $this->find($id);
-        return $query ? $query->update($data) : false;
+        return $this->model->firstOrCreate($data);
     }
 
     /**
      * @param $id
-     * @return bool
+     * @param array $data
+     */
+    public function update($id, array $data): bool
+    {
+        $query = $this->find($id);
+        return $query ? $this->model->update($data) : false;
+    }
+
+    /**
+     * @param $id
      */
     public function delete($id): bool
     {
@@ -55,7 +49,6 @@ abstract class UserRepository implements RepositoryInterface
 
     /**
      * @param $id
-     * @return Model|null
      */
     public function find($id): ?Model
     {
@@ -63,9 +56,9 @@ abstract class UserRepository implements RepositoryInterface
     }
 
     /**
-     * @return Collection
+     * returns a query
      */
-    public function all(): Collection
+    public function all()
     {
         return $this->model->all();
     }

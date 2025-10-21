@@ -2,30 +2,50 @@
 
 namespace App\Http\Controllers\Users;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\UserRequest\StoreRequest;
 use App\Http\Requests\UserRequest\UpdateRequest;
 use App\Services\UserService;
 
-class UserController
+class UserController extends BaseController
 {
-    public function __construct(protected UserService $userService) {}
+    public function __construct(
+        // user service injection
+        protected UserService $userService
+    ) {}
 
+    // users data page
     public function index()
     {
         $user = $this->userService->getUser();
-        return view('src.admin.users', ['users' => $user]);
+        return view('src.dashboard.pages.users', ['users' => $user]);
     }
 
-    public function edit()
+    public function create()
     {
-        return view('src.admin.users.edituser');
+        // return view('src.admin.users.adddetails');
     }
 
+    public function store(StoreRequest $request, $user)
+    {
+        $response = $this->userService->storeRequest($request, $user);
+        return $this->getResponse($response);
+    }
+
+    // users edit form page
+    public function edit($user)
+    {
+        return view('src.dashboard.users.edit', ['user' => $user]);
+    }
+
+    /**
+     * @param UpdateRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(UpdateRequest $request)
     {
         $response = $this->userService->updateRequest($request);
-        return redirect()->route($response)
-            ->with('success', 'User successfully updated');
+        return $this->getResponse($response);
     }
 
     // public function update(User $user, Request $request)
@@ -63,9 +83,13 @@ class UserController
     //     }
     // }
 
-    // public function disable(User $user)
-    // {
-    //     $user->update(['disabled_at' => now()]);
-    //     return redirect()->back()->with('success', 'User disabled');
-    // }
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function disable($id)
+    {
+        $response = $this->userService->disableRequest($id);
+        return $this->getResponse($response);
+    }
 }

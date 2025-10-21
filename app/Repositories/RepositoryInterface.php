@@ -18,22 +18,22 @@ interface RepositoryInterface
      * @param array $data
      * @return bool
      */
-    public function update(int $id, array $data): bool;
+    public function update($id, array $data): bool;
 
     /**
      * @param Model $model
      * @return bool
      */
-    public function delete(int $id): bool;
+    public function delete($id): bool;
 
     /**
-     * @param int $id
+     * @param any $id
      * @return Model|null
      */
-    public function find(int $id): ?Model;
+    public function find($id): ?Model;
 
     /**
-     * @return Collection
+     * @return Query
      */
-    public function all(): Collection;
+    public function all();
 }
