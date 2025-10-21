@@ -23,16 +23,19 @@ class DashboardController
         $discounts = Discounts::cases();
         $codes = Discount::all();
 
-        return view('src.dashboard.index',
-        [
-            'productCount' => count($product),
-            'catalogCount' => count($catalog),
-            'discounts' => $discounts,
-            'codes' => $codes,
-        ]);
+        return view(
+            'src.dashboard.index',
+            [
+                'productCount' => count($product),
+                'catalogCount' => count($catalog),
+                'discounts' => $discounts,
+                'codes' => $codes,
+            ]
+        );
     }
 
-    public function generate() {
+    public function generate()
+    {
         $generatedCode = $this->generateString();
 
         return redirect()->back()->with(['generatedCode' => $generatedCode]);
@@ -61,13 +64,14 @@ class DashboardController
     {
         $transactions = Transaction::with('paymentMethod', 'productRent')->get();
 
-        return view('src.admin.transactions', ['transactions' => $transactions]);
+        return view('src.dashboard.pages.transactions', ['transactions' => $transactions]);
     }
 
     public function rented()
     {
+
         $productRented = ProductRent::with('customerRent', 'rentDetail', 'catalog', 'productRentedStatus')->get();
 
-        return view('src.admin.prodrented', ['productRents' => $productRented]);
+        return view('src.dashboard.pages.rents', ['productRents' => $productRented]);
     }
 }

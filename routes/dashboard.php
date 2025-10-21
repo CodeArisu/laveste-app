@@ -7,8 +7,7 @@ Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index'])->na
 Route::post('/code', [\App\Http\Controllers\DashboardController::class, 'generate'])->name('code');
 Route::post('/code/register', [\App\Http\Controllers\DashboardController::class, 'register'])->name('code.register');
 
-Route::get('/users', [App\Http\Controllers\Users\AuthController::class, 'index'])->name('users')->middleware(['role:admin']);
-
+Route::get('/users', [App\Http\Controllers\Users\UserController::class, 'index'])->name('users')->middleware(['role:admin']);
 // dashboard products routes
 Route::middleware(['role:admin'])->name('product.')->prefix('product')->group(function () {
     require __DIR__ . '/products.php';
