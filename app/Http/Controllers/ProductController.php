@@ -44,8 +44,10 @@ class ProductController
     public function show(Product $product)
     {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view('src.admin.adproducts.infoprod',
-        ['products' => $product, 'conditions' => ConditionStatus::cases(), 'measurements' => Measurement::cases()]);
+        return view(
+            'src.dashboard.products.details',
+            ['products' => $product, 'conditions' => ConditionStatus::cases(), 'measurements' => Measurement::cases()]
+        );
     }
 
     public function edit(Product $product)

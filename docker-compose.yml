@@ -1,0 +1,54 @@
+services:
+    app:
+        build: .
+        container_name: Lavest-app
+        ports:
+            - "8000:8000"
+        command: php artisan serve --host=0.0.0.0 --port=8000
+        env_file:
+            - .env
+        volumes:
+            - ./:/var/www/html
+        depends_on:
+            - db
+        networks:
+            - app_network
+
+    db:
+        image: mysql:8.0
+        container_name: Lavest-db
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: rootpassword
+            MYSQL_DATABASE: mydatabase
+            MYSQL_USER: myuser
+            MYSQL_PASSWORD: mypassword
+        volumes:
+            - db_data:/var/lib/mysql
+        ports:
+            - "3306:3306"
+        networks:
+            - app_network
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: Lavest-phpmyadmin
+        restart: always
+        ports:
+            - "8080:80"      # you’ll access it via http://localhost:8080
+        environment:
+            PMA_HOST: Lavest-db
+            PMA_USER: myuser
+            PMA_PASSWORD: mypassword
+            PMA_ARBITRARY: 1
+        depends_on:
+            - db
+        networks:
+            - app_network
+
+networks:
+    app_network:
+        driver: bridge
+
+volumes:
+    db_data:

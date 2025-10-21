@@ -15,7 +15,7 @@ class GarmentController extends BaseController
     {
         $garments = Garment::with(['product', 'size', 'condition'])->get();
 
-        return view('src.admin.garment', ['garments' => GarmentResource::collection($garments)]);
+        return view('src.dashboard.pages.garments', ['garments' => GarmentResource::collection($garments)]);
     }
 
     public function store(GarmentRequest $request)
@@ -28,14 +28,14 @@ class GarmentController extends BaseController
     public function edit($garmentId)
     {
         $garment = Garment::with(['product', 'size', 'condition'])->findOrFail($garmentId);
-        return view('src.admin.partials.garment-edit-details', compact('garment'));
+        return view('src.dashboard.partials.garment-edit-details', compact('garment'));
     }
 
     public function show($garmentId)
     {
         // Eager load the relationships to avoid N+1 query problem
         $garment = Garment::with(['product', 'size', 'condition'])->findOrFail($garmentId);
-        return view('src.admin.partials.garment-details', compact('garment'));
+        return view('src.dashboard.partials.garment-details', compact('garment'));
     }
 
     public function update(GarmentRequest $request, Garment $garment)

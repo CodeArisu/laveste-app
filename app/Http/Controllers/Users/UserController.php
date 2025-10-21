@@ -18,7 +18,7 @@ class UserController extends BaseController
     public function index()
     {
         $user = $this->userService->getUser();
-        return view('src.admin.users', ['users' => $user]);
+        return view('src.dashboard.pages.users', ['users' => $user]);
     }
 
     public function create()
@@ -33,9 +33,9 @@ class UserController extends BaseController
     }
 
     // users edit form page
-    public function edit()
+    public function edit($user)
     {
-        return view('src.admin.users.edituser');
+        return view('src.dashboard.users.edit', ['user' => $user]);
     }
 
     /**
