@@ -13,19 +13,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class DashboardController
-{   
+{
     use RandomStringGenerator;
 
     public function index()
-    {   
+    {
         $product = Product::all();
         $catalog = Catalog::all();
         $discounts = Discounts::cases();
         $codes = Discount::all();
 
-        return view('src.admin.dashboard', 
+        return view('src.dashboard.index',
         [
-            'productCount' => count($product), 
+            'productCount' => count($product),
             'catalogCount' => count($catalog),
             'discounts' => $discounts,
             'codes' => $codes,
@@ -39,7 +39,7 @@ class DashboardController
     }
 
     public function register(Request $request)
-    {   
+    {
         $validated = Validator::make($request->all(), [
             'code' => 'string|unique:discounts,code|max:8',
             'coupon_type' => 'required|string',
@@ -55,7 +55,7 @@ class DashboardController
         ]);
 
         return redirect()->back()->with('success', 'Discount code successfully generated!');
-    }   
+    }
 
     public function transactions()
     {
