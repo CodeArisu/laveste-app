@@ -11,7 +11,6 @@ use App\Models\Products\Type;
 use App\Services\ProductService;
 use App\Enum\Measurement;
 use App\Enum\ConditionStatus;
-use Illuminate\Http\JsonResponse;
 
 class ProductController
 {

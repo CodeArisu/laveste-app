@@ -11,29 +11,41 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {   
+    {
         Schema::create('sizes', function (Blueprint $table) {
             $table->id();
-            $table->enum('measurement', array_column(Measurement::cases(), 'value'))->default(Measurement::M->value);
-            $table->integer('length')->nullable();
-            $table->integer('width')->nullable();
+            $table->enum('measurement', array_column(Measurement::cases(), 'value'))
+                ->default(Measurement::M->value)
+                ->nullable();
+            $table->integer('length')
+                ->nullable();
+            $table->integer('width')
+                ->nullable();
             $table->timestamps();
         });
-        
+
         Schema::create('conditions', function (Blueprint $table) {
             $table->id();
-            $table->string('condition_name');
+            $table->string('condition_name')
+                ->nullable();
             $table->timestamps();
         });
 
         Schema::create('garments', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->string('product_id');
-            $table->double('rent_price', 16, 2);
-            $table->string('poster')->nullable();
-            $table->longText('additional_description')->nullable(); 
-            $table->unsignedBigInteger('condition_id')->default(ConditionStatus::OK->value);
-            $table->unsignedBigInteger('size_id')->nullable();
+            $table->string('product_id')
+                ->nullable();
+            $table->double('rent_price', 16, 2)
+                ->nullable();
+            $table->string('poster')
+                ->nullable();
+            $table->longText('additional_description')
+                ->nullable();
+            $table->unsignedBigInteger('condition_id')
+                ->default(ConditionStatus::OK->value)
+                ->nullabe();
+            $table->unsignedBigInteger('size_id')
+                ->nullable();
             $table->timestamps();
 
             $table->foreign('product_id')
@@ -57,7 +69,7 @@ return new class extends Migration
      * Reverse the migrations.
      */
     public function down(): void
-    {   
+    {
         Schema::dropIfExists('sizes');
         Schema::dropIfExists('condition_status');
         Schema::dropIfExists('garments');

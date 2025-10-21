@@ -25,8 +25,10 @@ trait AuthTraits
             throw new Exception('Invalid credentials provided');
         }
 
+        // logs in user
         Auth::login($user);
 
+        // regenerate session
         session()->regenerate();
         session()->save();
 
@@ -66,6 +68,7 @@ trait AuthTraits
         // logs out user
         Auth::logout();
 
+        // invalidate session
         session()->invalidate();
         session()->regenerateToken();
     }
@@ -80,7 +83,7 @@ trait AuthTraits
         $data = $this->filterUser($validated);
 
         // creates user
-        return $this->model->create($data);
+        return $this->create($data);
     }
 
     /**
@@ -90,11 +93,13 @@ trait AuthTraits
     public function updateUser($id, $validated)
     {
         // update user logic to be implemented
-        $user = $this->model->update($id, $validated);
+        $user = $this->update($id, $validated);
 
         if (!$user) {
             throw AuthException::userNotFound();
         }
+
+        return $user;
     }
 
     /**
@@ -104,11 +109,39 @@ trait AuthTraits
     public function filterUser($validated)
     {
         return [
-            'name' => $validated['name'],
-            'email' => $validated['email'],
+            'name'     => $validated['name'],
+            'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role_id' => UserRoles::GUEST->value,
+            'role_id'  => UserRoles::GUEST->value,
         ];
+    }
+
+    /**
+     * @param int $userId
+     * @param array $validated
+     * @return UserDetail
+     */
+    public function createUserDetails($user, $validated)
+    {
+        if (!$user) {
+            throw new Exception('User not found for creating details');
+        }
+
+        $userId = $user->id;
+
+        $userDetails = $this->userDetail->create([
+            'first_name' => $validated['first_name'],
+            'last_name'  => $validated['last_name'],
+            'address'    => $validated['address'],
+            'contact'    => $validated['contact'],
+            'user_id'    => $userId,
+        ]);
+
+        if (!$userDetails) {
+            throw new Exception('Failed to create user details');
+        }
+
+        return $userDetails;
     }
 
     /**

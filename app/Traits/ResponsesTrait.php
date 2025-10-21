@@ -20,6 +20,10 @@ trait ResponsesTrait
             return redirect()->to($response['next'])->with('error', $response['message']);
         }
 
+        if ($response['next']) {
+            // 
+        }
+
         return redirect()->to($response['next'])->with('success', $response['message']);
     }
 

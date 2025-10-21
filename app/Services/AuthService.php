@@ -10,7 +10,8 @@ use App\Repositories\UserRepository;
 
 class AuthService extends UserRepository
 {
-    public function __construct(User $model) {
+    public function __construct(User $model)
+    {
         parent::__construct($model);
     }
 

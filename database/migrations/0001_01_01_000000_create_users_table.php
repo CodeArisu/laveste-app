@@ -19,11 +19,12 @@ return new class extends Migration
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('role_id')
+                ->nullable();
             $table->foreign('role_id')
                 ->references('id')
                 ->on('roles')
@@ -37,8 +38,8 @@ return new class extends Migration
 
         Schema::create('user_details', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name', 25);
-            $table->string('last_name', 25);
+            $table->string('first_name', 25)->nullable();
+            $table->string('last_name', 25)->nullable();
 
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')
@@ -46,9 +47,8 @@ return new class extends Migration
                 ->on('users')
                 ->onDelete('cascade');
 
-
-            $table->text('address', 255);
-            $table->string('contact', 11)->unique();
+            $table->text('address', 255)->nullable();
+            $table->string('contact', 11)->unique()->nullable();
             $table->timestamps();
         });
 
