@@ -13,16 +13,21 @@ return new class extends Migration
     {
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
-            $table->string('supplier_name')->nullable();
-            $table->string('company_name')->nullable();
-            $table->text('address', 255);
-            $table->string('contact', 11);
+            $table->string('supplier_name')
+                ->nullable();
+            $table->string('company_name')
+                ->nullable();
+            $table->text('address', 255)
+                ->nullable();
+            $table->string('contact', 11)
+                ->nullable();
             $table->timestamps();
         });
-        
+
         Schema::create('types', function (Blueprint $table) {
             $table->id();
-            $table->string('type_name')->nullable();
+            $table->string('type_name')
+                ->nullable();
             $table->timestamps();
         });
 
@@ -36,37 +41,41 @@ return new class extends Migration
             $table->string('id')->primary();
             $table->string('product_name', 50);
 
-            $table->unsignedBigInteger('supplier_id')->nullable();
+            $table->unsignedBigInteger('supplier_id')
+                ->nullable();
             $table->foreign('supplier_id')
-            ->references('id')
-            ->on('suppliers')
-            ->onDelete('cascade');
-            
-            $table->double('original_price', 16, 2);
-            $table->text('description', 255);
+                ->references('id')
+                ->on('suppliers')
+                ->onDelete('cascade');
+
+            $table->double('original_price', 16, 2)->nullable();
+            $table->text('description', 255)->nullable();
             $table->timestamps();
         });
 
         Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('type_id');
+            $table->unsignedBigInteger('type_id')
+                ->nullable();
             $table->foreign('type_id')
-            ->references('id')
-            ->on('types')
-            ->onDelete('cascade');
+                ->references('id')
+                ->on('types')
+                ->onDelete('cascade');
 
-            $table->unsignedBigInteger('subtype_id');
+            $table->unsignedBigInteger('subtype_id'
+                )->nullable();
             $table->foreign('subtype_id')
-            ->references('id')
-            ->on('subtypes')
-            ->onDelete('cascade');
+                ->references('id')
+                ->on('subtypes')
+                ->onDelete('cascade');
 
-            $table->string('product_id');
+            $table->string('product_id')
+                ->nullable();
             $table->foreign('product_id')
-            ->references('id')
-            ->on('products')
-            ->onDelete('cascade');
+                ->references('id')
+                ->on('products')
+                ->onDelete('cascade');
 
             $table->timestamps();
         });

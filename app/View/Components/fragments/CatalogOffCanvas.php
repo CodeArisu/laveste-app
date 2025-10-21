@@ -8,9 +8,10 @@ use Illuminate\View\Component;
 
 class CatalogOffCanvas extends Component
 {   
-    public function __construct()
+    public $canvasId;
+    public function __construct($canvasId)
     {
-
+        $this->canvasId = $canvasId;
     }
 
     /**

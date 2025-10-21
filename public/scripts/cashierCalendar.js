@@ -3,16 +3,65 @@ let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Calendar variables
+
+    console.log("DOM fully loaded and parsed");
+
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
     const tabs = document.querySelectorAll(".tab");
     const rentalsTable = document.getElementById("rentals-table");
     const appointmentsTable = document.getElementById("appointments-table");
     const bookRentalBtn = document.querySelector(".book-rental");
     const schedAppointmentBtn = document.querySelector(".sched-appointment");
-    const appointmentPanel = document.getElementById("appointmentPanel");
+    const appointmentPanel = document.getElementById("appointmentPanel"); // Make sure this exists
 
-    const backBtn = document.getElementById("backBtn");
-    backBtn.addEventListener("click", function () {
-        document.getElementById("appointmentPanel").style.display = "none";
+    // Get the calendar grid container
+    const calendarGrid = document.getElementById("calendarGrid");
+
+    const dateScheduleInput =
+        document.getElementById("dateSchedule") ||
+        document.createElement("input");
+
+    if (!calendarGrid) {
+        console.error("Calendar grid element not found");
+        return;
+    }
+
+    // Initialize calendar
+    generateCalendar(currentMonth, currentYear);
+
+    // Date selection handler
+    calendarGrid.addEventListener("click", function (e) {
+        const dayElement = e.target.closest(".calendar-day");
+
+        if (dayElement && !dayElement.classList.contains("disabled")) {
+            const selectedDate = dayElement.getAttribute("data-date");
+
+            // Format date for display (e.g., "September 15, 2023")
+            const dateObj = new Date(selectedDate);
+            const options = { year: "numeric", month: "long", day: "numeric" };
+            const displayDate = dateObj.toLocaleDateString(undefined, options);
+
+            // Set both value and display text
+            dateScheduleInput.value = selectedDate; // For form submission
+            dateScheduleInput.textContent = displayDate; // For visual display
+
+            // If you want to show the date in the input's placeholder or value
+            dateScheduleInput.setAttribute("placeholder", displayDate);
+            // Or if it's a visible input field:
+            dateScheduleInput.value = displayDate;
+
+            // Visual feedback
+            document.querySelectorAll(".calendar-day").forEach((day) => {
+                day.classList.remove("selected");
+            });
+            dayElement.classList.add("selected");
+
+            console.log("Date selected:", displayDate);
+        }
     });
 
     // Tab switching logic
@@ -26,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 appointmentsTable.style.display = "none";
                 bookRentalBtn.style.display = "block";
                 schedAppointmentBtn.style.display = "none";
-                appointmentPanel.style.display = "none";
+                if (appointmentPanel) appointmentPanel.style.display = "none";
             } else {
                 rentalsTable.style.display = "none";
                 appointmentsTable.style.display = "table";
@@ -37,28 +86,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Show appointment panel
-    schedAppointmentBtn.addEventListener("click", function () {
-        appointmentPanel.style.display = "block";
-    });
-
-    // Handle appointment confirmation
-    document
-        .getElementById("nextAppointmentBtn")
-        .addEventListener("click", () => {
-            const time = document.getElementById("appointmentTime").value;
-
-            if (!selectedDate || !time) {
-                alert("Please select both date and time.");
-                return;
-            }
-
-            const dateStr = selectedDate.toISOString().split("T")[0];
-            alert(`Appointment scheduled on ${dateStr} at ${time}`);
+    if (schedAppointmentBtn && appointmentPanel) {
+        schedAppointmentBtn.addEventListener("click", function () {
+            appointmentPanel.style.display = "block";
+            // Reset selection when opening panel
+            dateScheduleInput.value = "";
+            document
+                .querySelectorAll(".calendar-day.selected")
+                .forEach((day) => {
+                    day.classList.remove("selected");
+                });
         });
+    }
 
-    // Calendar setup
-    generateCalendar(currentMonth, currentYear);
-
+    // Calendar navigation
     document.getElementById("prevMonth").addEventListener("click", () => {
         currentMonth--;
         if (currentMonth < 0) {
@@ -66,6 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
             currentYear--;
         }
         generateCalendar(currentMonth, currentYear);
+        // Clear selection when changing months
+        dateScheduleInput.value = "";
     });
 
     document.getElementById("nextMonth").addEventListener("click", () => {
@@ -75,6 +118,8 @@ document.addEventListener("DOMContentLoaded", function () {
             currentYear++;
         }
         generateCalendar(currentMonth, currentYear);
+        // Clear selection when changing months
+        dateScheduleInput.value = "";
     });
 });
 
@@ -103,14 +148,22 @@ function generateCalendar(month, year) {
 
     for (let i = 1; i <= totalDays; i++) {
         const dayCell = document.createElement("div");
+        dayCell.className = "calendar-day"; // Add this class
         dayCell.textContent = i;
-        dayCell.addEventListener("click", function () {
-            document
-                .querySelectorAll("#calendarGrid div")
-                .forEach((d) => d.classList.remove("selected"));
-            this.classList.add("selected");
-            selectedDate = new Date(year, month, i);
-        });
+
+        // Add data-date attribute in YYYY-MM-DD format
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(
+            i
+        ).padStart(2, "0")}`;
+        dayCell.setAttribute("data-date", dateStr);
+
+        // Disable past dates
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (new Date(year, month, i) < today) {
+            dayCell.classList.add("disabled");
+        }
+
         calendarGrid.appendChild(dayCell);
     }
 
@@ -132,50 +185,12 @@ function generateCalendar(month, year) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-    const rentalRows = document.querySelectorAll("#rentals-table tbody table-rows");
+    const rentalRows = document.querySelectorAll(
+        "#rentals-table tbody table-rows"
+    );
     const appointRows = document.querySelectorAll(
         "#appointments-table tbody tr"
     );
-
-    const rentalPanel = document.getElementById("rentalSidePanel");
-    const appointPanel = document.getElementById("appointmentSidePanel");
-
-    // Hide panels initially
-    rentalPanel.style.display = "none";
-    appointPanel.style.display = "none";
-
-    rentalRows.forEach((row) => {
-        row.addEventListener("click", () => {
-            rentalPanel.style.display = "block";
-            appointPanel.style.display = "none";
-        });
-    });
-
-    appointRows.forEach((row) => {
-        row.addEventListener("click", () => {
-            rentalPanel.style.display = "none";
-            appointPanel.style.display = "block";
-        });
-    });
-
-    // Optional: hide panels when switching tabs
-    const tabs = document.querySelectorAll(".tab");
-    tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-            rentalPanel.style.display = "none";
-            appointPanel.style.display = "none";
-        });
-    });
-});
-
-document.addEventListener("click", (e) => {
-    const clickedInsideRental = e.target.closest("#rentals-table");
-    const clickedInsideAppoint = e.target.closest("#appointments-table");
-
-    if (!clickedInsideRental && !clickedInsideAppoint) {
-        rentalPanel.style.display = "none";
-        appointPanel.style.display = "none";
-    }
 });
 
 function closePanel(panelId) {
@@ -194,32 +209,3 @@ function toggleSidePanel() {
             ? "flex"
             : "none";
 }
-
-// Initially hide the side panel when page loads
-sidePanel.style.display = "none";
-
-// Add event listener to the Next button to toggle the side panel on click
-nextAppointmentBtn.addEventListener("click", toggleSidePanel);
-
-const heightSelect = document.getElementById("height");
-
-for (let feet = 4; feet <= 7; feet++) {
-    for (let inches = 0; inches <= 11; inches++) {
-        if (feet === 7 && inches > 0) break; // Limit to 7'0"
-        const value = `${feet}-${inches}`;
-        const text = `${feet}'${inches}"`;
-        const option = new Option(text, value);
-        heightSelect.appendChild(option);
-    }
-}
-
-const tabs = document.querySelectorAll(".tab");
-const slider = document.querySelector(".slider");
-
-tabs.forEach((tab, index) => {
-    tab.addEventListener("click", () => {
-        document.querySelector(".tab.active")?.classList.remove("active");
-        tab.classList.add("active");
-        slider.style.left = `${index * 140 + 5}px`; // 140 = button width, 5 = padding
-    });
-});

@@ -42,6 +42,10 @@ return [
         'message' => 'Signing out failed',
         'description' => 'Something went wrong or try again later.', 
     ],
+    '10010' => [
+        'message' => 'Signing In Failed',
+        'description' => 'Your account had been Disabled.', 
+    ],
 
     // products
     '12000' => [

@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<x-layouts.app>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
-    <link rel="stylesheet" href="{{ asset('css/cashier/checkout.css') }}?v={{ time() }}">
-    <link rel="stylesheet" href="{{ asset('css/global.css') }}">
-</head>
-
-<body>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/cashier/checkout.css') }}?v={{ time() }}">
+        <link rel="stylesheet" href="{{ asset('css/global.css') }}">
+    @endpush
     <form action="{{ route('cashier.details.store', ['catalogs' => $catalogs]) }}" method='POST'>
         @csrf
         <div class="rental-header">
@@ -33,9 +27,17 @@
 
             <div class="date-inputs">
                 <label for="start">Start<span class='importance'>*</span></label>
-                <input name='rented_date' type="text" id="start" placeholder="Select start date" value='{{ old('rented_date') }}' readonly>
+                <input name='rented_date' type="text" id="start" placeholder="Select start date"
+                    value='{{ old('rented_date') }}' readonly>
+                @error('rented_date')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
                 <label for="end">End<span class='importance'>*</span></label>
-                <input name='return_date' type="text" id="end" placeholder="Select end date" value='{{ old('return_date') }}' readonly>
+                <input name='return_date' type="text" id="end" placeholder="Select end date"
+                    value='{{ old('return_date') }}' readonly>
+                @error('return_date')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
             </div>
 
         </div>
@@ -45,18 +47,27 @@
                 <div class="section-title">Customer Details</div>
                 <label for="customer-name">Customer Name<span class='importance'>*</span></label>
                 <input name='name' type="text" id="customer-name" value="{{ old('name') }}"">
+                @error('name')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
 
                 <label for="address">Address<span class='importance'>*</span></label>
                 <input name='address' type="text" id="address" value="{{ old('address') }}">
+                @error('address')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
 
                 <label for="contact">Contact Number<span class='importance'>*</span></label>
                 <input name='contact' type="tel" id="contact" value="{{ old('contact') }}">
+                @error('contact')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                @enderror
 
                 <label>Regular Customer</label>
                 <div class="radio-group">
                     <input name='is_regular' type="radio" id="yes" name="regular" value="1">
                     <label for="yes">Yes</label>
-                    <input name='is_regular' type="radio" id="no" name="regular" value="0">
+                    <input name='is_regular' type="radio" id="no" name="regular" value="0" selected>
                     <label for="no">No</label>
                 </div>
             </div>
@@ -68,6 +79,9 @@
                     <div class="input-block">
                         <label for="pickup">Pick - up Date<span class='importance'>*</span></label>
                         <input name='pickup_date' type="date" id="pickup" value="{{ old('pickup_date') }}">
+                        @error('pickup_date')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
@@ -85,12 +99,15 @@
                 <div class="input-block">
                     <label for="event-date">Event Date<span class='importance'>*</span></label>
                     <input type="date" id="event-date" name='event_date' value="{{ old('event_date') }}" readonly>
+                    @error('event_date')
+                        <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>
 
         <div class="checkout-button">
-            <button type="submit" >Checkout</button>
+            <button type="submit">Checkout</button>
         </div>
     </form>
     <script>
@@ -217,5 +234,5 @@
         // Initial render
         renderCalendar(currentDate);
     </script>
-</body>
-</html>
+
+</x-layouts.app>

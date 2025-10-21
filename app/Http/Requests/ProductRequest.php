@@ -38,7 +38,6 @@ class ProductRequest extends FormRequest
             'contact' => 'required|string|digits:11',
 
             'type' => ['required', Rule::in([...Type::pluck('type_name')->toArray(), 'new_type'])],
-
             'subtype' => ['required', Rule::in([...Subtype::pluck('subtype_name')->toArray(), 'new_subtype'])],
         ];
 

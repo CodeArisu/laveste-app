@@ -31,4 +31,16 @@ class CustomerRent extends Model
         return $date->format('F j, Y'); // "February 5, 2024"
     }
 
+     public function convertStartDateFormat()
+    {
+        $date = new \DateTime($this->start_date);
+        return $date->format('F j, Y'); // "February 5, 2024"
+    }
+
+     public function convertEndDateFormat()
+    {
+        $date = new \DateTime($this->return_date);
+        return $date->format('F j, Y'); // "February 5, 2024"
+    }
+
 }

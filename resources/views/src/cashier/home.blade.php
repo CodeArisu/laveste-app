@@ -6,6 +6,11 @@
 @endpush
 
 <x-layouts.cashlayout>
+
+    @if (Session('success'))
+        <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
+    @endif
+
     <div class="home-page">
         <div id="home-container">
             <!-- Tabs= -->
@@ -16,7 +21,7 @@
                         <button class="tab active" data-tab="rentals">Rentals</button>
                         <button class="tab" data-tab="appointments">Appointment</button>
                     </div>
-                </div>  
+                </div>
                 <div class="buttons">
                     <a href="{{ route('cashier.index') }}" class="book-rental">
                         <img src="/assets/icons/hanger.png" alt="Book Rental Icon" class="icon"> Book Rental
@@ -34,7 +39,7 @@
             <table id="rentals-table">
                 <thead>
                     <tr>
-                        <th>Order ID</th>
+                        <th>Transaction ID</th>
                         <th>Product</th>
                         <th>Customer Name</th>
                         <th>Amount Due</th>
@@ -45,25 +50,37 @@
                 </thead>
                 <tbody>
                     @foreach ($productRents as $productRent)
-                        <tr class='table-rows'>
+                        <tr class='product-row' data-bs-toggle='offcanvas' data-bs-target='#dynamicCanvas'
+                            data-type="product"
+                            data-name="{{ $productRent->catalog->garment->product->product_name }}"
+                            data-rented-price="{{ $productRent->catalog->garment->getFormattedRentedPrice() }}"
+                            data-image="{{ $productRent->catalog->garment->getImageUrl() }}"
+                            data-description="{{ $productRent->catalog->garment->additional_description }}"
+                            data-condition="{{ ucfirst($productRent->productRentedStatus->status_name) }}"
+                            data-size="{{ $productRent->catalog->garment->size->measurement }}"
+                            data-start="{{ $productRent->customerRent->convertStartDateFormat() }}"
+                            data-end="{{ $productRent->customerRent->convertEndDateFormat() }}">
                             <td>{{ $productRent->id }}</td>
                             <td>{{ $productRent->catalog->garment->product->product_name }}</td>
                             <td>{{ $productRent->customerRent->customerDetail->name }}</td>
                             <td>{{ $productRent->catalog->getFormattedRentPrice() }}</td>
                             <td>{{ $productRent->customerRent->convertDateFormat() }}</td>
                             <td>
-                                @if($productRent->productRentedStatus->status_name === 'rented')
+                                @if ($productRent->productRentedStatus->status_name === 'rented')
                                     <span class="status pending">Rented</span>
                                 @elseif ($productRent->productRentedStatus->status_name === 'returned')
                                     <span class="status confirmed">Returned</span>
                                 @endif
                             </td>
                             <td class='status_col'>
-                                @if($productRent->productRentedStatus->status_name === 'rented')
-                                    <a href="#" class='btn btn-danger'>Returned</a>
-                                @else
-                                    no action
-                                @endif
+                                <form action="{{ route('cashier.receive', $productRent->id) }}" method='POST'>
+                                    @if ($productRent->productRentedStatus->status_name === 'rented')
+                                        @csrf
+                                        <button type='submit' class='btn btn-danger'>Returned</button>
+                                    @else
+                                        <span>No action needed</span>
+                                    @endif
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -79,122 +96,106 @@
                         <th>Date</th>
                         <th>Time</th>
                         <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1001</td>
-                        <td>Maria Santos</td>
-                        <td>April 1, 2025</td>
-                        <td>10:00 AM</td>
-                        <td><span class="status confirmed">Confirmed</span></td>
-                    </tr>
+                    @foreach ($appointments as $appointment)
+                        <tr class='appointment-row' data-bs-toggle='offcanvas' data-bs-target='#dynamicCanvas'
+                        data-type="appointment"
+                                data-image="{{ asset('assets/images/h5.png') }}"
+                                data-date="{{ $appointment->appointment_date->format('F j, Y') }}"
+                                data-time="{{ $appointment->appointment_time->format('h:i:s A')  }}"
+                                data-status="{{ ucfirst($appointment->appointmentStatus->status_name) }}"
+                            >
+                            <td>{{ $appointment->id }}</td>
+                            <td>{{ $appointment->customerDetail->name }}</td>
+                            <td>{{ $appointment->appointment_date->format('F j, Y') }}</td>
+                            <td>{{ $appointment->appointment_time->format('h:i:s A') }}</td>
+                            <td>
+                                @if ($appointment->appointmentStatus->id == 2)
+                                    <span
+                                        class="status pending">{{ ucfirst($appointment->appointmentStatus->status_name) }}</span>
+                                @elseif ($appointment->appointmentStatus->id == 1)
+                                    <span
+                                        class="status confirmed">{{ ucfirst($appointment->appointmentStatus->status_name) }}</span>
+                                @elseif ($appointment->appointmentStatus->id == 4)
+                                    <span
+                                        class="status bg-danger">{{ ucfirst($appointment->appointmentStatus->status_name) }}</span>
+                                @endif
+                            </td>
+                            <td style="padding: 0;">
+                                <div class='d-flex flex-row gap-2 align-items-center w-100 h-100' style="padding: 0;">
+                                    @if ($appointment->appointmentStatus->id == 2)
+                                        <form action="{{ route('cashier.appointment.completed', $appointment) }}"
+                                            method='POST' class='p-0 m-0'>
+                                            @csrf
+                                            <button type='submit' class='btn btn-success'>Complete</button>
+                                        </form>
+                                        <form action="{{ route('cashier.appointment.cancelled', $appointment) }}"
+                                            method='POST' class='p-0 m-0'>
+                                            @csrf
+                                            <button type='submit' class='btn btn-danger'>Cancel</button>
+                                        </form>
+                                    @else
+                                        No action needed
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
+
+          <x-fragments.catalog-off-canvas canvasId='dynamicCanvas' />
 
         <div class="appointment-side-panel" id="appointmentPanel" style="display: none;">
             <button class="back-btn" id="backBtn">
                 &#8592; Back
             </button>
 
-            <h2>Schedule Appointment</h2>
-
-            <div class="calendar-container">
-                <div class="calendar-header">
-                    <button id="prevMonth">&lt;</button>
-                    <span id="monthYear">September 2025</span>
-                    <button id="nextMonth">&gt;</button>
+            @if ($errors->has('internal_error'))
+                <div class="alert alert-danger text-wrap mt-1">
+                    <strong>Error:</strong> {{ $errors->first('internal_error') }}
+                    <p class='p-0 m-0'>{{ $errors->first('internal_error_description') }}</p>
                 </div>
-                <div class="calendar-grid" id="calendarGrid">
-                    <!-- Days will be generated here by JS -->
-                </div>
-            </div>
+            @endif
 
-            <div class="card time-card">
-                <select id="appointmentTime" class="time-select">
-                    <option value="" disabled selected>Select time</option>
-                    <option value="09:00">09:00-10:00 AM</option>
-                    <option value="10:00">10:00-11:00 AM</option>
-                    <option value="11:00">01:00-02:00 PM</option>
-                    <option value="13:00">02:00-03:00 PM</option>
-                    <option value="14:00">03:00-04:00 PM</option>
-                    <option value="15:00">04:00-05:00 PM</option>
-                </select>
-            </div>
-
-            <button class="next-btn" id="nextAppointmentBtn">
-                Next <span>&#x2192;</span>
-            </button>
-        </div>
-
-    </div>
-
-    <div class="side-panel-container3">
-        <div class="appointment-container3">
-            <h1 class="page-title">Schedule Appointment</h1>
-            <h2 class="section-title">Customer Information</h2>
-
-            <form action="#" method="POST" class="appointment-form">
-                <label class="form-label">Customer Name</label>
-                <input type="text" name="customerName" class="form-input">
-
-                <label class="form-label">Address</label>
-                <input type="text" name="address" class="form-input">
-
-                <label class="form-label">Contact Number</label>
-                <input type="text" name="contactNumber" class="form-input">
-
-                <h2 class="section-title">Fitting Details</h2>
-
-                <div class="inline-inputs">
-                    <div class="input-group">
-                        <label class="form-label" for="size">Size</label>
-                        <select name="size" id="size" class="form-input">
-                            <option value="">Select size</option>
-                            <option value="xs">Extra Small</option>
-                            <option value="s">Small</option>
-                            <option value="m">Medium</option>
-                            <option value="l">Large</option>
-                            <option value="xl">Extra Large</option>
-                            <option value="xxl">2XL</option>
-                            <option value="xxxl">3XL</option>
-                        </select>
+            <form action="{{ route('cashier.appointment.session') }}" method="POST">
+                @csrf
+                <h2>Schedule Appointment</h2>
+                <div class="calendar-container">
+                    <div class="calendar-header">
+                        <button id="prevMonth">&lt;</button>
+                        <span id="monthYear">September 2025</span>
+                        <button id="nextMonth">&gt;</button>
                     </div>
-                    <div class="input-group">
-                        <label class="form-label" for="height">Height (in feet)</label>
-                        <select name="height" id="height" class="form-input">
-                            <option value="">Select height</option>
-                        </select>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Days will be generated here by JS -->
                     </div>
-
+                    <input type="hidden" id="dateSchedule" name="date_schedule" placeholder="Select a date" readonly
+                        class="date-display-input">
                 </div>
 
-                <div class="inline-inputs">
-                    <div class="input-group">
-                        <label class="form-label">Event Type</label>
-                        <input type="text" name="eventType" class="form-input">
-                    </div>
-                    <div class="input-group">
-                        <label class="form-label">Event Date</label>
-                        <input type="date" name="eventDate" class="form-input">
-                    </div>
+                <div class="card time-card">
+                    <select name="appointment_time" id="appointmentTime" class="time-select">
+                        <option value="" disabled selected>Select time</option>
+                        <option value="09:00 AM">09:00-10:00 AM</option>
+                        <option value="10:00 AM">10:00-11:00 AM</option>
+                        <option value="02:00 PM">02:00-03:00 PM</option>
+                        <option value="03:00 PM">03:00-04:00 PM</option>
+                    </select>
                 </div>
 
-                <label class="form-label">Style Preference</label>
-                <input type="text" name="stylePreference" class="form-input">
-
-                <br><br>
-
-                <div class="button-row3">
-                    <a href="" class="back-btn3" id="backBtn3">← Back</a>
-                    <a href="{{ route('appointment.checkout') }}" class="next-btn3" id="nextBtn3">Next →</a>
-                </div>
+                <button type='submit' class="next-btn" id="nextAppointmentBtn">
+                    Next <span>&#x2192;</span>
+                </button>
             </form>
         </div>
     </div>
 
-    <div class="side-panel1" id="rentalSidePanel" style="display: none;">
+    {{-- <div class="side-panel1" id="rentalSidePanel" style="display: none;">
         <button class="back-btn" onclick="closePanel('rentalSidePanel')">&#8592; Back</button>
         <div class="side-content1">
             <div class="image-container1">
@@ -273,11 +274,12 @@
         <div class="btn-section">
             <a href="#" class="cancel-button">Canceled</a>
             <a href="#" class="completed-button">Completed</a>
-        </div>
+        </div> 
 
-    </div>
+    </div> --}}
 
     @push('scripts')
         <script src={{ asset('scripts/cashierCalendar.js') }}></script>
+        <script src='{{ asset('scripts/appointmentCanvas.js') }}'></script>
     @endpush
 </x-layouts.cashlayout>

@@ -37,12 +37,12 @@
                         </a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('transactions') ? 'active' : '' }}">
-                        <a href="{{ route('transactions') }}">
+                        <a href="{{ route('dashboard.transactions') }}">
                             <img src="{{ asset('/assets/icons/i5.png') }}" alt="Transactions">
                         </a>
                     </li>
                     <li class="nav-item {{ request()->routeIs('rented') ? 'active' : '' }}">
-                        <a href="{{ route('rented') }}">
+                        <a href="{{ route('dashboard.rented') }}">
                             <img src="{{ asset('/assets/icons/i6.png') }}" alt="Rented">
                         </a>
                     </li>

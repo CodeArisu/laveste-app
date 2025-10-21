@@ -2,42 +2,48 @@
 
 namespace App\Services;
 
-use App\Enum\ResponseCode;
-use App\Enum\UserRoles;
-use App\Exceptions\AuthException;
 use App\Http\Requests\AuthRequest;
-use App\Models\Auth\User;
-use App\Models\Auth\Role;
-use Exception;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\QueryException;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\{Auth, Hash};
+use App\Models\Auth\User;
+use Exception;
+use App\Repositories\UserRepository;
 
-class AuthService
+class AuthService extends UserRepository
 {
+    public function __construct(User $model)
+    {
+        parent::__construct($model);
+    }
+
     /**
      * @param AuthRequest $request
      * @return array
      */
-    public function registerRequest(AuthRequest $request)
+    public function registerRequest($request)
     {
         try {
             return DB::transaction(function () use ($request) {
-                $this->registerUser($request);
+                // validates the incoming request
+                $validated = $request->validated();
+                // function from AuthTraits to register user
+                $user = $this->register($validated);
+
                 return [
-                    'message' => 'User registered',
-                    'url' => ''
+                    'error' => false,
+                    'message' => 'User registered successfully',
+                    'next' => $this->userRedirect($user),
+                    'data' => [
+                        'user' => $user,
+                    ]
                 ];
             });
-        } catch (QueryException $e) {
-            throw AuthException::userRegistrationFailed();
-        } catch (ModelNotFoundException $e) {
-            throw AuthException::userRegistrationFailed();
-        } catch (\Throwable $e) {
-            throw AuthException::userRegistrationFailed();
+        } catch (Exception $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'next' => null,
+                'data' => []
+            ];
         }
     }
 
@@ -45,21 +51,29 @@ class AuthService
      * @param AuthRequest $request
      * @return array
      */
-    public function loginRequest(AuthRequest $request)
+    public function loginRequest($request)
     {
         try {
-            $this->loginUser($request);
+            // validates the incoming request
+            $validated = $request->validated();
+            // function from AuthTraits to login user
+            $user = $this->authenticate($validated);
+
             return [
-                'message' => 'Login Successful',
-                'url' => 'dashboard.home'
+                'error' => false,
+                'message' => 'User logged in successfully',
+                'next' => $this->userRedirect($user),
+                'data' => [
+                    'user' => $user,
+                ]
             ];
-        }
-        catch (AuthException $e) {
-            // Re-throw Auth-specific exceptions (invalid credentials, locked account, etc.)
-            throw $e;
-            throw AuthException::userNotFound();
-        } catch (Exception $e) {   
-            throw AuthException::userLoginFailed();
+        } catch (Exception $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'next' => null,
+                'data' => []
+            ];
         }
     }
 
@@ -69,117 +83,23 @@ class AuthService
      */
     public function logoutRequest($request)
     {
+        // set request user
+        $user = $request->user();
         try {
-            if (!$request->user()) {
-                throw AuthException::unauthenticated('No authenticated user found');
-            }
-
-            Auth::logout();
-
+            $user = $this->logout($user);
             return [
-                'message' => 'User signed out',
-                'url' => 'login'
+                'error' => false,
+                'message' => 'User logged out successfully',
+                'next' => $this->userRedirect($user),
+                'data' => []
             ];
-
-        } catch (AuthException $e) {
-            // Re-throw pre-formatted auth exceptions
-            throw $e;
-        } catch (\Throwable $e) {
-            // Log unexpected errors
-            report($e);
-            throw AuthException::logoutFailed('Could not complete logout');
+        } catch (Exception $e) {
+            return [
+                'error' => true,
+                'message' => $e->getMessage(),
+                'next' => null,
+                'body' => []
+            ];
         }
-    }
-
-    /**
-     * @param AuthRequest $request
-     * @return array
-     */
-    private function registerUser($request)
-    {
-        if (!Role::exists()) {
-            $this->registerRoles();
-        }
-
-        $this->checkIfExists($request);
-        $this->handleRegister($request->validated());
-    }
-
-    /**
-     * @param Request $request
-     */
-    private function checkIfExists($request)
-    {
-        $exist = User::where('email', $request->email)
-        ->orWhere('name', $request->name)
-        ->exists();
-
-        if ($exist) {
-            throw AuthException::userAlreadyRegistered();
-        }
-    }
-
-    /**
-     * @param AuthRequest $request
-     * @return array
-     */
-    private function handleRegister($request)
-    {
-        return User::firstOrCreate([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => Hash::make($request['password']),
-            'role_id' => UserRoles::MANAGER->value,
-            'user_details_id' => $request['user_details_id'] ?? null,
-        ]);
-    }
-
-    /**
-     * @param Request creates new roles enums exists
-     */
-    private function loginUser(AuthRequest $request)
-    {   
-            $authenticated = $request->authenticate();
-            $request = $request->safe();
-            
-            $user = User::where('email', $request['email'])->first();
-            if (!$authenticated || !$user || !Hash::check($request['password'], $user->password))
-            {
-                throw AuthException::invalidUserCredentials();
-            }
-
-            return $user;
-    }
-
-    /**
-     * @param void creates new roles enums exists
-     */
-    private function registerRoles(): void
-    {
-        $existingRoles = Role::pluck('role_name')->toArray();
-        $allRoles = array_map(fn($role) => $role->label(), UserRoles::cases());
-
-        if (count(array_diff($allRoles, $existingRoles))) {
-            foreach (UserRoles::cases() as $role) {
-                Role::firstOrCreate(['role_name' => $role->label()]);
-            }
-        }
-    }
-
-    /**
-     * @param array $params
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function userResponse(array $params) : JsonResponse
-    {   
-        Log::info('Status: Success \n' .  $params['message']);
-        return response()->json([
-            'status' => 'success',
-            'data' => [
-                'message' => $params['message'],
-                'access_token' => $params['token'] ?? null,
-                'token_type' => !empty($params['token']) ? 'bearer' : 'revoked',
-            ],
-        ], ResponseCode::OK->value);
     }
 }
