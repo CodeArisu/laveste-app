@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\api\ApiBaseController;
 use App\Http\Resources\SubtypeResource;
 use App\Http\Resources\TypeResource;
 use App\Http\{Requests\ProductRequest, Resources\ProductResource};
@@ -12,10 +11,10 @@ use App\Models\Products\Type;
 use App\Services\ProductService;
 use App\Enum\Measurement;
 use App\Enum\ConditionStatus;
-use Illuminate\Http\JsonResponse;   
+use Illuminate\Http\JsonResponse;
 
-class ProductController extends ApiBaseController
-{   
+class ProductController
+{
     private $productCollection;
     private $types, $subtypes;
 
@@ -28,39 +27,39 @@ class ProductController extends ApiBaseController
     }
 
     public function index()
-    {    
-        return view('src.admin.adproduct', 
+    {
+        return view('src.admin.adproduct',
         ['products' => $this->productCollection]);
     }
 
     public function create()
-    {   
-        return view('src.admin.adproducts.productadd', 
+    {
+        return view('src.admin.adproducts.productadd',
         ['types' => $this->types, 'subtypes' => $this->subtypes]);
     }
 
     public function store(ProductRequest $request)
-    {   
+    {
         $createdProduct = $this->productService->requestCreateProduct($request);
         return redirect()->route($createdProduct['route'])->with('success', $createdProduct['message']);
     }
 
     public function show(Product $product)
-    {   
+    {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view('src.admin.adproducts.infoprod', 
+        return view('src.admin.adproducts.infoprod',
         ['products' => $product, 'conditions' => ConditionStatus::cases(), 'measurements' => Measurement::cases()]);
     }
 
     public function edit(Product $product)
-    {    
+    {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view('src.admin.adproducts.editprod', 
+        return view('src.admin.adproducts.editprod',
         ['products' => $product, 'types' => $this->types, 'subtypes' => $this->subtypes]);
     }
 
     public function update(ProductRequest $request, Product $product)
-    {   
+    {
         $updatedProduct = $this->productService->requestUpdateProduct($request, $product);
         return redirect()->back()->with('success', $updatedProduct['message']);
     }
