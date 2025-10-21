@@ -1,13 +1,12 @@
-
 .sidepanel {
     position: fixed;
     top: 0;
     right: 0; /* Changed from left to right */
     height: 100%;
     width: 800px;
-    background-color: #FFF4D9;
+    background-color: #fff4d9;
     padding: 2rem;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: "Segoe UI", sans-serif;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     transform: translateX(100%); /* Start off-screen to the right */
@@ -19,15 +18,11 @@
 .sidepanel-body {
     display: flex;
     flex-direction: column;
-  }
-  
+}
 
 .sidepanel.visible {
     transform: translateX(0); /* Slide in */
 }
-
-
-
 
 .sidepanel-title {
     color: #802020;
@@ -36,7 +31,7 @@
     margin-bottom: 1rem;
     border-bottom: 1px solid #802020;
     padding-bottom: 0.5rem;
-    font-family: 'Ovo';
+    font-family: "Ovo";
 }
 
 .sidepanel-content {
@@ -45,7 +40,6 @@
     gap: 2rem; /* more spacing between image and text */
     flex-wrap: wrap; /* allows responsive wrap on smaller screens */
 }
-
 
 .product-img {
     flex: 1;
@@ -58,13 +52,12 @@
     min-width: 200px;
 }
 
-
 .product-info h2 {
     color: #802020;
     font-size: 2rem;
     font-weight: 500;
     margin: 0.5rem 0;
-    font-family: 'Ovo';
+    font-family: "Ovo";
 }
 
 .product-info p {
@@ -73,7 +66,6 @@
     margin: 1rem 0; /* increased vertical spacing */
     font-weight: 400;
 }
-
 
 .description-section h4,
 .status-section h4 {
@@ -107,39 +99,34 @@
     text-transform: capitalize;
 }
 
-
 .add-button,
 .edit-button {
-  background-color: #6bfcb0;
-  border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 999px;
-  font-weight: bold;
-  color: #1a1a1a;
-  font-size: 1rem;
-  margin-top: 1rem;
-  align-self: flex-end;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    background-color: #6bfcb0;
+    border: none;
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    font-weight: bold;
+    color: #1a1a1a;
+    font-size: 1rem;
+    margin-top: 1rem;
+    align-self: flex-end;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .add-button:hover,
 .edit-button:hover {
-  background-color: #52e4a0;
+    background-color: #52e4a0;
 }
-
-
 
 .action-footer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: auto;
-  padding-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 2rem;
 }
-
-
 
 .info-row {
     display: flex;
@@ -179,7 +166,7 @@
     text-decoration: none;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-family: 'Ovo';
+    font-family: "Ovo";
 }
 
 .back-btn:hover {
@@ -189,19 +176,6 @@
     color: white;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 .side-panel {
     position: fixed;
     top: 0;
@@ -209,21 +183,21 @@
     width: 800px;
     height: 100%;
     background-color: #fdf3d8;
-    box-shadow: -4px 0 10px rgba(0,0,0,0.1);
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
     padding: 15px 25px;
-    font-family: 'Ovo';
+    font-family: "Ovo";
     color: #823b36;
     overflow-y: auto;
     display: none;
     z-index: 9999;
-    font-family: 'Poppins', sans-serif;
+    font-family: "Poppins", sans-serif;
 }
 
 .side-panel h2 {
     font-size: 36px;
     margin-bottom: 20px;
     color: #823b36;
-    font-family: 'Ovo';
+    font-family: "Ovo";
 }
 
 .garment-form {
@@ -238,7 +212,6 @@
     margin-top: 5px;
 }
 
-
 .form-row > div {
     flex: 1;
 }
@@ -248,8 +221,6 @@
     display: inline-block;
     font-weight: 400;
 }
-
-
 
 .garment-form input,
 .garment-form textarea {
@@ -287,14 +258,11 @@
     background-color: #75c68b;
 }
 
-
-
 .tight-group {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-
 
 select {
     width: 100%;
@@ -313,5 +281,3 @@ select:focus {
     border-color: #8b2e2e;
     background-color: #f1e1d0; /* Optional: light color on focus */
 }
-
-

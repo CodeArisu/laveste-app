@@ -1,7 +1,6 @@
 <x-layouts.cashlayout>
     @push('styles')
         <link rel="stylesheet" href="/css/products/product.css">
-        <link rel="stylesheet" href="/css/cashier/cashierhead.css">
         <link rel="stylesheet" href="/css/products/custom-filter.css">
     @endpush
 
@@ -41,7 +40,7 @@
             </div>
         </div>
 
-        <x-fragments.catalog-off-canvas/>
+        <x-fragments.catalog-off-canvas canvasId="catalogOffCanvas" />
 
         @push('scripts')
             <script src={{ asset('scripts/catalogOffCanvasHandler.js') }}></script>

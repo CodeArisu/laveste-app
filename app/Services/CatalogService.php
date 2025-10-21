@@ -37,6 +37,7 @@ class CatalogService extends BaseServicesClass
                 ]);
             }
         }
+
         return;
     }
 
@@ -50,14 +51,14 @@ class CatalogService extends BaseServicesClass
     }
 
     public function updateCatalogItemStatus($newStatus)
-    {
+    {   
         $this->handleStatusUpdate($newStatus);
         
         return ['message' => 'Status updated'];
     }
 
     private function handleStatusUpdate(array $status)
-    {
+    {   
         Catalog::where('id', $status['catalog_id'])->update([
             'product_status_id' => $status['product_status'],
             'updated_at' => $status['updated_at'],

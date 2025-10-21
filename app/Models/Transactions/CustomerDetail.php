@@ -19,4 +19,9 @@ class CustomerDetail extends Model
     {
         return $this->hasMany(CustomerRent::class, 'customer_details_id');
     }
+
+    public function appointment()
+    {
+        return $this->hasMany(Appointment::class, 'id');
+    }
 }

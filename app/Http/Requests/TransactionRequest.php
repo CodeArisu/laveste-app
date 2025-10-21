@@ -27,7 +27,7 @@ class TransactionRequest extends FormRequest
         return [
             'payment_method' => 'required|string',
             'payment' => 'required|numeric',
-            'has_discount' => 'nullable|boolean',
+            'coupon_code' => 'nullable|string|max:8',
             'vat' => 'numeric',
         ];
     }

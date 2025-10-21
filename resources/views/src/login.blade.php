@@ -15,7 +15,7 @@
                     <p class='p-0 m-0'>{{ $errors->first('internal_error_description') }}</p>
                 </div>
             @endif
-           
+
             <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <label for="email"></label>

@@ -56,4 +56,9 @@ class AuthException extends InternalExceptions
     {
         return static::new(StatusCode::LogoutFailed);
     }
+
+    public static function accountDisabled(): self
+    {
+        return static::new(StatusCode::AccountDisabled);
+    }
 }
