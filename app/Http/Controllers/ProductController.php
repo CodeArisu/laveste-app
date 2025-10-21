@@ -17,7 +17,8 @@ class ProductController
     private $productCollection;
     private $types, $subtypes;
 
-    public function __construct(protected ProductService $productService) {
+    public function __construct(protected ProductService $productService)
+    {
         $product = Product::with(['types', 'subtypes'])->get();
 
         $this->productCollection = ProductResource::collection($product);
@@ -27,14 +28,18 @@ class ProductController
 
     public function index()
     {
-        return view('src.admin.adproduct',
-        ['products' => $this->productCollection]);
+        return view(
+            'src.dashboard.pages.products',
+            ['products' => $this->productCollection]
+        );
     }
 
     public function create()
     {
-        return view('src.admin.adproducts.productadd',
-        ['types' => $this->types, 'subtypes' => $this->subtypes]);
+        return view(
+            'src.dashboard.products.add',
+            ['types' => $this->types, 'subtypes' => $this->subtypes]
+        );
     }
 
     public function store(ProductRequest $request)
@@ -46,15 +51,19 @@ class ProductController
     public function show(Product $product)
     {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view('src.admin.adproducts.infoprod',
-        ['products' => $product, 'conditions' => ConditionStatus::cases(), 'measurements' => Measurement::cases()]);
+        return view(
+            'src.dashboard.products.details',
+            ['products' => $product, 'conditions' => ConditionStatus::cases(), 'measurements' => Measurement::cases()]
+        );
     }
 
     public function edit(Product $product)
     {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view('src.admin.adproducts.editprod',
-        ['products' => $product, 'types' => $this->types, 'subtypes' => $this->subtypes]);
+        return view(
+            'src.dashboard.products.edit',
+            ['products' => $product, 'types' => $this->types, 'subtypes' => $this->subtypes]
+        );
     }
 
     public function update(ProductRequest $request, Product $product)
