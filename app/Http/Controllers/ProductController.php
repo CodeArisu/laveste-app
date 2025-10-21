@@ -2,39 +2,37 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SubtypeResource;
-use App\Http\Resources\TypeResource;
-use App\Http\{Requests\ProductRequest, Resources\ProductResource};
+use App\Http\{Requests\ProductRequest};
 use App\Models\Products\Product;
-use App\Models\Products\Subtype;
-use App\Models\Products\Type;
+use App\Services\Caching\CachedProductServices;
 use App\Services\ProductService;
 use App\Enum\Measurement;
 use App\Enum\ConditionStatus;
 
 class ProductController
 {
-    private $productCollection;
-    private $types, $subtypes;
-
-    public function __construct(protected ProductService $productService) {
-        $product = Product::with(['types', 'subtypes'])->get();
-
-        $this->productCollection = ProductResource::collection($product);
-        $this->types = TypeResource::collection(Type::all());
-        $this->subtypes = SubtypeResource::collection(Subtype::all());
-    }
+    public function __construct(
+        // product service
+        protected ProductService $productService,
+        // cached product service
+        protected CachedProductServices $cachedProductServices
+    ) {}
 
     public function index()
     {
         return view('src.admin.adproduct',
-        ['products' => $this->productCollection]);
+        [
+            'products' => $this->cachedProductServices->getProductCollection()
+        ]);
     }
 
     public function create()
     {
         return view('src.admin.adproducts.productadd',
-        ['types' => $this->types, 'subtypes' => $this->subtypes]);
+        [
+            'types' => $this->cachedProductServices->getType(),
+            'subtypes' => $this->cachedProductServices->getSubtype()
+        ]);
     }
 
     public function store(ProductRequest $request)
@@ -54,7 +52,11 @@ class ProductController
     {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
         return view('src.admin.adproducts.editprod',
-        ['products' => $product, 'types' => $this->types, 'subtypes' => $this->subtypes]);
+        [
+            'products' => $product,
+            'types' => $this->cachedProductServices->getType(),
+            'subtypes' => $this->cachedProductServices->getSubtype()
+        ]);
     }
 
     public function update(ProductRequest $request, Product $product)

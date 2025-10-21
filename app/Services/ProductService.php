@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Products\{Product, Type, Subtype, Supplier, ProductCategories};
 
+use App\Models\Products\Product;
 use App\Exceptions\ProductException;
 use App\Http\Requests\ProductRequest;
 
@@ -18,13 +18,14 @@ class ProductService extends ProductRepository
 {
     public function __construct(
         protected Product $product,
-        protected Type $type,
-        protected Subtype $subtype,
-        protected Supplier $supplier,
-        protected ProductCategories $productCategory
     )
     {
         parent::__construct($product);
+    }
+
+    public function requestProductIndex()
+    {
+        //
     }
 
     /**
@@ -91,7 +92,6 @@ class ProductService extends ProductRepository
         } catch (\RuntimeException $e) {
             // Your custom runtime exceptions
             throw ProductException::productUpdateFailed();
-            dd($e->getMessage());
         }
     }
 
