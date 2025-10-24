@@ -83,13 +83,14 @@ trait ProductTraits
         foreach ($subtypes as $subtypeName) {
             $subType = $this->subtype->firstOrCreate(['subtype_name' => $subtypeName]);
             $productTypes->push(
-                $this->productCategories->firstOrCreate([
+                $this->productCategory->firstOrCreate([
                     'type_id' => $mainType->id ?? null,
                     'subtype_id' => $subType->id ?? null,
                     'product_id' => $relations['product_id'],
                 ]),
             );
         }
+
         return $productTypes->count() === 1 ? $productTypes->first() : $productTypes;
     }
 
@@ -108,6 +109,7 @@ trait ProductTraits
 
         // Handle product types
         $typeData = array_merge($validated->only(['type', 'subtype']), ['product_id' => $product]);
+
         if ($this->typeDataChanged($product, $typeData)) {
             $productTypes = $this->updateOrKeepProductTypes($product, $typeData);
 
@@ -120,6 +122,7 @@ trait ProductTraits
             $primaryProductType = $product->productCategories;
         }
 
+        // updates product details
         $product = $this->updateProductDetails($product, $validated->only(['product_name', 'original_price', 'description']), ['supplier_id' => $supplier->id]);
 
         return compact('supplier', 'primaryProductType', 'product');
@@ -285,7 +288,7 @@ trait ProductTraits
     }
 
     /**
-     *
+     *  @param Product $product
      */
     protected function deleteProduct(Product $product)
     {

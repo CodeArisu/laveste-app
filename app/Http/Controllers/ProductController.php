@@ -2,44 +2,38 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SubtypeResource;
-use App\Http\Resources\TypeResource;
-use App\Http\{Requests\ProductRequest, Resources\ProductResource};
+use App\Http\{Requests\ProductRequest};
 use App\Models\Products\Product;
-use App\Models\Products\Subtype;
-use App\Models\Products\Type;
+use App\Services\Caching\CachedProductServices;
 use App\Services\ProductService;
 use App\Enum\Measurement;
 use App\Enum\ConditionStatus;
 
 class ProductController
 {
-    private $productCollection;
-    private $types, $subtypes;
-
-    public function __construct(protected ProductService $productService)
-    {
-        $product = Product::with(['types', 'subtypes'])->get();
-
-        $this->productCollection = ProductResource::collection($product);
-        $this->types = TypeResource::collection(Type::all());
-        $this->subtypes = SubtypeResource::collection(Subtype::all());
-    }
+    public function __construct(
+        // product service
+        protected ProductService $productService,
+    ) {}
 
     public function index()
     {
-        return view(
-            'src.dashboard.pages.products',
-            ['products' => $this->productCollection]
-        );
+        $products = $this->productService->getProductCollection();
+
+        return view('src.dashboard.pages.products', [
+            'products' => $products,
+        ]);
     }
 
     public function create()
     {
-        return view(
-            'src.dashboard.products.add',
-            ['types' => $this->types, 'subtypes' => $this->subtypes]
-        );
+        $types = $this->productService->getType();
+        $subtypes = $this->productService->getSubtype();
+
+        return view('src.dashboard.products.add', [
+            'types' => $types,
+            'subtypes' => $subtypes
+        ]);
     }
 
     public function store(ProductRequest $request)
@@ -60,10 +54,11 @@ class ProductController
     public function edit(Product $product)
     {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view(
-            'src.dashboard.products.edit',
-            ['products' => $product, 'types' => $this->types, 'subtypes' => $this->subtypes]
-        );
+        return view('src.dashboard.products.edit', [
+            'products' => $product,
+            'types' => $this->productService->getType(),
+            'subtypes' => $this->productService->getSubtype()
+        ]);
     }
 
     public function update(ProductRequest $request, Product $product)

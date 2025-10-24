@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Products\{Product, Type, Subtype, Supplier, ProductCategories};
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\DoubleValidation;
 use App\Traits\ProductTraits;
@@ -10,14 +11,28 @@ abstract class ProductRepository implements RepositoryInterface
 {
     use DoubleValidation, ProductTraits;
     // main model instance
-    protected Model $model;
+    protected Product $model;
+    protected Type $type;
+    protected Subtype $subtype;
+    protected Supplier $supplier;
+    protected ProductCategories $productCategory;
 
     /**
      * @param Model $model
      */
-    public function __construct(Model $model)
+    public function __construct(
+        Model $model,
+        Type $type,
+        Subtype $subtype,
+        Supplier $supplier,
+        ProductCategories $productCategory
+    )
     {
         $this->model = $model;
+        $this->type = $type;
+        $this->subtype = $subtype;
+        $this->supplier = $supplier;
+        $this->productCategory = $productCategory;
     }
 
     /**
@@ -52,7 +67,9 @@ abstract class ProductRepository implements RepositoryInterface
      */
     public function find($id): ?Model
     {
-        return $this->model->find($id);
+        return $this->model
+            ->with(['subtypes', 'types', 'supplier'])
+            ->find($id);
     }
 
     /**
