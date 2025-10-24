@@ -83,13 +83,14 @@ trait ProductTraits
         foreach ($subtypes as $subtypeName) {
             $subType = $this->subtype->firstOrCreate(['subtype_name' => $subtypeName]);
             $productTypes->push(
-                $this->productCategories->firstOrCreate([
+                $this->productCategory->firstOrCreate([
                     'type_id' => $mainType->id ?? null,
                     'subtype_id' => $subType->id ?? null,
                     'product_id' => $relations['product_id'],
                 ]),
             );
         }
+
         return $productTypes->count() === 1 ? $productTypes->first() : $productTypes;
     }
 

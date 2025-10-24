@@ -12,7 +12,7 @@
         @endif
 
         @if($errors->has('internal_error'))
-             <div class="alert alert-danger">
+            <div class="alert alert-danger">
                 <strong>Error:</strong> {{ $errors->first('internal_error') }}
                 <p>{{ $errors->first('internal_error_description') }}</p>
             </div>
@@ -35,19 +35,23 @@
                             <label for="type">Type<span class='importance'>*</span></label>
                             <select id="type" name="type" required>
                                 <option value="" disabled {{ old('type') ? '' : 'selected' }}>Select Type</option>
-                                @foreach ($types as $type)
-                                <option value="{{ $type->type_name }}" {{ old('type') == $type->type_name ? 'selected' : '' }}>
-                                    {{ Str::ucfirst($type->type_name) }}
-                                </option>
-                                @endforeach
+                                    @if(isset($types) && $types->count() > 0)
+                                        @foreach ($types as $type)
+                                            <option value="{{ $type->type_name }}" {{ old('type') == $type->type_name ? 'selected' : '' }}>
+                                                {{ Str::ucfirst($type->type_name) }}
+                                            </option>
+                                        @endforeach
+                                    @else
+                                        <option value="">No types available</option>
+                                    @endif
                                 <option value="new_type" {{ old('type') == 'new_type' ? 'selected' : '' }}>Add New Type</option>
                             </select>
                             @error('type')
                                 <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                             @enderror
-                        
+
                             <div id="new-type-container" style="{{ old('type') == 'new_type' ? '' : 'display: none;' }}">
-                                <input type="text" name="new_type" placeholder="Enter new type" 
+                                <input type="text" name="new_type" placeholder="Enter new type"
                                     value="{{ old('new_type') }}">
                                 @error('new_type')
                                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
@@ -58,19 +62,23 @@
                         <label for="sub-type">Sub-type<span class='importance'>*</span></label>
                         <select id="sub-type" name="subtype" required>
                             <option value="" disabled {{ old('subtype') ? '' : 'selected' }}>Select Sub-type</option>
-                            @foreach ($subtypes as $subtype)
-                            <option value="{{ $subtype->subtype_name }}" {{ old('subtype') == $subtype->subtype_name ? 'selected' : '' }}>
-                                {{ Str::ucfirst($subtype->subtype_name) }}
-                            </option>
-                            @endforeach
+                                @if(isset($subtypes) && $subtypes->count() > 0)
+                                    @foreach ($subtypes as $subtype)
+                                    <option value="{{ $subtype->subtype_name }}" {{ old('subtype') == $subtype->subtype_name ? 'selected' : '' }}>
+                                        {{ Str::ucfirst($subtype->subtype_name) }}
+                                    </option>
+                                    @endforeach
+                                @else
+                                    <option value="">No sub-types available</option>
+                                @endif
                             <option value="new_subtype" {{ old('subtype') == 'new_subtype' ? 'selected' : '' }}>Add New Sub-type</option>
                         </select>
                         @error('subtype')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
-                        
+
                         <div id="new-subtype-container" style="{{ old('subtype') == 'new_subtype' ? '' : 'display: none;' }}">
-                            <input type="text" name="new_subtype" placeholder="Enter new sub-type (comma separated)" 
+                            <input type="text" name="new_subtype" placeholder="Enter new sub-type (comma separated)"
                                 value="{{ old('new_subtype') }}" class="mb-0">
                             <small>Separate using commas for multiple inputs.</small>
                             @error('new_subtype')
@@ -79,13 +87,13 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <label for="description">Description</label>
                 <textarea name="description" id="description" rows="4">{{ old('description') }}</textarea>
                 @error('description')
                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                 @enderror
-                
+
                 <label for="original-price">Original Price<span class='importance'>*</span></label>
                 <input name="original_price" type="number" id="original-price" value="{{ old('original_price') }}" required>
                 @error('original_price')
@@ -98,7 +106,7 @@
                     <h2>Supplier Information</h2>
                     <label for="supplier-name">Supplier Name</label>
                     <input name="supplier_name" type="text" id="supplier-name" value={{ old('supplier_name') }}>
-                 
+
                     <label for="company-name">Company Name<span class='importance'>*</span></label>
                     <input name="company_name" type="text" id="company-name" value={{ old('company_name') }}>
 
@@ -135,5 +143,5 @@
         <script src={{ asset('scripts/addProductSelectTypesHandler.js') }}></script>
         <script src={{ asset('scripts/categoriesHandler.js') }}></script>
     @endsection
-    
+
 </x-layouts.app>

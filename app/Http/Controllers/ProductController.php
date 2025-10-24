@@ -14,24 +14,25 @@ class ProductController
     public function __construct(
         // product service
         protected ProductService $productService,
-        // cached product service
-        protected CachedProductServices $cachedProductServices
     ) {}
 
     public function index()
     {
-        return view('src.admin.adproduct',
-        [
-            'products' => $this->cachedProductServices->getProductCollection()
+        $products = $this->productService->getProductCollection();
+
+        return view('src.dashboard.pages.products', [
+            'products' => $products,
         ]);
     }
 
     public function create()
     {
-        return view('src.admin.adproducts.productadd',
-        [
-            'types' => $this->cachedProductServices->getType(),
-            'subtypes' => $this->cachedProductServices->getSubtype()
+        $types = $this->productService->getType();
+        $subtypes = $this->productService->getSubtype();
+
+        return view('src.dashboard.products.add', [
+            'types' => $types,
+            'subtypes' => $subtypes
         ]);
     }
 
@@ -53,11 +54,10 @@ class ProductController
     public function edit(Product $product)
     {
         $product = Product::with(['subtypes', 'types', 'supplier'])->findOrFail($product->id);
-        return view('src.admin.adproducts.editprod',
-        [
+        return view('src.dashboard.products.edit', [
             'products' => $product,
-            'types' => $this->cachedProductServices->getType(),
-            'subtypes' => $this->cachedProductServices->getSubtype()
+            'types' => $this->productService->getType(),
+            'subtypes' => $this->productService->getSubtype()
         ]);
     }
 

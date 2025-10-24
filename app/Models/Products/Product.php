@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class Product extends Model
 {
     use HasFactory, HasUniqueStringIds;
-    
+
     protected $table = 'products';
 
     protected $fillable = [
@@ -83,5 +84,20 @@ class Product extends Model
     public function newUniqueId()
     {
         return 'PRD-' . Str::ulid();
+    }
+
+    protected static function booted()
+    {
+        static::created(function () {
+            Cache::forget('product_collection');
+        });
+
+        static::updated(function () {
+            Cache::forget('product_collection');
+        });
+
+        static::deleted(function () {
+            Cache::forget('product_collection');
+        });
     }
 }

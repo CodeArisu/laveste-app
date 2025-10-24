@@ -2,8 +2,7 @@
 
 namespace App\Services;
 
-
-use App\Models\Products\Product;
+use App\Models\Products\{Product, Type, Subtype, Supplier, ProductCategories};
 use App\Exceptions\ProductException;
 use App\Http\Requests\ProductRequest;
 
@@ -16,13 +15,28 @@ use Illuminate\Validation\ValidationException;
 
 class ProductService extends ProductRepository
 {
+    use \App\Traits\ProductCache;
+
     public function __construct(
         protected Product $product,
+        protected Type $type,
+        protected Subtype $subtype,
+        protected Supplier $supplier,
+        protected ProductCategories $productCategory
     )
     {
-        parent::__construct($product);
+        parent::__construct(
+            $product,
+            $type,
+            $subtype,
+            $supplier,
+            $productCategory
+        );
     }
 
+    /**
+     * Request to get product index
+     */
     public function requestProductIndex()
     {
         //
@@ -44,21 +58,10 @@ class ProductService extends ProductRepository
                 return ['message' => 'Successfully Created', 'route' => 'dashboard.product.form'];
             });
         } catch (\Exception $e) {
-            report($e);
-            throw ProductException::productCreateFailed();
-        } catch (ModelNotFoundException $e) {
-            report($e);
-            throw ProductException::productNotFound();
-        } catch (QueryException $e) {
-            // Database query errors (constraint violations, etc.)
-            report($e);
-            throw ProductException::productNotFound();
-        } catch (ValidationException $e) {
-            // If any validation fails (though ProductRequest should handle most)
-            throw ProductException::productValidationFailed();
-        } catch (\RuntimeException $e) {
-            // Your custom runtime exceptions
-            throw ProductException::productCreateFailed();
+            return [
+                'message' => 'Creation Failed: ' . $e->getMessage(),
+                'route' => 'dashboard.product.form'
+            ];
         }
     }
 

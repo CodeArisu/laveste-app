@@ -6,10 +6,10 @@ trait QueryHelper
 {
     //
 
-    public function queryAll()
+    public function queryAll($selectedCols = ['*'])
     {
-        
+        $table = $this->model->getTable();
 
-        $this->model->select();
+        return $this->model->select($selectedCols)->from($table)->get();
     }
 }

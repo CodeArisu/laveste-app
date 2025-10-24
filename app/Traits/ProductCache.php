@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Services\Caching;
+namespace App\Traits;
 
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\TypeResource;
-use App\Repositories\ProductRepository;
 use Illuminate\Support\Facades\Cache;
 
-class CachedProductServices extends ProductRepository
+trait ProductCache
 {
     protected $cacheDuration = 60;
     protected $cacheKeyPrefix = 'product_';

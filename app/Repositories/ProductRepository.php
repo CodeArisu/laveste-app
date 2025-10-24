@@ -11,20 +11,28 @@ abstract class ProductRepository implements RepositoryInterface
 {
     use DoubleValidation, ProductTraits;
     // main model instance
-    protected Model $model;
+    protected Product $model;
+    protected Type $type;
+    protected Subtype $subtype;
+    protected Supplier $supplier;
+    protected ProductCategories $productCategory;
 
     /**
      * @param Model $model
      */
     public function __construct(
         Model $model,
-        protected Type $type,
-        protected Subtype $subtype,
-        protected Supplier $supplier,
-        protected ProductCategories $productCategory
+        Type $type,
+        Subtype $subtype,
+        Supplier $supplier,
+        ProductCategories $productCategory
     )
     {
         $this->model = $model;
+        $this->type = $type;
+        $this->subtype = $subtype;
+        $this->supplier = $supplier;
+        $this->productCategory = $productCategory;
     }
 
     /**
