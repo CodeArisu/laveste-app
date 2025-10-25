@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="/css/register.css">
     @endpush
 
-    @if (Session('success'))
+    @if (Session('success') && !str_contains(Session('success'), 'logged in'))
         <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
     @endif
 

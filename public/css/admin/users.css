@@ -1,3 +1,126 @@
+
+/* Additional custom styles for enhanced functionality */
+
+/* Sort indicators */
+.sortable.sort-asc i::before {
+    content: "\f0de"; /* fa-sort-up */
+}
+
+.sortable.sort-desc i::before {
+    content: "\f0dd"; /* fa-sort-down */
+}
+
+/* Enhanced hover effects for table rows */
+.table-row:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Custom scrollbar for table wrapper */
+.overflow-x-auto::-webkit-scrollbar {
+    height: 6px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Enhanced focus states for form elements */
+#userSearch:focus,
+#roleFilter:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Animation for status badges */
+.status-badge {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading state for action buttons */
+.action-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.action-btn:disabled:hover {
+    transform: none;
+}
+
+/* Enhanced empty state */
+.empty-state {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+    .table-row {
+        font-size: 0.875rem;
+    }
+    
+    .table-row td {
+        padding: 0.75rem 1rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .action-btn {
+        width: 1.75rem;
+        height: 1.75rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .table-header {
+        background: #f8fafc !important;
+        color: #374151 !important;
+    }
+    
+    .action-buttons {
+        display: none !important;
+    }
+    
+    .table-row:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+}
+
 .profile-panel {
     background-color: #FFF2D9;
     border-radius: 20px;

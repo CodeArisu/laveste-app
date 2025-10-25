@@ -6,7 +6,7 @@
 
                 @if (Session('deleted'))
                     <x-fragments.alert-response message="{{ Session('deleted') }}" type='danger' />
-                @elseif (Session('success'))
+                @elseif (Session('success') && !str_contains(Session('success'), 'logged in'))
                     <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
                 @endif
 

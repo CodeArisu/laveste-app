@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="{{ asset('css/cashier/checkout2.css') }}?v={{ time() }}">
     @endpush
 
-    @if (Session('success'))
+    @if (Session('success') && !str_contains(Session('success'), 'logged in'))
         <x-fragments.alert-response message="{{ Session('success') }}" type="success" />
     @elseif (Session('failed'))
         <x-fragments.alert-response message="{{ Session('failed') }}" type="warning" />

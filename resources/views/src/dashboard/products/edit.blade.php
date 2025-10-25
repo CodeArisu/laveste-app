@@ -5,7 +5,7 @@
 
     <div class="container">
 
-        @if (Session('success'))
+        @if (Session('success') && !str_contains(Session('success'), 'logged in'))
             <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
         @endif
 
