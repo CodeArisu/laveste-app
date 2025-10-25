@@ -48,8 +48,7 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        foreach($attributes as $attribute)
-        {
+        foreach ($attributes as $attribute) {
             DB::table('users')->insert([
                 $attribute
             ]);

@@ -7,7 +7,7 @@
         <a href="{{ route('dashboard.product.index') }}" class="back-btn">← Back</a>
         <div class="info-sections">
             <div class="product-section">
-                @if (session('success'))
+                @if (session('success') && !str_contains(session('success'), 'logged in'))
                     <x-fragments.alert-response message="{{ session('success') }}" type='success' />
                 @endif
                 <br>

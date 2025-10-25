@@ -6,6 +6,10 @@
 
         @if (Session('success'))
             <x-fragments.alert-response message="{{ Session('success') }}" type="success" />
+            @php
+                // Clear the session message after displaying it
+                session()->forget('success');
+            @endphp
         @endif
 
         <h2 class="dashboard-title">Dashboard</h2>

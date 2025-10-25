@@ -7,7 +7,7 @@
         <h1>Add Product</h1>
 
         {{-- shows message after success API --}}
-        @if (session('success'))
+        @if (session('success') && !str_contains(session('success'), 'logged in'))
             <x-fragments.alert-response message="{{ Session('success') }}" type='success' />
         @endif
 
